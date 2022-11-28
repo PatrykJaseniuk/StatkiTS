@@ -22,8 +22,9 @@ Projekt realizowany w stylu [eXtreme Programming, XP](https://pl.wikipedia.org/w
 + cała struktura projektu jest plastyczna i może się zmieniać
 + testy jednostkowe przed rozpoczęciem pisania kodu
 
-## iteracja
+## iteracja Kontrola wersji
 
+pseud kod:
 ``` TS
 let majorVersion =0;
 let minorVersion =0;
@@ -42,3 +43,11 @@ while(true)
     majorVersion++;
 }
 ```
+Każda wersja główna (major version) jest w osobnej `gałęzi(branch)`. Gałąź odpowiada za wprowadzenie nowej funkcjonalności/ poszerzenie aplikacji/ realizacje nowego celu, Każda kolejna gałąź/wersja jest zależna od wszystkich poprzednich, tworzą łańcuch.  
+
+Co jeżeli aktualną `gałęzią` będzie np 5 i znajdę błąd w gałęzi 3?
+
+Modyfikację commituje/zapiszę do gałęzi 3, następnie zmianę propaguję do góry przez wszystkie gałęzie
+
+
+

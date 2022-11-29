@@ -1,35 +1,39 @@
-import PIXI from "pixi.js";
+import { Application, Sprite, Assets } from 'pixi.js';
 
-export const app = new PIXI.Application({ background: '#1099bb' });
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
 
-const container = new PIXI.Container();
 
-app.stage.addChild(container);
+async function f() {
+    const app = new Application();
 
-// Create a new texture
-const texture = PIXI.Texture.from('examples/assets/bunny.png');
+    // The application will create a canvas element for you that you
+    // can then insert into the DOM
 
-// Create a 5x5 grid of bunnies
-for (let i = 0; i < 25; i++) {
-    const bunny = new PIXI.Sprite(texture);
-    bunny.anchor.set(0.5);
-    bunny.x = (i % 5) * 40;
-    bunny.y = Math.floor(i / 5) * 40;
-    container.addChild(bunny);
+    // load the texture we need
+    const texture = await Assets.load('bunny.jpeg');
+
+    // This creates a texture from a 'bunny.png' image
+    const bunny = new Sprite(texture);
+
+    // Setup the position of the bunny
+    bunny.x = app.renderer.width / 2;
+    bunny.y = app.renderer.height / 2;
+
+    // Rotate around the center
+    bunny.anchor.x = 0.5;
+    bunny.anchor.y = 0.5;
+
+    // Add the bunny to the scene we are building
+    app.stage.addChild(bunny);
+
+    // Listen for frame updates
+    app.ticker.add(() => {
+        // each frame we spin the bunny around a bit
+        bunny.rotation += 0.01;
+    });
+    return app;
 }
 
-// Move container to the center
-container.x = app.screen.width / 2;
-container.y = app.screen.height / 2;
-
-// Center bunny sprite in local container coordinates
-container.pivot.x = container.width / 2;
-container.pivot.y = container.height / 2;
-
-// Listen for animate update
-app.ticker.add((delta) => {
-    // rotate the container!
-    // use delta to create frame-independent transform
-    container.rotation -= 0.01 * delta;
-});
-
+export default f();

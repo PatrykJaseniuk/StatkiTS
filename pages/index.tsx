@@ -1,8 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-// import game from '../game/helloWorld'
-// import Game from '../components/game'
+import Game from '../components/game'
 
 export async function getStaticProps() {
   return {
@@ -24,7 +23,7 @@ export default function Home() {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
         <div>
-          {/* <Game/> */}
+          <Game />
         </div>
 
 

@@ -1,20 +1,21 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { readConfigFile } from "typescript"
-import { app } from "../game/helloWorld"
+import app from "../game/helloWorld"
+
 
 const Game = () => {
-    const ref = useRef(null)
-    // useEffect(() => {
-    //     // On first render add app to DOM
-    //     // (ref.current as any).addchild(app.view);
-    //     // Start the PixiJS app
-    //     app.start();
+    const gameId = 'game'
+    useEffect(() => {
+        app.then((app) => {
+            document.getElementById(gameId)?.appendChild(app.view as any);
+            app.start();
 
-    //     return () => {
-    //         // On unload stop the application
-    //         app.stop();
-    //     };
-    // }, []);
-    // return <div ref={ref}></div>
+            console.log('start')
+        });
+    }, [])
+
+    return (
+        <div id={gameId}></div>
+    )
 }
 export default Game;

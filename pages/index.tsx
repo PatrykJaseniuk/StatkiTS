@@ -1,7 +1,10 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import Game from '../components/game'
+import PixiApp from '../components/pixiApp'
+import Layout from '../components/layout'
+import hw from '../apps/helloWorld'
+import { Container } from '@mui/material'
 
 export async function getStaticProps() {
   return {
@@ -18,15 +21,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-        <div>
-          <Game />
-        </div>
-
-
+      <main>
+        <Container sx={{ height: '100vh' }}>
+          <Layout />
+        </Container>
       </main>
 
       <footer className={styles.footer}>
@@ -41,6 +39,7 @@ export default function Home() {
           </span>
         </a>
       </footer>
+
     </div>
   )
 }

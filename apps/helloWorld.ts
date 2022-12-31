@@ -6,13 +6,14 @@ import { Application, Sprite, Assets } from 'pixi.js';
 
 
 async function f() {
-    const app = new Application();
+    const app = new Application({ background: '#109900' });
 
     // The application will create a canvas element for you that you
     // can then insert into the DOM
+    // document.body.appendChild(app.view as any);
 
     // load the texture we need
-    const texture = await Assets.load('bunny.jpeg');
+    const texture = await Assets.load('bunny.png');
 
     // This creates a texture from a 'bunny.png' image
     const bunny = new Sprite(texture);
@@ -36,4 +37,4 @@ async function f() {
     return app;
 }
 
-export default f();
+export default f;

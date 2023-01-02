@@ -14,6 +14,7 @@ import { version } from 'os';
 import click from '../apps/click';
 import keyEvents from '../apps/keyEvents';
 import kinematics from '../apps/kinematicss';
+import dynamics from '../apps/dynamics';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -32,6 +33,7 @@ export default function Layout() {
         { nazwa: 'DragAndDrop', app: dragAndDrop },
         { nazwa: 'KeyEvent', app: keyEvents },
         { nazwa: 'Kinematics', app: kinematics },
+        { nazwa: 'Dynamika', app: dynamics },
     ]
 
     return (

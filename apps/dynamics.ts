@@ -1,5 +1,5 @@
 import { experimentalStyled } from '@mui/material';
-import { Application, Sprite, Assets, Texture, Container, FederatedPointerEvent, Point } from 'pixi.js';
+import { Application, Sprite, Assets, Texture, Container, FederatedPointerEvent, Point, Graphics } from 'pixi.js';
 
 async function f() {
     const app = new Application({ background: '#1099ba' });
@@ -17,22 +17,44 @@ async function f() {
         console.log('event', event);
         // get mous position
         let mouseStartPosition: Point = new Point(0, 0);
+
         Object.assign(mouseStartPosition, event.global);
         let containerStartPosition: Point = new Point(container.position.x, container.position.y);
-        app.stage.on('pointermove', (eventt: FederatedPointerEvent) => {
-            // console.log('pointermove');
-            const mouseCurrentPosition = eventt.global;
+
+        // pozycja myszy wzgledem obiektu
+        let mousePositionRelativeToContainer: Point = new Point(mouseStartPosition.x - container.position.x, mouseStartPosition.y - container.position.y);
+        const line = new Graphics();
+        app.stage.addChild(line);
+
+        const generateForce = () => {  // console.log('pointermove');
+            const mouseCurrentPosition = event.global;
+
+            // narysuj linie od myszy do obiektu
+            // zmarz linie line
+            line.clear();
+
+            line.lineStyle(2, 0xff0000, 1);
+            line.moveTo(mouseCurrentPosition.x, mouseCurrentPosition.y);
+            let startPoint = new Point(container.position.x + mousePositionRelativeToContainer.x, container.position.y + mousePositionRelativeToContainer.y);
+            line.lineTo(startPoint.x, startPoint.y);
+            let delta = new Point(mouseCurrentPosition.x - startPoint.x, mouseCurrentPosition.y - startPoint.y);
+
+            container.sila = delta;
             console.log('mouseCurrentPosition', mouseCurrentPosition);
             console.log('mouseStartPosition', mouseStartPosition)
-            const delta = new Point(mouseCurrentPosition.x - mouseStartPosition.x, mouseCurrentPosition.y - mouseStartPosition.y);
-            container.position.set(containerStartPosition.x + delta.x, containerStartPosition.y + delta.y);
+            // const delta = new Point(mouseCurrentPosition.x - mouseStartPosition.x, mouseCurrentPosition.y - mouseStartPosition.y);
+            // container.position.set(containerStartPosition.x + delta.x, containerStartPosition.y + delta.y);
             // container.rotation -= 0.01;
-        });
+        }
+        app.ticker.add(generateForce);
 
 
         app.stage.once('pointerup', () => {
             console.log('pointerup');
-            app.stage.off('pointermove');
+            // usun linie
+            app.stage.removeChild(line);
+            container.sila = new Point(0, 0);
+            app.ticker.remove(generateForce);
         })
     }
 
@@ -122,8 +144,10 @@ class ObiektFizyczny extends Container {
     }
 
     kinematykuj() {
+        this.aktualizujPrzyspieszenie();
         this.przyspiesz();
         this.przesun();
+
     }
 
     przesun() {
@@ -134,7 +158,13 @@ class ObiektFizyczny extends Container {
         this.predkosc.x += this.przyspieszenie.x;
         this.predkosc.y += this.przyspieszenie.y;
     }
+    aktualizujPrzyspieszenie() {
+        this.przyspieszenie.x = this.sila.x / this.masa / 100;
+        this.przyspieszenie.y = this.sila.y / this.masa / 100;
+    }
 
     predkosc: Point = new Point(0, 0);
     przyspieszenie: Point = new Point(0, 0);
+    sila: Point = new Point(0, 0);
+    masa: number = 1;
 }

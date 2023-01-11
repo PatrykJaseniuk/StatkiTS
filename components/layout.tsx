@@ -15,6 +15,7 @@ import click from '../apps/click';
 import keyEvents from '../apps/keyEvents';
 import kinematics from '../apps/kinematicss';
 import dynamics from '../apps/dynamics';
+import statekNiestabilny from '../apps/statekNiestabilny';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -34,15 +35,12 @@ export default function Layout() {
         { nazwa: 'KeyEvent', app: keyEvents },
         { nazwa: 'Kinematics', app: kinematics },
         { nazwa: 'Dynamika', app: dynamics },
+        { nazwa: 'Statek Niestabilny', app: statekNiestabilny },
+
     ]
 
     return (
         <Container sx={{ border: '1px dashed red' }}>
-            <Box sx={{
-                width: 200,
-                border: '1px'
-            }}>
-            </Box>
             <Grid2 container>
                 <Grid2 sx={{
                     border: '1px ',

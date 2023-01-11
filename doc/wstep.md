@@ -24,7 +24,7 @@ Projekt realizowany w stylu [eXtreme Programming, XP](https://pl.wikipedia.org/w
 
 ## iteracja Kontrola wersji
 
-pseud kod:
+pseudo kod:
 ``` TS
 let majorVersion =0;
 let minorVersion =0;

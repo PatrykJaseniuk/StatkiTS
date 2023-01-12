@@ -16,6 +16,8 @@ import keyEvents from '../apps/keyEvents';
 import kinematics from '../apps/kinematicss';
 import dynamics from '../apps/dynamics';
 import statekNiestabilny from '../apps/statekNiestabilny';
+import statekStabilny from '../apps/statekStabilny';
+
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -36,6 +38,7 @@ export default function Layout() {
         { nazwa: 'Kinematics', app: kinematics },
         { nazwa: 'Dynamika', app: dynamics },
         { nazwa: 'Statek Niestabilny', app: statekNiestabilny },
+        { nazwa: 'Statek Stabilny', app: statekStabilny },
 
     ]
 

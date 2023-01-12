@@ -23,6 +23,7 @@ const PixiApp = (props: { app: () => Promise<Application<ICanvas>> }) => {
         return () => {
             promise.then((app) => {
                 app.stop();
+                app.destroy(true);
                 if (ref.current) {
                     (ref.current as any).innerHTML = '';
                 }

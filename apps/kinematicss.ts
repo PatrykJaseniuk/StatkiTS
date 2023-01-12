@@ -99,7 +99,7 @@ async function f() {
         console.log('delta', delta);
         container.kinematykuj();
     });
-
+    
     return app
 }
 

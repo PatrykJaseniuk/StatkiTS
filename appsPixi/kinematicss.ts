@@ -53,8 +53,6 @@ async function f() {
     container.on('pointerdown', onDragStart);
     container.interactive = true;
 
-
-
     app.stage.hitArea = app.screen;
     app.stage.interactive = true;
 
@@ -97,7 +95,7 @@ async function f() {
 
     app.ticker.add((delta) => {
         console.log('delta', delta);
-        container.kinematykuj();
+        container.aktualizuj();
     });
     
     return app
@@ -105,7 +103,7 @@ async function f() {
 
 export default f;
 
-// Dodanie event listenera jest w jednej funkcji z odmontowaniem go w odpowiednim momencie. Tak należy postępować z funkcjami z efektami ubocznymi aby zachować czystość kodu. 
+// Dodanie event listenera jest w jednej funkcji z odmontowaniem go w odpowiednim momencie. Robie tak żeby później nie zapomnieć o odmontowaniu event listenera.
 function addEventListener<K extends keyof WindowEventMap>(app: Application, type: K, listener: (this: Window, ev: WindowEventMap[K]) => any) {
     window.addEventListener(type, listener); //funkcja z efektem ubocznym (side effect)
 
@@ -121,7 +119,7 @@ class ObiektFizyczny extends Container {
         super();
     }
 
-    kinematykuj() {
+    aktualizuj() {
         this.przyspiesz();
         this.przesun();
     }

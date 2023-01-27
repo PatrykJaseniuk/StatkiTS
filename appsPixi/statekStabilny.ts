@@ -121,9 +121,8 @@ class Wiazanie {
     obiekt2: ObiektFizyczny;
     app: Application;
     // container : Container;
-    constructor(app: Application, container: Container, obiekt1: ObiektFizyczny, obiekt2: ObiektFizyczny) {
+    constructor(app: Application, obiekt1: ObiektFizyczny, obiekt2: ObiektFizyczny) {
         this.app = app;
-        // this.container = container;
         this.obiekt1 = obiekt1;
         this.obiekt2 = obiekt2;
         this.app.ticker.add(() => { this.aktualizuj() });
@@ -132,13 +131,13 @@ class Wiazanie {
         this.app.ticker.remove(() => { this.aktualizuj() });
     }
     aktualizuj() {
-        // sila oddzialywania zatezy od odleglosci miedzy obiektami
-        // oblicz dot product predkosci obiektow
-        // let vector:Vector2 = new Vector2(this.obiekt1.x - this.obiekt2.x, this.obiekt1.y - this.obiekt2.y);
-
+        // sila wiazania zalezy od odleglosci miedzy obiektami(jest podobna do sprężyny)
+        let odleglosc = this.obiekt1.position;
+        
     }
 
 }
+
 
 
 class Zagiel extends ObiektFizyczny {

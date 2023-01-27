@@ -3,7 +3,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import PixiApp from '../components/pixiApp'
 import Layout from '../components/layout'
-import hw from '../apps/helloWorld'
+import hw from '../appsPixi/helloWorld'
 import { Container } from '@mui/material'
 
 export async function getStaticProps() {

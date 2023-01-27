@@ -5,18 +5,24 @@ import { Box, Button, Card, Container, Paper, Typography } from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { Stack } from '@mui/system';
 import { Application, ICanvas } from 'pixi.js';
-import dragAndDrop from '../apps/dragAndDrop'
-import hw from '../apps/helloWorld'
+import dragAndDrop from '../appsPixi/dragAndDrop'
+import hw from '../appsPixi/helloWorld'
 import { useState } from 'react';
 import PixiApp from './pixiApp';
-import tining from '../apps/tining'
-import { version } from 'os';
-import click from '../apps/click';
-import keyEvents from '../apps/keyEvents';
-import kinematics from '../apps/kinematicss';
-import dynamics from '../apps/dynamics';
-import statekNiestabilny from '../apps/statekNiestabilny';
-import statekStabilny from '../apps/statekStabilny';
+import tining from '../appsPixi/tining'
+import { type, version } from 'os';
+import click from '../appsPixi/click';
+import keyEvents from '../appsPixi/keyEvents';
+import kinematics from '../appsPixi/kinematicss';
+import dynamics from '../appsPixi/dynamics';
+import statekNiestabilny from '../appsPixi/statekNiestabilny';
+import statekStabilny from '../appsPixi/statekStabilny';
+import { WebGLRenderer } from 'three';
+import ThreeAppComp from './threeApp';
+import heloWorldThree from '../appsThree/helloworld';
+import d2Graphics from '../appsThree/2dGraphics';
+import { ThreeApp } from '../appsThree/ThreeApp';
+
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -27,8 +33,9 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+
 export default function Layout() {
-    const [actualApp, setActualApp] = useState(hw)
+    const [actualApp, setActualApp] = useState(<PixiApp app={hw} />) //dziwne że przesylam do useState funkcję, a actualApp jest typu, który ta funkcja zwraca
     const przyklady: { nazwa: string, app: () => Promise<Application<ICanvas>> }[] = [
         { nazwa: 'hello World', app: hw },
         { nazwa: 'Tining', app: tining },
@@ -39,7 +46,11 @@ export default function Layout() {
         { nazwa: 'Dynamika', app: dynamics },
         { nazwa: 'Statek Niestabilny', app: statekNiestabilny },
         { nazwa: 'Statek Stabilny', app: statekStabilny },
-
+    ]
+    const [actualThreeApp, setActualThreeApp] = useState<() => Promise<WebGLRenderer> | undefined>()
+    const przykladyThree: { nazwa: string, app: () => Promise<ThreeApp> }[] = [
+        { nazwa: 'hello World Tree', app: heloWorldThree },
+        { nazwa: '2dGraphics', app: d2Graphics },
     ]
 
     return (
@@ -53,18 +64,33 @@ export default function Layout() {
                     <Stack>
                         {przyklady.map((przyklad) => {
                             return <Button
+                                key={przyklad.nazwa}
                                 sx={{ margin: '3px' }}
                                 variant='contained'
-                                onClick={() => { setActualApp(przyklad.app) }}>{przyklad.nazwa}
+                                onClick={() => { setActualApp(<PixiApp app={przyklad.app} />) }}>
+                                {przyklad.nazwa}
 
                             </Button>;
                         })}
-                        {/* {[<Button>b1</Button>, <Button>b2</Button>]} */}
                     </Stack>
+                    <Stack>
+                        {przykladyThree.map((przyklad) => {
+                            return <Button
+                                key={przyklad.nazwa}
+                                sx={{ margin: '3px', backgroundColor: 'red' }}
+                                variant='contained'
+                                onClick={() => { setActualApp(<ThreeAppComp app={przyklad.app} />) }}
+                            >
+                                {przyklad.nazwa}
 
+                            </Button>;
+                        })}
+                    </Stack>
                 </Grid2>
                 <Grid2 width={0.3}>
-                    <PixiApp app={() => actualApp} />
+                    {
+                        actualApp
+                    }
                 </Grid2>
             </Grid2>
 

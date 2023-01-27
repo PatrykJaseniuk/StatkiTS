@@ -23,7 +23,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "apps"
+    "appsPixi"
   ],
   "exclude": [
     "node_modules"

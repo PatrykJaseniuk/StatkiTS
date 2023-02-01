@@ -1,37 +1,54 @@
 // hello world bibloteki three.js w typescript
 //
 import { touchRippleClasses } from '@mui/material';
+import { type } from 'os';
 import { Renderer } from 'pixi.js';
 import * as THREE from 'three';
-import { Scene, Vector2 } from 'three';
-import { canHaveDecorators } from 'typescript';
+import { Scene, Vector2, Vector3 } from 'three';
+import { randFloat, randInt } from 'three/src/math/MathUtils';
+import { canHaveDecorators, textSpanIntersectsWith } from 'typescript';
 import { ThreeApp } from './ThreeApp';
 
 async function threeApp() {
     const scene = new THREE.Scene();
-    // const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const camera = new THREE.OrthographicCamera(-100, 100, 100, -100, -10, 1000);
 
+    const camera = new THREE.OrthographicCamera(-100, 100, 100, -100, -10, 1000);
     scene.add(camera);
 
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(800, 800);
 
-    let silnikFizyki = new SilnikFizyki();
+    const gotowyRenderer: GotowyRenderer = new GotowyRenderer(scene, camera, renderer);
+    const rysowaczSil = new RysowaczSil(scene);
+    const silnikFizyki = new SilnikFizyki(rysowaczSil);
+    const oddzialywatorPointerObiekt = new OddzialywatorPointerObiekt(camera, renderer);
+    const silnikWiazan = new SilnikWiazan();
 
-    let oddzialywatorPointerObiekt = new OddzialywatorPointerObiekt(camera, renderer, scene);
-
-
-
-    // on plane click print coordinates of plane in console
-
+    const ticker = new Ticker();
+    ticker.addStateModifier(oddzialywatorPointerObiekt);
+    ticker.addStateModifier(silnikFizyki);
+    ticker.addStateModifier(gotowyRenderer);
+    ticker.addStateModifier(rysowaczSil);
+    ticker.addStateModifier(silnikWiazan);
 
     //to jest pierwsza wersja tworzenai obiektu i dodawania go do kontenerów fizyki i sceny 
     let kadlub = new Kadlub();
-
-    oddzialywatorPointerObiekt.add(kadlub);
+    // oddzialywatorPointerObiekt.add(kadlub);
     silnikFizyki.add(kadlub);
     scene.add(kadlub);
+    rysowaczSil.addObiekt(kadlub);
+
+    let zagiel = new Zagiel();
+    oddzialywatorPointerObiekt.add(zagiel);
+    silnikFizyki.add(zagiel);
+    scene.add(zagiel);
+    rysowaczSil.addObiekt(zagiel);
+
+
+
+
+    const wiazanie = new Wiazanie(kadlub, zagiel, 10);
+    silnikWiazan.addWiazanie(wiazanie);
 
     // w wersji drugiej tworze obiekt, który w konstruktorze dodaje siebie do kontenerów fizyki i sceny
     // let obiektFizyczny = new ObiektFizyczny(plane, silnikFizyki);
@@ -41,14 +58,7 @@ async function threeApp() {
 
     camera.position.z = 1;
 
-    let ticker = new Ticker();
-    ticker.addTickListener(() => {
-        oddzialywatorPointerObiekt.oddzialywuj();
-        silnikFizyki.aktualizuj();
-        renderer.render(scene, camera);
-    });
-
-    let threeApp: ThreeApp = {
+    const threeApp: ThreeApp = {
         renderer,
         stop: () => {
             ticker.stop();
@@ -59,20 +69,103 @@ async function threeApp() {
     return threeApp;
 }
 
+interface MousePosition {
+    ndc: THREE.Vector3,
+    worldSpace: THREE.Vector3
+}
+
+interface ClickedObject {
+    object: THREE.Object3D,
+    clickPositionOnObject: THREE.Vector3,
+    // line: THREE.Line
+}
+
+class Ticker {
+    animationFrameID: number | undefined;
+    silnikFizyki: SilnikFizyki | undefined;
+    rysowaczSil: RysowaczSil | undefined;
+    gotowyRenderer: GotowyRenderer | undefined;
+    oddzialywatorPointerObiekt: OddzialywatorPointerObiekt | undefined;
+    silnikWiazan: SilnikWiazan | undefined;
+    constructor() {
+        this.tick();
+    }
+    addStateModifier(stateModifier: SilnikFizyki | RysowaczSil | OddzialywatorPointerObiekt | GotowyRenderer | SilnikWiazan) {
+        if (stateModifier instanceof SilnikFizyki) {
+            this.silnikFizyki = stateModifier;
+        }
+        else if (stateModifier instanceof RysowaczSil) {
+            this.rysowaczSil = stateModifier;
+        }
+        else if (stateModifier instanceof OddzialywatorPointerObiekt) {
+            this.oddzialywatorPointerObiekt = stateModifier;
+        }
+        else if (stateModifier instanceof GotowyRenderer) {
+            this.gotowyRenderer = stateModifier;
+        }
+        else if (stateModifier instanceof SilnikWiazan) {
+            this.silnikWiazan = stateModifier;
+        }
+    }
+
+
+    tick() {
+        this.animationFrameID = requestAnimationFrame(() => this.tick());
+        // this.tickListeners.forEach((listener) => listener());
+
+        this.oddzialywatorPointerObiekt?.poczatekKlatki();
+        this.silnikWiazan?.wyznaczSily();
+        this.silnikFizyki?.poczatekKlatki();
+        this.rysowaczSil?.poczatekKlatki();
+
+        this.gotowyRenderer?.poczatekKlatki();
+
+        this.rysowaczSil?.koniecKlatki();
+        this.silnikFizyki?.koniecKlatki();
+        this.oddzialywatorPointerObiekt?.koniecKlatki();
+
+
+
+    }
+    // tickListeners: (() => void)[] = [];
+    // addTickListener(listener: () => void) {
+    //     this.tickListeners.push(listener);
+    // }
+    // removeTickListener(listener: () => void) {
+    //     this.tickListeners = this.tickListeners.filter((l) => l !== listener);
+    // }
+    stop() {
+        if (this.animationFrameID) {
+            cancelAnimationFrame(this.animationFrameID);
+        }
+    }
+}
+
 class OddzialywatorPointerObiekt {
-    scene: THREE.Scene;
+    // scene: THREE.Scene;
     camera: THREE.OrthographicCamera;
     renderer: THREE.Renderer;
     reyCaster = new THREE.Raycaster();
     obiekty: (Pickable & ObiektFizyczny)[] = [];
-    mousePosition = new THREE.Vector3();
-    clickedObject: { object: THREE.Object3D, clickPositionOnObject: THREE.Vector3, line: THREE.Line } | undefined = undefined;
-    constructor(camera: THREE.OrthographicCamera, renderer: THREE.Renderer, scene: THREE.Scene) {
-        this.scene = scene;
+    mousePosition: MousePosition = {
+        ndc: new THREE.Vector3(0),
+        worldSpace: new THREE.Vector3(0)
+    };
+    clickedObject: ClickedObject | undefined = undefined;
+
+    constructor(camera: THREE.OrthographicCamera, renderer: THREE.Renderer) {
+        // this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
         renderer.domElement.addEventListener('pointermove', (event: PointerEvent) => { this.onPointerMove(event) });
         renderer.domElement.addEventListener('pointerdown', (event: PointerEvent) => { this.onPointerDown(event) });
+    }
+    poczatekKlatki() {
+
+        this.oddzialywuj();
+    }
+    koniecKlatki() {
+
     }
     destructor() {
         this.renderer.domElement.removeEventListener('pointermove', (event: PointerEvent) => { this.onPointerMove(event) });
@@ -85,7 +178,7 @@ class OddzialywatorPointerObiekt {
         this.obiekty = this.obiekty.filter((ob) => ob !== obiekt);
     }
     onPointerDown(event: PointerEvent) {
-        this.reyCaster.setFromCamera(this.mousePosition, this.camera);
+        this.reyCaster.setFromCamera(this.mousePosition.ndc, this.camera);
         let intersects = this.reyCaster.intersectObjects(this.obiekty);
         if (intersects.length > 0) {
             // get camera width and height
@@ -96,24 +189,33 @@ class OddzialywatorPointerObiekt {
                 -(event.offsetY / this.renderer.domElement.clientHeight) * height + this.camera.top,
                 0
             )
-
-
             this.clickedObject = {
                 object: intersects[0].object,
                 clickPositionOnObject: mousePositionInWorldSpace.sub(intersects[0].object.position),
-                line: new THREE.Line(new THREE.BufferGeometry().setFromPoints([new Vector2(10, 10), new Vector2(30, 30)]), new THREE.LineBasicMaterial({ color: 0xff0000 }))
+                // line: new THREE.Line(new THREE.BufferGeometry().setFromPoints([new Vector2(10, 10), new Vector2(30, 30)]), new THREE.LineBasicMaterial({ color: 0xff0000 }))
             };
-            this.scene.add(this.clickedObject.line);
+            // this.scene.add(this.clickedObject.line);
             // register single pointer up event
-            this.renderer.domElement.addEventListener('pointerup', () => { this.clickedObject = undefined }, { once: true });
+            this.renderer.domElement.addEventListener('pointerup', () => { this.onPointerUp() }, { once: true });
         }
     }
+    onPointerUp() {
+        // usun linie ze sceny  
+        if (this.clickedObject !== undefined) {
+            // this.scene.remove(this.clickedObject.line);
+            this.clickedObject = undefined;
+        }
+    }
+
     onPointerMove(event: PointerEvent) {
-        this.mousePosition.x = (event.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
-        this.mousePosition.y = -(event.offsetY / this.renderer.domElement.clientHeight) * 2 + 1;
+        this.mousePosition.ndc.x = (event.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
+        this.mousePosition.ndc.y = -(event.offsetY / this.renderer.domElement.clientHeight) * 2 + 1;
+        this.mousePosition.worldSpace.x = this.mousePosition.ndc.x * this.camera.right;
+        this.mousePosition.worldSpace.y = this.mousePosition.ndc.y * this.camera.top;
+
     }
     oddzialywuj() {
-        this.reyCaster.setFromCamera(this.mousePosition, this.camera);
+        this.reyCaster.setFromCamera(this.mousePosition.ndc, this.camera);
         this.obiekty.forEach((obiekt) => {
             obiekt.isPicked(false);
         });
@@ -126,88 +228,172 @@ class OddzialywatorPointerObiekt {
         }
 
         if (this.clickedObject) {
+            // const rysujLinie = (clickedObject: ClickedObject, mousePosition: MousePosition) => {
+            //     clickedObject.line.geometry = new THREE.BufferGeometry().setFromPoints(
+            //         [clickedObject.object.position.clone().add(clickedObject.clickPositionOnObject),
+            //         mousePosition.worldSpace]
+            //     );
+            // }
+            const generujSile = (clickedObject: ClickedObject, mousePosition: MousePosition) => {
+                if (clickedObject.object instanceof ObiektFizyczny) {
+                    let sila = mousePosition.worldSpace.clone().sub(clickedObject.object.position.clone().add(clickedObject.clickPositionOnObject));
+                    clickedObject.object.addForce(sila);
+                }
 
-
-
-            this.clickedObject.line.geometry = new THREE.BufferGeometry().setFromPoints([this.clickedObject.object.position.clone().add(this.clickedObject.clickPositionOnObject), this.mousePosition]);
+            }
+            // rysujLinie(this.clickedObject, this.mousePosition);
+            generujSile(this.clickedObject, this.mousePosition);
         }
     }
 }
 
-class Ticker {
-    animationFrameID: number | undefined;
-    constructor() {
-        this.tick();
+class GotowyRenderer {
+    constructor(scene: THREE.Scene, camera: THREE.OrthographicCamera, renderer: THREE.Renderer) {
+        this.scene = scene;
+        this.camera = camera;
+        this.renderer = renderer;
     }
-    tick() {
-        this.animationFrameID = requestAnimationFrame(() => this.tick());
-        this.tickListeners.forEach((listener) => listener());
+    poczatekKlatki() {
+        this.renderer.render(this.scene, this.camera);
     }
-    tickListeners: (() => void)[] = [];
-    addTickListener(listener: () => void) {
-        this.tickListeners.push(listener);
+    koniecKlatki() {
+
     }
-    removeTickListener(listener: () => void) {
-        this.tickListeners = this.tickListeners.filter((l) => l !== listener);
+    scene: THREE.Scene;
+    camera: THREE.OrthographicCamera;
+    renderer: THREE.Renderer;
+
+}
+class RysowaczSil {
+
+
+    constructor(scene: THREE.Scene) {
+        this.scene = scene;
     }
-    stop() {
-        if (this.animationFrameID) {
-            cancelAnimationFrame(this.animationFrameID);
-        }
+    poczatekKlatki() {
+        this.obiekty.forEach((obiekt) => {
+            obiekt.sily.forEach((sila) => {
+                this.rysujSile(sila, obiekt.position);
+            })
+
+        });
+    }
+    koniecKlatki() {
+        this.strzalki.forEach((strzalka) => {
+            this.scene.remove(strzalka);
+        });
+        this.strzalki = [];
+    }
+    addObiekt(obiekt: ObiektFizyczny) {
+        this.obiekty.push(obiekt);
+    }
+
+    private obiekty: ObiektFizyczny[] = [];
+    private strzalki: THREE.ArrowHelper[] = [];
+    private scene: THREE.Scene;
+    private rysujSile(sila: THREE.Vector3, polozenie: THREE.Vector3) {
+        const arrowHelper = new THREE.ArrowHelper(sila.clone().normalize(), polozenie, sila.length(), 0xff0000);
+        this.strzalki.push(arrowHelper);
+        this.scene.add(arrowHelper);
     }
 }
-
-
 
 class SilnikFizyki {
+    constructor(rysowaczSil?: RysowaczSil) {
+    }
+    poczatekKlatki() {
+        this.obiektyFizyczne.forEach((obiekt) => {
+            obiekt.poczatekKlatki();
+        });
+    }
+    koniecKlatki() {
+        this.obiektyFizyczne.forEach((obiekt) => {
+            obiekt.koniecKlatki();
+        });
+    }
+
+    rysowaczSil: RysowaczSil | undefined;
     remove(obiekt: ObiektFizyczny): void {
         this.obiektyFizyczne = this.obiektyFizyczne.filter((ob) => ob !== obiekt);
     }
-
     obiektyFizyczne: ObiektFizyczny[] = [];
     add(obiek: ObiektFizyczny) {
         this.obiektyFizyczne.push(obiek);
     }
-    constructor() {
+    // aktualizuj() {
+    //     this.obiektyFizyczne.forEach((obiekt) => {
+    //         obiekt.aktualizuj(this.rysowaczSil);
+    //     });
+    // }
+}
 
+class SilnikWiazan {
+    constructor() {
     }
-    aktualizuj() {
-        this.obiektyFizyczne.forEach((obiekt) => obiekt.aktualizuj());
-        // console.log(this.obiektyFizyczne[0].predkosc)
+    wyznaczSily() {
+        this.wiazania.forEach((wiazanie) => {
+            wiazanie.wyzanczSily();
+        });
+    }
+    wiazania: Wiazanie[] = [];
+    addWiazanie(wiazanie: Wiazanie) {
+        this.wiazania.push(wiazanie);
     }
 }
 
-
-
 class ObiektFizyczny extends THREE.Mesh {
-    // silnikFizyki: SilnikFizyki;
-    constructor(mesh: THREE.Mesh) {
-        super(mesh.geometry, mesh.material);
-        // this.silnikFizyki = silnikFizyki;
-        // silnikFizyki.add(this);
-        this.predkosc = new THREE.Vector2(1, 0);
-    }
-    // destroy(): void {
-    //     this.silnikFizyki.remove(this);
-    // }
-    aktualizuj() {
+    poczatekKlatki() {
         this.aktualizujSile();
         this.aktualizujPrzyspieszenie();
         this.aktualizujPredkosc();
         this.aktualizujPolozenie();
     }
-    aktualizujSile() {
+    koniecKlatki() {
+        this.sily = [];
+    }
+
+    // silnikFizyki: SilnikFizyki;
+    constructor(mesh: THREE.Mesh) {
+        super(mesh.geometry, mesh.material);
+        // this.silnikFizyki = silnikFizyki;
+        // silnikFizyki.add(this);
+        this.predkosc = new THREE.Vector3(1, 0);
+    }
+    sily: THREE.Vector3[] = [];
+    predkosc: Vector3 = new Vector3(0);
+    przyspieszenie: Vector3 = new Vector3(0);
+    private sila: Vector3 = new Vector3(0);
+    masa: number = 1;
+
+    addForce(sila: THREE.Vector3) {
+        this.sily.push(sila);
+    }
+
+    // aktualizuj() {
+    //     this.aktualizujSile();
+    //     this.aktualizujPrzyspieszenie();
+    //     this.aktualizujPredkosc();
+    //     this.aktualizujPolozenie();
+    // }
+    private aktualizujSile() {
+
+        this.sila = new THREE.Vector3(0);
+
         let skladowaWO = this.predkosc.lengthSq(); //skladowa wektora oporu jest rowna kwadratowi dlugosci wektora predkosci co powoduje, że model fuzyki może eksplodować dla zbyt dużej predkosci. Aby temu zapobiec muszę wprowadzić ograniczenie że zmiana predkosci nie może być wieksza od predkości
 
-        let dlugoscWektoraOporu = skladowaWO * -0.01 - 0.01;
-        this.silaOporu = this.predkosc.clone().normalize().multiplyScalar(dlugoscWektoraOporu);
+        let dlugoscWektoraOporu = skladowaWO * -1 - 0.2;
+        let silaOporu = this.predkosc.clone().normalize().multiplyScalar(dlugoscWektoraOporu);
 
-        this.sila = this.silaPrzeciagania.clone().add(this.silaOporu);
+        this.sily.push(silaOporu);
+        this.sily.forEach((sila) => {
+            this.sila.add(sila);
+        });
+        this.sila.divideScalar(10)
     }
-    aktualizujPrzyspieszenie() {
+    private aktualizujPrzyspieszenie() {
         this.przyspieszenie = this.sila.clone().divideScalar(this.masa);
     }
-    aktualizujPredkosc() {
+    private aktualizujPredkosc() {
         let przyspieszeniePomocnicze = this.przyspieszenie.clone();
 
         // przyspieszenie w przeciwnym kierunku niż prędkość nie mozę być większe od prędkości, bo obiekt fizyczny zaczyna drgać, a jeżeli jest dwa razy większe to obiekt przesuwa się w nieskończoność
@@ -228,21 +414,11 @@ class ObiektFizyczny extends THREE.Mesh {
         }
         this.predkosc.add(przyspieszeniePomocnicze);
     }
-    aktualizujPolozenie() {
-        this.position.x += this.predkosc.x;;
-        this.position.y += this.predkosc.y;;
-
+    private aktualizujPolozenie() {
+        this.position.x += this.predkosc.x;
+        this.position.y += this.predkosc.y;
     }
 
-
-
-    predkosc: Vector2 = new Vector2(0, 0);
-    przyspieszenie: Vector2 = new Vector2(0, 0);
-    silaPrzeciagania: Vector2 = new Vector2(0, 0);
-    private silaOporu: Vector2 = new Vector2(0, 0);
-    private sila: Vector2 = new Vector2(0, 0);
-    silaoporu: Vector2 = new Vector2(0, 0);
-    masa: number = 1;
 }
 
 interface Pickable {
@@ -274,9 +450,38 @@ class Kadlub extends ObiektFizyczny implements Pickable {
 
         this.planeMat = planeMat;
 
-        this.masa = 5;
+        this.masa = 10;
     }
 
+}
+
+class Zagiel extends ObiektFizyczny implements Pickable {
+    isPicked(isPicked: boolean) { };
+    constructor() {
+        // add picture to scene
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load('zagiel.png');
+        const planeGeo = new THREE.PlaneGeometry(10, 10);
+        const planeMat = new THREE.MeshBasicMaterial({
+            map: texture,
+        });
+        const plane = new THREE.Mesh(planeGeo, planeMat);
+        super(plane);
+        this.position.set(0, 0, 0);
+
+        this.masa = 1;
+    }
+}
+
+class Wiazanie {
+    constructor(private obiekt1: ObiektFizyczny, private obiekt2: ObiektFizyczny, private sprezystosc: number) { }
+
+    wyzanczSily() {
+        let sila = this.obiekt1.position.clone().sub(this.obiekt2.position);
+        sila.multiplyScalar(this.sprezystosc);
+        this.obiekt2.addForce(sila);
+        this.obiekt1.addForce(sila.clone().multiplyScalar(-1));
+    }
 }
 
 export default threeApp;

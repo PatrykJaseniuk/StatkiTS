@@ -119,7 +119,7 @@ async function f() {
 
     app.ticker.add((delta) => {
         console.log('delta', delta);
-        container.kinematykuj();
+        container.aktualizuj();
     });
 
     return app
@@ -143,7 +143,7 @@ class ObiektFizyczny extends Container {
         super();
     }
 
-    kinematykuj() {
+    aktualizuj() {
         this.aktualizujPrzyspieszenie();
         this.przyspiesz();
         this.przesun();

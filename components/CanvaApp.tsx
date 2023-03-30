@@ -3,23 +3,24 @@ import { border, Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react"
 import { WebGLRenderer } from "three";
 import { isPropertySignature, readConfigFile } from "typescript"
-import { ThreeApp } from "../appsThree/ThreeApp";
+import { CanvaApp } from "../appsThree/KolejnePodejscie/app";
 
 
 
-const ThreeAppComponent = (props: { app: () => Promise<ThreeApp> }) => {
+const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
     let { app } = props;
     const ref = useRef(null);
 
     useEffect(() => {
+        console.log('useEffect')
         let promise = app();
         promise.then((app) => {
-            (ref.current as unknown as HTMLElement).appendChild(app.renderer.domElement as any);
+            (ref.current as unknown as HTMLElement).appendChild(app.getHtmlElement() as any);
             console.log('mount threeApp')
+            app.start();
         })
         return () => {
             promise.then((app) => {
-                app.renderer.domElement.remove();
                 app.stop();
                 if (ref.current) {
                     (ref.current as any).innerHTML = '';
@@ -44,4 +45,4 @@ const ThreeAppComponent = (props: { app: () => Promise<ThreeApp> }) => {
         </React.Fragment >
     )
 }
-export default ThreeAppComponent;
+export default CanvaAppComponent;

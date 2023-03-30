@@ -42,21 +42,32 @@ async function threeApp() {
     scene.add(kadlub);
     rysowaczSil.addObiekt(kadlub);
 
-    let zagiel = new Zagiel();
-    oddzialywatorPointerObiekt.add(zagiel);
-    silnikFizyki.add(zagiel);
-    scene.add(zagiel);
-    rysowaczSil.addObiekt(zagiel);
+    let zagiel1 = new Zagiel();
+    oddzialywatorPointerObiekt.add(zagiel1);
+    silnikFizyki.add(zagiel1);
+    scene.add(zagiel1);
+    rysowaczSil.addObiekt(zagiel1);
+
+    let zagiel2 = new Zagiel();
+    oddzialywatorPointerObiekt.add(zagiel2);
+    silnikFizyki.add(zagiel2);
+    scene.add(zagiel2);
+    rysowaczSil.addObiekt(zagiel2);
 
 
 
-
-    const wiazanie = new Wiazanie(
-        { obiekt: kadlub, punktPrzyczepienia: new Vector3(0, 1, 0) },
-        { obiekt: zagiel, punktPrzyczepienia: new Vector3(0, -1, 0) },
+    const wiazanie1 = new Wiazanie(
+        { obiekt: kadlub, punktPrzyczepienia: new Vector3(10, 0, 0) },
+        { obiekt: zagiel1, punktPrzyczepienia: new Vector3(0, 0, 0) },
         10
     );
-    silnikWiazan.addWiazanie(wiazanie);
+    const wiazanie2 = new Wiazanie(
+        { obiekt: kadlub, punktPrzyczepienia: new Vector3(-10, 0, 0) },
+        { obiekt: zagiel2, punktPrzyczepienia: new Vector3(0, 0, 0) },
+        10
+    );
+    silnikWiazan.addWiazanie(wiazanie1);
+    silnikWiazan.addWiazanie(wiazanie2);
 
     // w wersji drugiej tworze obiekt, który w konstruktorze dodaje siebie do kontenerów fizyki i sceny
     // let obiektFizyczny = new ObiektFizyczny(plane, silnikFizyki);

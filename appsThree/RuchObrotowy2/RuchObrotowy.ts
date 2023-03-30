@@ -6,12 +6,13 @@ import { OddzialywatorPointerObiekt } from './ModyfikatoryStanuITIcker/Oddzialyw
 import { RysowaczSil } from './ModyfikatoryStanuITIcker/RysowaczSil';
 import { SilnikFizyki } from './ModyfikatoryStanuITIcker/SilnikFizyki';
 import { SilnikWiazan } from './ModyfikatoryStanuITIcker/SilnikWiazan';
-import { ThreeApp } from './ThreeApp';
+import { ThreeApp } from '../ThreeApp';
 import { Kadlub } from './Obiekty/Kadlub';
 import { Zagiel } from './Obiekty/Zagiel';
 import { Wiazanie } from './Obiekty/Wiazanie';
 import { Ticker } from './ModyfikatoryStanuITIcker/Ticker';
 import { Vector3 } from 'three';
+import { ObiektFizyczny } from './Obiekty/ObiektFizyczny';
 
 async function threeApp() {
     const scene = new THREE.Scene();
@@ -36,30 +37,45 @@ async function threeApp() {
     ticker.addStateModifier(silnikWiazan);
 
     //to jest pierwsza wersja tworzenai obiektu i dodawania go do kontenerów fizyki i sceny 
-    let kadlub = new Kadlub();
+    // let kadlub = new Kadlub();
     // oddzialywatorPointerObiekt.add(kadlub);
-    silnikFizyki.add(kadlub);
-    scene.add(kadlub);
-    rysowaczSil.addObiekt(kadlub);
+    // silnikFizyki.add(kadlub);
+    // scene.add(kadlub);
+    // rysowaczSil.addObiekt(kadlub);
 
-    let zagiel = new Zagiel();
-    oddzialywatorPointerObiekt.add(zagiel);
-    silnikFizyki.add(zagiel);
-    scene.add(zagiel);
-    rysowaczSil.addObiekt(zagiel);
+    let redDot = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+    let punkt1 = new ObiektFizyczny(redDot);
+    punkt1.position.x = 10;
+    let punkt2 = new ObiektFizyczny(redDot.clone());
+    punkt2.position.x = -10;
+    let punkt3 = new ObiektFizyczny(redDot.clone());
+    punkt3.position.y = 10;
+
+    oddzialywatorPointerObiekt.add(punkt1);
+    oddzialywatorPointerObiekt.add(punkt2);
+    oddzialywatorPointerObiekt.add(punkt3);
+
+    silnikFizyki.add(punkt2);
+    silnikFizyki.add(punkt1);
+    silnikFizyki.add(punkt3);
+
+    scene.add(punkt1);
+    scene.add(punkt2);
+    scene.add(punkt3);
+
+    rysowaczSil.addObiekt(punkt1);
+    rysowaczSil.addObiekt(punkt2);
+    rysowaczSil.addObiekt(punkt3);
+
+    let wiazanie1 = new Wiazanie(punkt1, punkt2, 1, 10);
+    let wiazanie2 = new Wiazanie(punkt2, punkt3, 1, 10);
+    let wiazanie3 = new Wiazanie(punkt3, punkt1, 1, 10);
+
+    silnikWiazan.addWiazanie(wiazanie1);
+    silnikWiazan.addWiazanie(wiazanie2);
+    silnikWiazan.addWiazanie(wiazanie3);
 
 
-
-
-    const wiazanie = new Wiazanie(
-        { obiekt: kadlub, punktPrzyczepienia: new Vector3(0, 1, 0) },
-        { obiekt: zagiel, punktPrzyczepienia: new Vector3(0, -1, 0) },
-        10
-    );
-    silnikWiazan.addWiazanie(wiazanie);
-
-    // w wersji drugiej tworze obiekt, który w konstruktorze dodaje siebie do kontenerów fizyki i sceny
-    // let obiektFizyczny = new ObiektFizyczny(plane, silnikFizyki);
 
     // make backgroud blue
     renderer.setClearColor(0x0000ff, 1);
@@ -73,6 +89,7 @@ async function threeApp() {
             renderer.dispose();
         }
     };
+    ticker.start();
 
     return threeApp;
 }

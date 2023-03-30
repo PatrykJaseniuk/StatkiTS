@@ -44,9 +44,6 @@ const PixiApp = (props: { app: () => Promise<Application<ICanvas>> }) => {
                 {/* <div ref={ref}></div> */}
             </Container>
         </React.Fragment >
-
-
-
     )
 }
 export default PixiApp;

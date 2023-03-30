@@ -6,7 +6,7 @@ import { OddzialywatorPointerObiekt } from './ModyfikatoryStanuITIcker/Oddzialyw
 import { RysowaczSil } from './ModyfikatoryStanuITIcker/RysowaczSil';
 import { SilnikFizyki } from './ModyfikatoryStanuITIcker/SilnikFizyki';
 import { SilnikWiazan } from './ModyfikatoryStanuITIcker/SilnikWiazan';
-import { ThreeApp } from './ThreeApp';
+import { ThreeApp } from '../ThreeApp';
 import { Kadlub } from './Obiekty/Kadlub';
 import { Zagiel } from './Obiekty/Zagiel';
 import { Wiazanie } from './Obiekty/Wiazanie';
@@ -37,26 +37,37 @@ async function threeApp() {
 
     //to jest pierwsza wersja tworzenai obiektu i dodawania go do kontenerów fizyki i sceny 
     let kadlub = new Kadlub();
-    // oddzialywatorPointerObiekt.add(kadlub);
+    oddzialywatorPointerObiekt.add(kadlub);
     silnikFizyki.add(kadlub);
     scene.add(kadlub);
     rysowaczSil.addObiekt(kadlub);
 
-    let zagiel = new Zagiel();
-    oddzialywatorPointerObiekt.add(zagiel);
-    silnikFizyki.add(zagiel);
-    scene.add(zagiel);
-    rysowaczSil.addObiekt(zagiel);
+    // let zagiel1 = new Zagiel();
+    // zagiel1.position.set(10, 0, 0);
+    // oddzialywatorPointerObiekt.add(zagiel1);
+    // silnikFizyki.add(zagiel1);
+    // scene.add(zagiel1);
+    // rysowaczSil.addObiekt(zagiel1);
 
+    // let zagiel2 = new Zagiel();
+    // zagiel2.position.set(-10, 0, 0);
+    // oddzialywatorPointerObiekt.add(zagiel2);
+    // silnikFizyki.add(zagiel2);
+    // scene.add(zagiel2);
+    // rysowaczSil.addObiekt(zagiel2);
 
-
-
-    const wiazanie = new Wiazanie(
-        { obiekt: kadlub, punktPrzyczepienia: new Vector3(0, 1, 0) },
-        { obiekt: zagiel, punktPrzyczepienia: new Vector3(0, -1, 0) },
-        10
-    );
-    silnikWiazan.addWiazanie(wiazanie);
+    // const wiazanie1 = new Wiazanie(
+    //     { obiekt: kadlub, punktPrzyczepienia: new Vector3(10, 0, 0) },
+    //     { obiekt: zagiel1, punktPrzyczepienia: new Vector3(0, 0, 0) },
+    //     10
+    // );
+    // const wiazanie2 = new Wiazanie(
+    //     { obiekt: kadlub, punktPrzyczepienia: new Vector3(-10, 0, 0) },
+    //     { obiekt: zagiel2, punktPrzyczepienia: new Vector3(0, 0, 0) },
+    //     10
+    // );
+    // silnikWiazan.addWiazanie(wiazanie1);
+    // silnikWiazan.addWiazanie(wiazanie2);
 
     // w wersji drugiej tworze obiekt, który w konstruktorze dodaje siebie do kontenerów fizyki i sceny
     // let obiektFizyczny = new ObiektFizyczny(plane, silnikFizyki);
@@ -73,6 +84,7 @@ async function threeApp() {
             renderer.dispose();
         }
     };
+    ticker.tick();
 
     return threeApp;
 }

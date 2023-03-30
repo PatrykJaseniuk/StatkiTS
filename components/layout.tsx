@@ -22,6 +22,12 @@ import ThreeAppComp from './threeApp';
 import heloWorldThree from '../appsThree/helloworld';
 import d2Graphics from '../appsThree/2dGraphics';
 import { ThreeApp } from '../appsThree/ThreeApp';
+import statek from '../appsThree/Statek';
+import RuchObrotowy from '../appsThree/RuchObrotowy/RuchObrotowy';
+import RuchObrotowy2 from '../appsThree/RuchObrotowy2/RuchObrotowy';
+import { CanvaApp } from '../appsThree/KolejnePodejscie/app';
+import { app as kolejnePodejscie } from '../appsThree/KolejnePodejscie/app';
+import CanvaAppComponent from './CanvaApp';
 
 
 
@@ -47,10 +53,16 @@ export default function Layout() {
         { nazwa: 'Statek Niestabilny', app: statekNiestabilny },
         { nazwa: 'Statek Stabilny', app: statekStabilny },
     ]
-    const [actualThreeApp, setActualThreeApp] = useState<() => Promise<WebGLRenderer> | undefined>()
+    // const [actualThreeApp, setActualThreeApp] = useState<() => Promise<WebGLRenderer> | undefined>()
     const przykladyThree: { nazwa: string, app: () => Promise<ThreeApp> }[] = [
         { nazwa: 'hello World Tree', app: heloWorldThree },
         { nazwa: '2dGraphics', app: d2Graphics },
+        { nazwa: 'Statek', app: statek },
+        { nazwa: 'Ruch Obrotowy', app: RuchObrotowy },
+        // { nazwa: 'Ruch Obrotowy 2', app: RuchObrotowy2 }
+    ]
+    const apps: { nazwa: string, app: () => Promise<CanvaApp> }[] = [
+        { nazwa: 'Kolejne Podejscie', app: kolejnePodejscie }
     ]
 
     return (
@@ -83,6 +95,18 @@ export default function Layout() {
                             >
                                 {przyklad.nazwa}
 
+                            </Button>;
+                        })}
+                    </Stack>
+                    <Stack>
+                        {apps.map((app) => {
+                            return <Button
+                                key={app.nazwa}
+                                sx={{ margin: '3px', backgroundColor: 'red' }}
+                                variant='contained'
+                                onClick={() => { setActualApp(<CanvaAppComponent app={app.app} />) }}
+                            >
+                                {app.nazwa}
                             </Button>;
                         })}
                     </Stack>

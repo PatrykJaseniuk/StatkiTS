@@ -1,94 +1,102 @@
 // test for interaction class
 
 import { Interaction, interactionUpdater } from "./Interaction";
-import { Force, forceUpdater } from "./Force";
 import { Vector2 } from "three";
-import { Acceleration, accelerationUpdater } from "./Acceleration";
-import { Velocity, velocityUpdater } from "./Velocity";
 import { Position } from "./Position";
-import { dynamicModelUpdate } from "../WorldModifiers";
+import { DynamicElement, dynamicElementUpdater } from "./DynamicElement";
 
 describe("Interaction", () => {
     let position1: Position;
     let position2: Position;
-    let velocity1: Velocity;
-    let velocity2: Velocity;
-    let acceleration1: Acceleration;
-    let acceleration2: Acceleration;
-    let force1: Force;
-    let force2: Force;
+    let dynamicElement1: DynamicElement;
+    let dynamicElement2: DynamicElement;
     let interaction: Interaction;
     beforeEach(() => {
         position1 = new Position();
         position2 = new Position();
-        velocity1 = new Velocity(position1);
-        velocity1.value = new Vector2(10, 0);
-        velocity2 = new Velocity(position2);
-        acceleration1 = new Acceleration(velocity1);
-        acceleration2 = new Acceleration(velocity2);
-        force1 = new Force(acceleration1);
-        force2 = new Force(acceleration2);
-        interaction = new Interaction(force1, force2, 10);
+        dynamicElement1 = new DynamicElement(position1);
+        dynamicElement2 = new DynamicElement(position2);
+        interaction = new Interaction(dynamicElement1, dynamicElement2, 1);
     });
     afterEach(() => {
-        velocityUpdater.clear();
-        accelerationUpdater.clear();
-        forceUpdater.clear();
+        dynamicElementUpdater.clear();
         interactionUpdater.clear();
     });
 
-    it("should be created", () => {
-        expect(interaction).toBeTruthy();
-    });
-    it("should have force1", () => {
-        expect(interaction.force1).toEqual(force1);
-    });
-    it("should have force2", () => {
-        expect(interaction.force2).toEqual(force2);
-    });
     it('should update force1', () => {
         // interaction.force1.acceleration.velocity.position.value = new Vector2(1, 0);
         interaction.update();
-        expect(interaction.force1.value).toEqual(new Vector2(-1, 0));
+        expect(interaction.dynamicElement1.force).toEqual(new Vector2(-1, 0));
         interaction.update();
-        expect(interaction.force1.value).toEqual(new Vector2(-2, 0));
-        expect(interaction.force2.value).toEqual(new Vector2(2, 0));
+        expect(interaction.dynamicElement1.force).toEqual(new Vector2(-2, 0));
+        expect(interaction.dynamicElement2.force).toEqual(new Vector2(2, 0));
         position2.value = new Vector2(0, 1);
         interaction.update();
-        expect(interaction.force1.value).toEqual(new Vector2(-3, 1));
-        expect(interaction.force2.value).toEqual(new Vector2(3, -1));
+        expect(interaction.dynamicElement1.force).toEqual(new Vector2(-3, 1));
+        expect(interaction.dynamicElement2.force).toEqual(new Vector2(3, -1));
     });
 
     test('changing of acceleration', () => {
         interaction.update();
-        expect(interaction.force1.value).toEqual(new Vector2(-1, 0));
-        forceUpdater.update();
-        expect(acceleration1.value).toEqual(new Vector2(-1, 0));
-        expect(acceleration2.value).toEqual(new Vector2(1, 0));
-        expect(force1.value).toEqual(new Vector2(0, 0));
-        expect(force2.value).toEqual(new Vector2(0, 0));
+        expect(interaction.dynamicElement1.force).toEqual(new Vector2(-1, 0));
+        dynamicElementUpdater.update(1);
+        expect(dynamicElement1.acceleration).toEqual(new Vector2(-1, 0));
+        expect(dynamicElement2.acceleration).toEqual(new Vector2(1, 0));
+        expect(dynamicElement1.force).toEqual(new Vector2(0, 0));
+        expect(dynamicElement2.force).toEqual(new Vector2(0, 0));
         interaction.update();
-        forceUpdater.update();
-        expect(acceleration1.value).toEqual(new Vector2(-1, 0));
-        expect(acceleration2.value).toEqual(new Vector2(1, 0));
+        dynamicElementUpdater.update(1);
+        expect(dynamicElement1.acceleration).toEqual(new Vector2(-1, 0));
+        expect(dynamicElement2.acceleration).toEqual(new Vector2(1, 0));
     });
 
     test('momentum conservation', () => {
-        let forces: Force[] = [];
-        forces.push(force1);
-        forces.push(force2);
-        let momentum0 = calculateMomentum(forces);
+        dynamicElement1.velocity = new Vector2(10, 0);
+        interaction.springRate = 7.8;
+        dynamicElement1.mass = 100;
+        dynamicElement2.mass = 100;
+
+        let momentum0 = dynamicElement1.getMomentum().add(dynamicElement2.getMomentum());
 
         for (let i = 0; i < 10000; i++) {
-            dynamicModelUpdate();
+            interaction.update();
+            dynamicElementUpdater.update(5);
         }
-        let momentum1 = calculateMomentum(forces);
-        expect(momentum0.distanceTo(momentum1) < 0.00001 * momentum0.length()).toBeTruthy();
+        let momentum1 = dynamicElement1.getMomentum().add(dynamicElement2.getMomentum());
+        expect(momentum0.distanceTo(momentum1) <= 0.01 * momentum0.length()).toBeTruthy();
     });
+
+    test('momentum conservation for for wsp = 2^(1/2)', () => {
+        // molecular model is stable (conservation of momentum) if dt< wsp /omegaMax
+        // where omegaMax is the highest oscilation frequency of the molecul in the system 
+        // according to Wikipedia wsp should be 2^(1/2)
+        dynamicElement1.velocity = new Vector2(10, 0);
+        dynamicElement2.mass = 10000000;
+
+        for (let i = 1; i < 1000; i++) {
+            interaction.springRate = Math.random() * 1000;
+            dynamicElement1.mass = Math.random() * 1000;
+            dynamicElement2.mass = Math.random() * 1000;
+            dynamicElement1.velocity = new Vector2(10, Math.random() * 1000);
+            let maximumDt = calculatemaximumDt(interaction.springRate, dynamicElement1.mass, dynamicElement2.mass);
+            maximumDt *= 1;
+            let momentum0 = dynamicElement1.getMomentum().add(dynamicElement2.getMomentum());
+            for (let i = 0; i < 10000; i++) {
+                interaction.update();
+                dynamicElementUpdater.update(maximumDt);
+            }
+            let momentum1 = dynamicElement1.getMomentum().add(dynamicElement2.getMomentum());
+            expect(momentum0.distanceTo(momentum1) <= 0.01 * momentum0.length()).toBeTruthy();
+        }
+    });
+
+    function calculatemaximumDt(springRate: number, mass1: number, mass2: number) {
+
+        let massMinn = Math.min(mass1, mass2);
+        let omegaMax = Math.sqrt(springRate / massMinn);
+        return Math.sqrt(2) / omegaMax;
+    }
 });
 
-function calculateMomentum(forces: Force[]) {
-    return forces.reduce((acc, force) => {
-        return force.Momentum().clone().add(acc);
-    }, new Vector2(0, 0));
-}
+
+

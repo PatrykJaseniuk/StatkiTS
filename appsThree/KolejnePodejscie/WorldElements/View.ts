@@ -46,7 +46,7 @@ export class ViewsRenderer {
     }
 }
 
-export let viewsRenderer = new ViewsRenderer();
+export const viewsRenderer = new ViewsRenderer();
 
 export class View {
     update() {

@@ -1,0 +1,231 @@
+{
+  "main": {
+    "id": "b31c4f5b88b99ea7",
+    "type": "split",
+    "children": [
+      {
+        "id": "817290a02660681d",
+        "type": "tabs",
+        "dimension": 55.66143497757847,
+        "children": [
+          {
+            "id": "d28e96fb35499ab5",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2.md",
+                "mode": "source",
+                "source": false
+              }
+            },
+            "group": "b374a4974b5f9c2a"
+          },
+          {
+            "id": "df3a1269971da015",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "2.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "bb07061705f4e059",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Ruchu Obrotowy.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "bc43726556e79a0b",
+        "type": "tabs",
+        "dimension": 44.33856502242152,
+        "children": [
+          {
+            "id": "4004c80e6e421dde",
+            "type": "leaf",
+            "state": {
+              "type": "localgraph",
+              "state": {
+                "file": "2.md",
+                "options": {
+                  "collapse-filter": false,
+                  "search": "",
+                  "localJumps": 1,
+                  "localBacklinks": true,
+                  "localForelinks": true,
+                  "localInterlinks": false,
+                  "showTags": false,
+                  "showAttachments": false,
+                  "hideUnresolved": false,
+                  "collapse-color-groups": true,
+                  "colorGroups": [],
+                  "collapse-display": true,
+                  "showArrow": false,
+                  "textFadeMultiplier": 0,
+                  "nodeSizeMultiplier": 1,
+                  "lineSizeMultiplier": 1,
+                  "collapse-forces": true,
+                  "centerStrength": 0.518713248970312,
+                  "repelStrength": 10,
+                  "linkStrength": 1,
+                  "linkDistance": 250,
+                  "scale": 0.6989606412938244,
+                  "close": false
+                }
+              }
+            },
+            "group": "b374a4974b5f9c2a"
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "624e152990438393",
+    "type": "split",
+    "children": [
+      {
+        "id": "6dbc98cc8085bf2b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b46c4532b120f639",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "a1340817e71b4ecc",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "7f23563c4e6d28e6",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "43f426041d941a91",
+    "type": "split",
+    "children": [
+      {
+        "id": "60d64d49e401797a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bfc9bc96d4d368d7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "2.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "19db86bb29809432",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "2.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "e9b186a784f11432",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "43418b0a34148495",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "2.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "df3a1269971da015",
+  "lastOpenFiles": [
+    "1.md",
+    "2.md",
+    "wstep.md",
+    "zasada zachowania pędu.md",
+    "zasada zachowania energii.md",
+    "Ruchu Obrotowy.md",
+    "zasady zachowania energi.md",
+    "0.md",
+    "res/Zrzut ekranu z 2022-11-16 10-12-48.png"
+  ]
+}

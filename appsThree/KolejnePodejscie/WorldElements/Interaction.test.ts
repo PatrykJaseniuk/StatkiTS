@@ -24,7 +24,7 @@ describe("Interaction", () => {
     });
 
     it('should update force1', () => {
-        // interaction.force1.acceleration.velocity.position.value = new Vector2(1, 0);
+        position1.value = new Vector2(1, 0);
         interaction.update();
         expect(interaction.dynamicElement1.force).toEqual(new Vector2(-1, 0));
         interaction.update();
@@ -37,6 +37,7 @@ describe("Interaction", () => {
     });
 
     test('changing of acceleration', () => {
+        position1.value = new Vector2(1, 0);
         interaction.update();
         expect(interaction.dynamicElement1.force).toEqual(new Vector2(-1, 0));
         dynamicElementUpdater.update(1);
@@ -46,8 +47,8 @@ describe("Interaction", () => {
         expect(dynamicElement2.force).toEqual(new Vector2(0, 0));
         interaction.update();
         dynamicElementUpdater.update(1);
-        expect(dynamicElement1.acceleration).toEqual(new Vector2(-1, 0));
-        expect(dynamicElement2.acceleration).toEqual(new Vector2(1, 0));
+        expect(dynamicElement1.acceleration).toEqual(new Vector2(1, 0));
+        expect(dynamicElement2.acceleration).toEqual(new Vector2(-1, 0));
     });
 
     test('momentum conservation', () => {

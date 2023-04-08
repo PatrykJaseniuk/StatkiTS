@@ -40,6 +40,14 @@ class DynamicElementsUpdater {
     clear() {
         this.elements = [];
     }
+    getSumOfMomentums() {
+        let sum = new Vector2(0, 0);
+        this.elements.forEach((element) => {
+            sum.add(element.getMomentum());
+        })
+        return sum;
+    }
 }
+
 
 export const dynamicElementUpdater = new DynamicElementsUpdater();

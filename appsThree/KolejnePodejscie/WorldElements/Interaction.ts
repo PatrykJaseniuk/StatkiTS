@@ -1,3 +1,4 @@
+import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { Updater, WorldElement } from "./Template";
 
@@ -18,6 +19,11 @@ export class Interaction implements WorldElement {
         this.dynamicElement2.force.add(forceOn2);
     }
 
+    destroy(): void {
+        // every object which has reference to this object should remove it
+        interactionUpdater.removeElement(this);
+    }
+
     dynamicElement1: DynamicElement;
     dynamicElement2: DynamicElement;
     springRate: number;
@@ -32,6 +38,9 @@ export class Interaction implements WorldElement {
 }
 
 class InteractionUpdater {
+    removeElement(element: Interaction) {
+        this.elements = this.elements.filter((e) => e != element);
+    }
     getSimulationMaximumDT() {
         const dt = 1; //TODO: calculate dt
         return dt

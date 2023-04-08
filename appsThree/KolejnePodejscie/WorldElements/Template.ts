@@ -20,4 +20,5 @@ export class Updater<T extends WorldElement> {
 
 export interface WorldElement {
     update(): void;
+    destroy(): void;
 }

@@ -7,8 +7,8 @@ import { DynamicElement } from "./DynamicElement";
 export class Ship {
 
     readonly anchore = new Anchore();
-    readonly kadlub = new Kadlub();
-    readonly interaction = new Interaction(this.anchore.dynamicElement, this.kadlub.dynamicElement, 0.5);
+    readonly hull = new Kadlub();
+    readonly interaction = new Interaction(this.anchore.dynamicElement, this.hull.dynamicElement, 0.5);
 
     constructor() {
         // this.kadlub.dynamicElement.velocity = new Vector2(2, 0);

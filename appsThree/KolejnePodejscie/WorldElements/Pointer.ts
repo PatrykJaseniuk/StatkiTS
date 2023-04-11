@@ -7,8 +7,8 @@ export class Pointer {
     update(pointerPosition: Vector2) {
         this.position.value = pointerPosition;
 
-        console.log('position' + this.position.value);
-        console.log("mesh position" + this.view.mesh.position);
+        // console.log('position' + this.position.value);
+        // console.log("mesh position" + this.view.mesh.position);
     }
     position: Position;
     view: ViewTexture;

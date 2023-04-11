@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
-import { View } from "./View";
+import { ViewTexture } from "./View";
 import { Interaction } from "./Interaction";
 import { DynamicElement } from "./DynamicElement";
 
@@ -19,7 +19,7 @@ export class Ship {
 class Anchore {
     position = new Position();
     dynamicElement = new DynamicElement(this.position);
-    view: View = new View(this.position, 'kotwica.png');
+    view: ViewTexture = new ViewTexture(this.position, 'kotwica.png');
 
     constructor() {
         this.dynamicElement.mass = 100000;
@@ -30,5 +30,5 @@ class Kadlub {
     position: Position = new Position();
     dynamicElement = new DynamicElement(this.position);
 
-    view: View = new View(this.position, 'kadlub.png');
+    view: ViewTexture = new ViewTexture(this.position, 'kadlub.png');
 }

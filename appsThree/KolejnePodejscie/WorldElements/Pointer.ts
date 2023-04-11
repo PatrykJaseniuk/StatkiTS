@@ -1,7 +1,7 @@
 import { Vec2, Vector2 } from 'three';
 import { Position } from './Position';
 import { Updater, WorldElement } from './Template';
-import { View, viewsRenderer, ViewsRenderer } from './View';
+import { ViewTexture, viewsRenderer, ViewsRenderer } from './View';
 
 export class Pointer {
     update(pointerPosition: Vector2) {
@@ -11,11 +11,11 @@ export class Pointer {
         console.log("mesh position" + this.view.mesh.position);
     }
     position: Position;
-    view: View;
+    view: ViewTexture;
 
     constructor() {
         this.position = new Position();
-        this.view = new View(this.position, 'hook.png');
+        this.view = new ViewTexture(this.position, 'hook.png');
         pointerUpdater.addElement(this);
     }
 }

@@ -42,14 +42,14 @@ export class Ticker {
         let okresRysowania = timeStamp - this.timeStampPreviousFrame;
 
 
-        let iloscZmianStanu = this.wyznaczIloscZmianStanu();
-        let okresWyzanaczaniaStanu = okresRysowania / iloscZmianStanu;
+        // let iloscZmianStanu = this.wyznaczIloscZmianStanu();
+        // let okresWyzanaczaniaStanu = okresRysowania / iloscZmianStanu;
 
-        for (let i = 0; i < iloscZmianStanu; i++) {
-            this.zmianaStanu(okresWyzanaczaniaStanu);
-        }
+        // for (let i = 0; i < iloscZmianStanu; i++) {
+        //     this.zmianaStanu(okresWyzanaczaniaStanu);
+        // }
 
-        this.renderowanie();
+        // this.renderowanie();
 
         // poniższy zapis nie pokazuej wyraźnie na jakich danych oprerują funkcje. Te wszystkie poniższe obiekty mogą mieć referencje do tych samych obiektów(danych). To powoduje, że trudniej jest zrozumieć działanie programu. Są to funkcje z efektem ubocznym. Funkcja z efektem ubocznym nie jest funkcja czystą. Funkcja czysta modyfikuje tylko zmienną na lewo od znaku równości.  
 
@@ -57,7 +57,7 @@ export class Ticker {
         this.silnikWiazan?.generujSily();
         this.rysowaczSil?.rysujSily();
         this.silnikFizyki?.poruszaj();
-        
+
 
         this.gotowyRenderer?.poczatekKlatki();
 

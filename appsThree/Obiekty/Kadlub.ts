@@ -27,7 +27,5 @@ export class Kadlub extends ObiektFizyczny implements Pickable {
         this.position.set(-50, 0, 0);
 
         this.planeMat = planeMat;
-
-        this.masa = 10;
     }
 }

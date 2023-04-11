@@ -17,6 +17,6 @@ export class Zagiel extends ObiektFizyczny implements Pickable {
         super(plane);
         this.position.set(0, 0, 0);
 
-        this.masa = 1;
+        // this.masa = 1;
     }
 }

@@ -8,12 +8,12 @@ export class RysowaczSil {
         this.scene = scene;
     }
     poczatekKlatki() {
-        this.obiekty.forEach((obiekt) => {
-            obiekt.sily.forEach((sila) => {
-                this.rysujSile(sila.wektor, obiekt.position.clone().add(sila.punktPrzyczepienia));
-            });
+        // this.obiekty.forEach((obiekt) => {
+        //     obiekt.sily.forEach((sila) => {
+        //         this.rysujSile(sila.wektor, obiekt.position.clone().add(sila.punktPrzyczepienia));
+        //     });
 
-        });
+        // });
     }
     koniecKlatki() {
         this.strzalki.forEach((strzalka) => {

@@ -1,10 +1,10 @@
 import { Vector2, Vector3 } from "three";
 import { Position } from "./Position";
-import { View, viewsRenderer } from "./View";
+import { ViewTexture, viewsRenderer } from "./View";
 
 describe('View', () => {
     const position = new Position();
-    const view = new View(position, 'kadlub.png');
+    const view = new ViewTexture(position, 'kadlub.png');
 
     it('should be created', () => {
         expect(view).toBeTruthy();
@@ -36,8 +36,8 @@ describe('View', () => {
 describe('viewsRenderer', () => {
     const position1 = new Position();
     const position2 = new Position();
-    const view1 = new View(position1, 'kadlub.png');
-    const view2 = new View(position2, 'kadlub.png');
+    const view1 = new ViewTexture(position1, 'kadlub.png');
+    const view2 = new ViewTexture(position2, 'kadlub.png');
 
 
     it('should be meshes in csene', () => {

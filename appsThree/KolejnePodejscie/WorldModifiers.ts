@@ -10,10 +10,17 @@ export class WorldModifiers {
 
     start() {
         this.setRefreshRateDurationInterval();
-        // this.dynamicModelUpdate();
-        this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
+        this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 3000)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
         viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointerUpdater.update(event); console.log('pointer move') });
+        this.intervals.push(setInterval(() => this.logs(), 1000));
+    }
+    logs(): void {
+        const SumOfMomenums = dynamicElementUpdater.getSumOfMomentums();
+        console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
+        // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
+
+
     }
 
     stop() {
@@ -46,7 +53,7 @@ export class WorldModifiers {
         // }
         // this.previousTimeStamp = timeStamp;
 
-        console.log(timeStamp);
+        // console.log(timeStamp);
         viewsRenderer.render();
         this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
     }

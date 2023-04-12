@@ -3,6 +3,17 @@ import { DynamicElement } from "./DynamicElement";
 import { Updater, WorldElement } from "./Template";
 
 export class Interaction implements WorldElement {
+    dynamicElement1: DynamicElement;
+    dynamicElement2: DynamicElement;
+    springRate: number;
+
+    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, SpringRate: number) {
+        this.dynamicElement1 = dynamicElement1;
+        this.dynamicElement2 = dynamicElement2;
+        this.springRate = SpringRate;
+
+        interactionUpdater.addElement(this);
+    }
     update(): void {
         // acording to third law of Newton and spring force
         // F1 = -F2
@@ -24,17 +35,9 @@ export class Interaction implements WorldElement {
         interactionUpdater.removeElement(this);
     }
 
-    dynamicElement1: DynamicElement;
-    dynamicElement2: DynamicElement;
-    springRate: number;
 
-    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, SpringRate: number) {
-        this.dynamicElement1 = dynamicElement1;
-        this.dynamicElement2 = dynamicElement2;
-        this.springRate = SpringRate;
 
-        interactionUpdater.addElement(this);
-    }
+
 }
 
 class InteractionUpdater {

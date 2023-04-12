@@ -18,13 +18,13 @@ export class InteractionCreator implements WorldElement {
             direction = interactionsCounter >= length ? 'down' : direction;
             return direction;
         }
-        console.log('interactionCreator update')
+        // console.log('interactionCreator update')
     }
 
     moreInteractions(): void {
         let dynamicElement1 = this.dynamicElements[0];
         let dynamicElement2 = this.dynamicElements[this.interactions.length];
-        let newInteraction = new Interaction(dynamicElement1, dynamicElement2, 0.01);
+        let newInteraction = new Interaction(dynamicElement1, dynamicElement2, 1);
         this.interactions.push(newInteraction);
         const line = new ViewLine(dynamicElement1.position, dynamicElement2.position);
         line.onUpdate = (p1, p2, color) => {
@@ -33,8 +33,8 @@ export class InteractionCreator implements WorldElement {
             const normalizedDistance = devidedDistance > 1 ? 1 : devidedDistance;
             color = Math.floor(0xffffff * normalizedDistance);
             color = 0xff0000;
-            console.log('color:' + color);
-            console.log('distance: ' + normalizedDistance);
+            // console.log('color:' + color);
+            // console.log('distance: ' + normalizedDistance);
             // color = Math.random() * 0xffffff;
             return color;
         };

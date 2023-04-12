@@ -1,4 +1,5 @@
 import { dynamicElementUpdater } from "./WorldElements/DynamicElement";
+import { frictionInteractionUpdater } from "./WorldElements/FrictionInteraction";
 import { interactionUpdater } from "./WorldElements/Interaction";
 import { interactionCreatorUpdater } from "./WorldElements/InteractionCreator";
 import { pointerUpdater } from "./WorldElements/Pointer";
@@ -39,6 +40,7 @@ export class WorldModifiers {
     private clearAllModifiers() {
         viewsRenderer.clear();
         interactionUpdater.clear();
+        frictionInteractionUpdater.clear();
     }
 
     private setRefreshRateDurationInterval(timeStamp: number | undefined = undefined) {
@@ -68,6 +70,7 @@ export class WorldModifiers {
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
         for (let i = 0; i < iterations; i++) {
             interactionUpdater.update();
+            frictionInteractionUpdater.update();
             dynamicElementUpdater.update(SimulationMaximumDT);
         }
     }

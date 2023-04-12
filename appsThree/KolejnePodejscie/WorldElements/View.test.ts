@@ -14,18 +14,18 @@ describe('View', () => {
         expect(view.position).toEqual(position);
     });
 
-    it('should have mesh', () => {
-        expect(view.mesh).toBeTruthy();
+    it('should have get3DObject()', () => {
+        expect(view.get3DObject()).toBeTruthy();
     });
 
-    it('should have mesh with position', () => {
-        expect(convertToVector2(view.mesh.position)).toEqual(position.value);
+    it('should have get3DObject() with position', () => {
+        expect(convertToVector2(view.get3DObject().position)).toEqual(position.value);
     });
 
-    it('should update mesh position', () => {
+    it('should update get3DObject() position', () => {
         position.value = new Vector2(1, 1);
         view.update();
-        expect(convertToVector2(view.mesh.position)).toEqual(position.value);
+        expect(convertToVector2(view.get3DObject().position)).toEqual(position.value);
     });
 
     viewsRenderer.clear();
@@ -48,8 +48,8 @@ describe('viewsRenderer', () => {
         position1.value = new Vector2(1, 1);
         position2.value = new Vector2(2, 2);
         viewsRenderer.render();
-        expect(convertToVector2(view1.mesh.position)).toEqual(position1.value);
-        expect(convertToVector2(view2.mesh.position)).toEqual(position2.value);
+        expect(convertToVector2(view1.get3DObject().position)).toEqual(position1.value);
+        expect(convertToVector2(view2.get3DObject().position)).toEqual(position2.value);
     });
 
     it('should be cleared', () => {

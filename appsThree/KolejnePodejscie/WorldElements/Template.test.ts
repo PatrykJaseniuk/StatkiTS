@@ -11,6 +11,9 @@ describe("Template", () => {
         constructor() {
             testUpdater.addElement(this);
         }
+        destroy(): void {
+            testUpdater.removeElement(this);
+        }
     }
     const testUpdater = new Updater<TestWorldElement>();
 
@@ -30,5 +33,16 @@ describe("Template", () => {
     it("should clear elements", () => {
         testUpdater.clear();
         expect(testUpdater["elements"].length).toBe(0);
+    });
+
+    it("should remove element", () => {
+        const element1 = new TestWorldElement();
+        const element2 = new TestWorldElement();
+        expect(testUpdater["elements"].length).toBe(2);
+        element1.destroy();
+        expect(testUpdater["elements"].length).toBe(1);
+        expect(testUpdater["elements"].find((element) => element == element1)).toBe(undefined);
+        expect(testUpdater["elements"].find((element) => element == element2)).toBe(element2);
+
     });
 });

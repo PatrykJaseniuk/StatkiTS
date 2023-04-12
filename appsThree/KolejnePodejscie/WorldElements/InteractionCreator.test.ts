@@ -3,6 +3,7 @@ import { DynamicElement } from "./DynamicElement";
 import { Pointer } from "./Pointer";
 import { Interaction } from "./Interaction";
 import { jest } from "@jest/globals";
+import { Position } from "./Position";
 
 describe("InteractionCreator", () => {
     let interactionCreator: InteractionCreator;
@@ -10,7 +11,11 @@ describe("InteractionCreator", () => {
     let pointer: Pointer;
 
     beforeEach(() => {
-        dynamicElements = [{}, {}, {}] as DynamicElement[];
+        const p1 = new Position();
+        const p2 = new Position();
+        const p3 = new Position();
+
+        dynamicElements = [new DynamicElement(p1), new DynamicElement(p2), new DynamicElement(p3)];
         pointer = {} as Pointer;
 
         interactionCreator = new InteractionCreator(pointer);

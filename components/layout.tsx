@@ -10,7 +10,6 @@ import hw from '../appsPixi/helloWorld'
 import { useState } from 'react';
 import PixiApp from './pixiApp';
 import tining from '../appsPixi/tining'
-import { type, version } from 'os';
 import click from '../appsPixi/click';
 import keyEvents from '../appsPixi/keyEvents';
 import kinematics from '../appsPixi/kinematicss';
@@ -42,7 +41,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function Layout() {
     const [actualApp, setActualApp] = useState(<PixiApp app={hw} />) //dziwne że przesylam do useState funkcję, a actualApp jest typu, który ta funkcja zwraca
-    const przyklady: { nazwa: string, app: () => Promise<Application<ICanvas>> }[] = [
+    const [showBar, setShowBar] = useState(false);
+    const przykladyPixi: { nazwa: string, app: () => Promise<Application<ICanvas>> }[] = [
         { nazwa: 'hello World', app: hw },
         { nazwa: 'Tining', app: tining },
         { nazwa: 'Click', app: click },
@@ -61,63 +61,73 @@ export default function Layout() {
         { nazwa: 'Ruch Obrotowy', app: RuchObrotowy },
         // { nazwa: 'Ruch Obrotowy 2', app: RuchObrotowy2 }
     ]
-    const apps: { nazwa: string, app: () => Promise<CanvaApp> }[] = [
+    const PrzykladyThreeNew: { nazwa: string, app: () => Promise<CanvaApp> }[] = [
         { nazwa: 'Kolejne Podejscie', app: kolejnePodejscie }
     ]
 
     return (
-        <Container sx={{ border: '1px dashed red' }}>
-            <Grid2 container>
-                <Grid2 sx={{
-                    border: '1px ',
-                    width: 0.7,
-                    maxWidth: '20em'
-                }} >
-                    <Stack>
-                        {przyklady.map((przyklad) => {
-                            return <Button
-                                key={przyklad.nazwa}
-                                sx={{ margin: '3px' }}
-                                variant='contained'
-                                onClick={() => { setActualApp(<PixiApp app={przyklad.app} />) }}>
-                                {przyklad.nazwa}
+        <>
 
-                            </Button>;
-                        })}
-                    </Stack>
-                    <Stack>
-                        {przykladyThree.map((przyklad) => {
-                            return <Button
-                                key={przyklad.nazwa}
-                                sx={{ margin: '3px', backgroundColor: 'red' }}
-                                variant='contained'
-                                onClick={() => { setActualApp(<ThreeAppComp app={przyklad.app} />) }}
-                            >
-                                {przyklad.nazwa}
+            <Box sx={{ border: '1px dashed red', height: '100%' }}>
+                <Button sx={{ height: '5%' }} variant='contained' onClick={() => { setShowBar((state) => !state) }}>{showBar ? 'schowaj' : 'pokaż'}</Button>
 
-                            </Button>;
-                        })}
-                    </Stack>
-                    <Stack>
-                        {apps.map((app) => {
-                            return <Button
-                                key={app.nazwa}
-                                sx={{ margin: '3px', backgroundColor: 'red' }}
-                                variant='contained'
-                                onClick={() => { setActualApp(<CanvaAppComponent app={app.app} />) }}
-                            >
-                                {app.nazwa}
-                            </Button>;
-                        })}
-                    </Stack>
-                </Grid2>
-                <Grid2 width={0.3}>
+
+                <Box sx={{ border: '1px dashed green', height: '95%', display: 'flex' }} >
                     {
-                        actualApp
-                    }
-                </Grid2>
-            </Grid2>
+                        showBar && <Box sx={{
+                            width: '20%',
+                            maxWidth: '20em'
+                        }} >
+                            <Stack>
+                                {przykladyPixi.map((przyklad) => {
+                                    return <Button
+                                        key={przyklad.nazwa}
+                                        sx={{ margin: '3px' }}
+                                        variant='contained'
+                                        onClick={() => { setActualApp(<PixiApp app={przyklad.app} />) }}>
+                                        {przyklad.nazwa}
 
-        </Container>
+                                    </Button>;
+                                })}
+                            </Stack>
+                            <Stack>
+                                {przykladyThree.map((przyklad) => {
+                                    return <Button
+                                        key={przyklad.nazwa}
+                                        sx={{ margin: '3px', backgroundColor: 'red' }}
+                                        variant='contained'
+                                        onClick={() => { setActualApp(<ThreeAppComp app={przyklad.app} />) }}
+                                    >
+                                        {przyklad.nazwa}
+
+                                    </Button>;
+                                })}
+                            </Stack>
+                            <Stack>
+                                {PrzykladyThreeNew.map((app) => {
+                                    return <Button
+                                        key={app.nazwa}
+                                        sx={{ margin: '3px', backgroundColor: 'red' }}
+                                        variant='contained'
+                                        onClick={() => { setActualApp(<CanvaAppComponent app={app.app} />) }}
+                                    >
+                                        {app.nazwa}
+                                    </Button>;
+                                })}
+                            </Stack>
+                        </Box>
+                    }
+
+                    <Box sx={{ border: '1px dashed red', height: '100%', width: showBar ? '80%' : '100%' }}>
+                        {
+                            actualApp
+                        }
+                    </Box>
+                </Box>
+            </Box>
+            {/* <Box sx={{ border: '1px dashed red', width: '100%', height: '100%' }}>
+                <Typography variant='h1'>Hello World</Typography>
+            </Box> */}
+        </>
     );
 }

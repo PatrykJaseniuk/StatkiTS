@@ -50,6 +50,14 @@ export class ViewsRenderer {
 
         return this.renderer.domElement;
     }
+    setSize(width: number, height: number) {
+        this.renderer?.setSize(width, height);
+        this.camera.left = -width / 2;
+        this.camera.right = width / 2;
+        this.camera.top = height / 2;
+        this.camera.bottom = -height / 2;
+        this.camera.updateProjectionMatrix();
+    }
 }
 
 export const viewsRenderer = new ViewsRenderer();

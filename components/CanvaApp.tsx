@@ -10,6 +10,8 @@ import { CanvaApp } from "../appsThree/KolejnePodejscie/app";
 const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
     let { app } = props;
     const ref = useRef(null);
+    let width = 10;
+    let height = 20;
 
     useEffect(() => {
         console.log('useEffect')
@@ -17,8 +19,32 @@ const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
         promise.then((app) => {
             (ref.current as unknown as HTMLElement).appendChild(app.getHtmlElement() as any);
             console.log('mount threeApp')
-            app.start();
+            if (ref.current) {
+                width = (ref.current as any).offsetWidth;
+                height = (ref.current as any).offsetHeight;
+            }
+            app.start(width, height);
+
+
+            console.log('width', width)
+            console.log('height', height)
         })
+
+        const observer = new ResizeObserver((entries) => {
+            // wykonanie czynności po zmianie rozmiaru
+            width = (ref.current as any)?.offsetWidth;
+            height = (ref.current as any)?.offsetHeight;
+            console.log('width', width)
+            console.log('height', height)
+            promise.then((app) => {
+                app.resize(width, height);
+            });
+
+        });
+
+        if (ref.current) {
+            observer.observe(ref.current);
+        }
         return () => {
             promise.then((app) => {
                 app.stop();
@@ -26,23 +52,36 @@ const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
                     (ref.current as any).innerHTML = '';
                 }
             })
+            if (ref.current) {
+                observer.unobserve(ref.current);
+            }
             console.log('unmount threeApp')
         }
     }, [app])
+
+    useEffect(() => {
+
+
+        return () => {
+
+        };
+    }, []);
+
     return (
-        <React.Fragment>
-            <div></div>
-            <Container ref={ref}
-                sx={{
-                    border: '1px red solid',
-                    padding: '3px',
-                    width: 'fit-content',
-                }}
-            >
-                {/* <Typography>pixiApp</Typography> */}
-                {/* <div ref={ref}></div> */}
-            </Container>
-        </React.Fragment >
+
+        <Box ref={ref}
+            sx={{
+                border: '0px blue solid',
+                padding: '0px',
+                width: '100%',
+                height: '100%',
+            }}
+        >
+            {/* <Typography>pixiApp</Typography> */}
+            {/* <div ref={ref}></div> */}
+            {/* width {width}
+            height {height} */}
+        </Box>
     )
 }
 export default CanvaAppComponent;

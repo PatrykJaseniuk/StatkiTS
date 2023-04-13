@@ -68,15 +68,14 @@ export default function Layout() {
     return (
         <>
 
-            <Box sx={{ border: '1px dashed red', height: '100%', display: "flex", flexDirection: "column" }}>
-                <Button variant='contained' onClick={() => { setShowBar((state) => !state) }}>{showBar ? 'schowaj' : 'pokaż'}</Button>
+            <Box sx={{ border: '1px dashed red', height: '100%' }}>
+                <Button sx={{ height: '5%' }} variant='contained' onClick={() => { setShowBar((state) => !state) }}>{showBar ? 'schowaj' : 'pokaż'}</Button>
 
 
-                <Box sx={{ border: '1px dashed green', display: "flex", flexDirection: "row", justifyContent: "flex-start", flex: 1 }} >
+                <Box sx={{ border: '1px dashed green', height: '95%', display: 'flex' }} >
                     {
-                        showBar && <Grid2 sx={{
-                            border: '1px ',
-                            width: 0.7,
+                        showBar && <Box sx={{
+                            width: '20%',
                             maxWidth: '20em'
                         }} >
                             <Stack>
@@ -116,20 +115,15 @@ export default function Layout() {
                                     </Button>;
                                 })}
                             </Stack>
-                        </Grid2>
+                        </Box>
                     }
 
-                    <Box sx={{ border: '1px dashed red', width: '100%', height: '100%' }}>
+                    <Box sx={{ border: '1px dashed red', height: '100%', width: showBar ? '80%' : '100%' }}>
                         {
                             actualApp
                         }
                     </Box>
                 </Box>
-
-                {/* kontener szeroki na cały ekran */}
-
-
-
             </Box>
             {/* <Box sx={{ border: '1px dashed red', width: '100%', height: '100%' }}>
                 <Typography variant='h1'>Hello World</Typography>

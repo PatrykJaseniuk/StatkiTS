@@ -1,75 +1,67 @@
+import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { Interaction } from "./Interaction";
+import { Interaction, InteractionWithPosition } from "./Interaction";
 import { Pointer } from "./Pointer";
 import { Updater, WorldElement } from "./Template";
 import { ViewLine } from "./View";
 
 
 export class InteractionCreator implements WorldElement {
-    update(): void {
-        this.direction = calculateDirection(this.interactions.length, this.dynamicElements.length, this.direction);
 
-        this.nextAction = this.direction == 'down' ? this.lessInteractions : this.moreInteractions;
-
-        this.nextAction();
-
-        function calculateDirection(interactionsCounter: number, length: number, direction: Direction): "up" | "down" {
-            direction = interactionsCounter <= 0 ? 'up' : direction;
-            direction = interactionsCounter >= length ? 'down' : direction;
-            return direction;
-        }
-        // console.log('interactionCreator update')
-    }
-
-    moreInteractions(): void {
-        let dynamicElement1 = this.dynamicElements[0];
-        let dynamicElement2 = this.dynamicElements[this.interactions.length];
-        let newInteraction = new Interaction(dynamicElement1, dynamicElement2, 1);
-        this.interactions.push(newInteraction);
-        const line = new ViewLine(dynamicElement1.position, dynamicElement2.position);
-        line.onUpdate = (p1, p2, color) => {
-            const distance = p1.value.distanceTo(p2.value);
-            const devidedDistance = (distance / 1000);
-            const normalizedDistance = devidedDistance > 1 ? 1 : devidedDistance;
-            color = Math.floor(0xffffff * normalizedDistance);
-            color = 0xff0000;
-            // console.log('color:' + color);
-            // console.log('distance: ' + normalizedDistance);
-            // color = Math.random() * 0xffffff;
-            return color;
-        };
-        this.lines.push(line);
-    }
-
-    lessInteractions(): void {
-        let interaction = this.interactions.pop();
-        interaction?.destroy();
-        let lines = this.lines.pop();
-        lines?.destroy();
-    }
-
-    nextAction: () => void = this.moreInteractions;
-
-
-    // interactionsCounter: number = 0;
-    direction: Direction = 'up';
-
-    dynamicElements: DynamicElement[] = [];
-    pointer: Pointer;
-    interactions: Interaction[] = [];
-    lines: ViewLine[] = [];
+    private dynamicElements: DynamicElement[] = [];
+    private pointer: Pointer;
+    private interactions: (InteractionWithPosition)[] = [];
+    private lines: ViewLine[] = [];
 
     constructor(pointer: Pointer) {
         this.pointer = pointer;
 
         interactionCreatorUpdater.addElement(this);
     }
+
+    addDynamicElement(dynamicElement: DynamicElement): void {
+        this.dynamicElements.push(dynamicElement);
+    }
+    update(): void {
+
+        this.pointer.isPointerDown &&
+            handlePointerDown(this.pointer, this.dynamicElements, this.interactions);
+
+        !this.pointer.isPointerDown &&
+            destroyAllinteractions(this.interactions);
+
+
+        function handlePointerDown(pointer: Pointer, dynamicElements: DynamicElement[], interactions: InteractionWithPosition[]) {
+
+            const dynamicElementPointed = dynamicElements.find((dynamicElement) => {
+                const distance = pointer.position.value.distanceTo(dynamicElement.position.value);
+                return distance < 50;
+            });
+
+            dynamicElementPointed && hendleDynamicElementPointed(dynamicElementPointed, interactions, pointer);
+        }
+
+        function hendleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: InteractionWithPosition[], pointer: Pointer) {
+            const interaction = new InteractionWithPosition(dynamicElementPointed, pointer.position, 0.01);
+            interactions.push(interaction);
+        }
+
+        function destroyAllinteractions(interactions: InteractionWithPosition[]) {
+            interactions.forEach((interaction) => {
+                interaction.destroy();
+            });
+            interactions.length = 0;
+        }
+    }
+
     destroy(): void {
-        throw new Error("Method not implemented.");
+        interactionCreatorUpdater.removeElement(this);
     }
 }
 
 type Direction = 'up' | 'down';
 
 export const interactionCreatorUpdater = new Updater<InteractionCreator>();
+
+
 

@@ -12,6 +12,7 @@ export class Pointer {
     }
     position: Position;
     view: ViewTexture;
+    isPointerDown: boolean = false;
 
     constructor() {
         this.position = new Position();
@@ -46,6 +47,17 @@ class PointerUpdater {
         // console.log(mousePositionCameraSpace);
         event.x
         return mousePositionCameraSpace;
+    }
+
+    onPointerDown(event: PointerEvent) {
+        this.elements.forEach((element) => {
+            element.isPointerDown = true;
+        })
+    }
+    onPointerUp(event: PointerEvent) {
+        this.elements.forEach((element) => {
+            element.isPointerDown = false;
+        })
     }
 }
 

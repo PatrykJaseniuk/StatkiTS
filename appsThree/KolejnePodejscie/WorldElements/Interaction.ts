@@ -8,36 +8,34 @@ export class Interaction implements WorldElement {
     dynamicElement2: DynamicElement;
     distance: number;
     springRate: number;
+    dumperRate: number;
 
-    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, springRate: number, distance: number) {
+    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, springRate: number, dumperRate: number, distance: number) {
         this.dynamicElement1 = dynamicElement1;
         this.dynamicElement2 = dynamicElement2;
         this.springRate = springRate;
+        this.dumperRate = dumperRate;
         this.distance = distance;
 
         interactionUpdater.addElement(this);
     }
 
     update(): void {
-        // acording to third law of Newton and spring force
-        // F1 = -F2
-        // F1 = -k * (x1 - x2)
+        const pointsShift = this.dynamicElement2.position.value.clone().sub(this.dynamicElement1.position.value);
+        const pointDirection = pointsShift.clone().normalize();
 
-        let position1 = this.dynamicElement1.position.value;
-        let position2 = this.dynamicElement2.position.value;
-        let pointsShift = position2.clone().sub(position1);
+        const springForceOn1 = calculateSpringForceOn1(pointsShift, pointDirection, this.springRate, this.distance);
+        // according to third law of Newton
+        const springForceOn2 = springForceOn1.clone().multiplyScalar(-1);
 
-        let pointDirection = pointsShift.clone().normalize();
-        let springNeutral = pointDirection.clone().multiplyScalar(this.distance);
-        let springShift = pointsShift.clone().sub(springNeutral);
+        const velocityShift = this.dynamicElement2.velocity.clone().sub(this.dynamicElement1.velocity);
+        const dumperForceOn1 = calculateDumperForceOn1(velocityShift, this.dumperRate, pointDirection);
+        const dumperForceOn2 = dumperForceOn1.clone().multiplyScalar(-1);
 
-        // let springShift = pointsShift
-
-        let forceOn1 = springShift.clone().multiplyScalar(this.springRate);
-        let forceOn2 = forceOn1.clone().multiplyScalar(-1);
-
-        this.dynamicElement1.force.add(forceOn1);
-        this.dynamicElement2.force.add(forceOn2);
+        this.dynamicElement1.force.add(springForceOn1);
+        this.dynamicElement2.force.add(springForceOn2);
+        this.dynamicElement1.force.add(dumperForceOn1);
+        this.dynamicElement2.force.add(dumperForceOn2);
     }
 
     destroy(): void {
@@ -51,22 +49,29 @@ export class InteractionWithPosition implements WorldElement {
     dynamicElement: DynamicElement;
     position: Position
     springRate: number;
+    dumperRate: number;
+    distance: number;
 
-    constructor(dynamicElement: DynamicElement, position: Position, SpringRate: number) {
+    constructor(dynamicElement: DynamicElement, position: Position, springRate: number, dumperRate: number, distance: number) {
         this.dynamicElement = dynamicElement;
         this.position = position;
-        this.springRate = SpringRate;
+        this.springRate = springRate;
+        this.dumperRate = dumperRate;
+        this.distance = distance;
 
         interactionUpdater.addElement(this);
     }
     update(): void {
-        let position1 = this.dynamicElement.position.value;
-        let position2 = this.position.value;
-        let distanceFrom1To2 = position2.clone().sub(position1);
-        let forceOn1 = distanceFrom1To2.clone().multiplyScalar(this.springRate);
-        // let forceOn2 = forceOn1.clone().multiplyScalar(-1);
-        this.dynamicElement.force.add(forceOn1);
-        // this.dynamicElement2.force.add(forceOn2);
+        const pointsShift = this.position.value.clone().sub(this.dynamicElement.position.value);
+        const pointDirection = pointsShift.clone().normalize();
+
+        const springForceOn1 = calculateSpringForceOn1(pointsShift, pointDirection, this.springRate, this.distance);
+
+        const velocityShift = this.dynamicElement.velocity.clone().multiplyScalar(-1);
+        const dumperForceOn1 = calculateDumperForceOn1(velocityShift, this.dumperRate, pointDirection);
+
+        this.dynamicElement.force.add(springForceOn1);
+        this.dynamicElement.force.add(dumperForceOn1);
     }
     destroy(): void {
         interactionUpdater.removeElement(this);
@@ -81,3 +86,18 @@ class InteractionUpdater extends Updater<WorldElement> {
 }
 
 export const interactionUpdater = new InteractionUpdater();
+
+function calculateSpringForceOn1(pointsShift: Vector2, pointDirection: Vector2, springRate: number, distance: number) {
+    // acording to third law of Newton and spring force
+    // F1 = -F2
+    // F1 = -k * (x1 - x2)    
+    const springNeutral = pointDirection.clone().multiplyScalar(distance);
+    const springShift = pointsShift.clone().sub(springNeutral);
+    const forceOn1 = springShift.clone().multiplyScalar(springRate);
+    return forceOn1;
+}
+function calculateDumperForceOn1(velocityShift: Vector2, dumperRate: number, pointDirection: Vector2) {
+    const velocityShiftPointDirection = pointDirection.clone().multiplyScalar(velocityShift.dot(pointDirection));
+    const dumperForceOn1 = velocityShiftPointDirection.clone().multiplyScalar(dumperRate);
+    return dumperForceOn1;
+}

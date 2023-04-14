@@ -29,12 +29,12 @@ export class World {
         // ]
         // const line = new ViewLine(ship1.hull.position, ship2.hull.position);
 
-        let interaction1 = new Interaction(ship1.hull.dynamicElement, ship2.hull.dynamicElement, 0.5, 200);
-        let interaction2 = new Interaction(ship1.hull.dynamicElement, ship3.hull.dynamicElement, 0.5, 200);
-        let interaction3 = new Interaction(ship2.hull.dynamicElement, ship3.hull.dynamicElement, 0.5, 200);
-        let friction1 = new FrictionInteraction(ship1.hull.dynamicElement, ship2.hull.dynamicElement, 0.1);
-        let friction2 = new FrictionInteraction(ship1.hull.dynamicElement, ship3.hull.dynamicElement, 0.1);
-        let friction3 = new FrictionInteraction(ship2.hull.dynamicElement, ship3.hull.dynamicElement, 0.1);
+        let interaction1 = new Interaction(ship1.hull.dynamicElement, ship2.hull.dynamicElement, 0.5, 0.1, 200);
+        let interaction2 = new Interaction(ship1.hull.dynamicElement, ship3.hull.dynamicElement, 0.5, 0.1, 200);
+        let interaction3 = new Interaction(ship2.hull.dynamicElement, ship3.hull.dynamicElement, 0.5, 0.1, 200);
+        // let friction1 = new FrictionInteraction(ship1.hull.dynamicElement, ship2.hull.dynamicElement, 0.1);
+        // let friction2 = new FrictionInteraction(ship1.hull.dynamicElement, ship3.hull.dynamicElement, 0.1);
+        // let friction3 = new FrictionInteraction(ship2.hull.dynamicElement, ship3.hull.dynamicElement, 0.1);
 
 
         // let frictinoInteraction = new FrictionInteraction(ship1.hull.dynamicElement, ship1.anchore.dynamicElement, 0.01);

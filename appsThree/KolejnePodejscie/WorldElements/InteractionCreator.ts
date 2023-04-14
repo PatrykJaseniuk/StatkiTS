@@ -24,10 +24,10 @@ export class InteractionCreator implements WorldElement {
     }
     update(): void {
 
-        this.pointer.isPointerDown &&
+        this.pointer.isPointerDown && this.interactions.length == 0 &&
             handlePointerDown(this.pointer, this.dynamicElements, this.interactions);
 
-        !this.pointer.isPointerDown &&
+        !this.pointer.isPointerDown && this.interactions.length > 0 &&
             destroyAllinteractions(this.interactions);
 
 
@@ -42,7 +42,7 @@ export class InteractionCreator implements WorldElement {
         }
 
         function hendleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: InteractionWithPosition[], pointer: Pointer) {
-            const interaction = new InteractionWithPosition(dynamicElementPointed, pointer.position, 0.01);
+            const interaction = new InteractionWithPosition(dynamicElementPointed, pointer.position, 0.1, 1, 0);
             interactions.push(interaction);
         }
 

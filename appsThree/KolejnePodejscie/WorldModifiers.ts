@@ -11,9 +11,11 @@ export class WorldModifiers {
 
     start() {
         this.setRefreshRateDurationInterval();
-        this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 3000)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
+        this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
         viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointerUpdater.update(event); console.log('pointer move') });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointerUpdater.onPointerDown(event); console.log('pointer down') });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointerUpdater.onPointerUp(event); console.log('pointer up') });
         this.intervals.push(setInterval(() => this.logs(), 1000));
     }
     logs(): void {
@@ -31,6 +33,7 @@ export class WorldModifiers {
         cancelAnimationFrame(this.animationFrameId);
         clearTimeout(this.dynamicTimeOutID);
         this.clearAllModifiers();
+
     }
 
     returnHtmlElement() {

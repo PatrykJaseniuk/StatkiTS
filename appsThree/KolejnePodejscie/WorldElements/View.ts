@@ -60,7 +60,32 @@ export class ViewsRenderer {
     }
 }
 
+
+
 export const viewsRenderer = new ViewsRenderer();
+
+export class ViewThreePoints {
+    ViewTexture: ViewTexture;
+    positions: Position[];
+    constructor(positions: Position[], picturePath: string) {
+        this.positions = positions;
+        this.ViewTexture = new ViewTexture(positions[0], picturePath);
+        this.ViewTexture.onUpdate = this.onUpdate = this.onUpdate.bind(this);
+    }
+
+    onUpdate(position: THREE.Vec2, rotation: number): { position: THREE.Vec2, rotation: number } {
+        const botomEdge = this.positions[1].value.clone().sub(this.positions[2].value);
+        const ortoganalToBotomEdge = new THREE.Vector2(-botomEdge.y, botomEdge.x); // rotate 90 degrees, GPT proposition
+        const rotationOfTriangle = Math.atan2(ortoganalToBotomEdge.y, ortoganalToBotomEdge.x);
+
+        const centerOfTriangle = this.positions[0].value.clone().add(this.positions[1].value).add(this.positions[2].value).divideScalar(3); // GPT proposition
+
+
+        const positionRotation = { position: centerOfTriangle, rotation: rotationOfTriangle };
+        return positionRotation;
+    }
+
+}
 
 interface View extends WorldElement {
     get3DObject(): THREE.Object3D<THREE.Event>;
@@ -68,9 +93,12 @@ interface View extends WorldElement {
 
 export class ViewTexture implements View {
     update() {
-        this.mesh.position.set(this.position.value.x, this.position.value.y, 0);
+        const positionRotation = this.onUpdate(this.position.value, this.rotation);
+        this.mesh.position.set(positionRotation.position.x, positionRotation.position.y, 0);
+        this.mesh.rotation.z = positionRotation.rotation;
     }
     position: Position;
+    rotation: number = 0;
     private mesh: THREE.Mesh;
 
 
@@ -89,6 +117,10 @@ export class ViewTexture implements View {
         //register view for rendering
         viewsRenderer.addView(this)
     }
+    onUpdate(position: THREE.Vec2, rotation: number) {
+        return { position: position, rotation: rotation };
+    }
+
     get3DObject(): THREE.Object3D<THREE.Event> {
         return this.mesh;
     }

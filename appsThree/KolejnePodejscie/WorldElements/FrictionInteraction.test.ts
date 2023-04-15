@@ -46,6 +46,5 @@ describe("FrictionInteraction", () => {
         // Then
         expect(dynamicElement1.force).toEqual(new Vector2(0, 0));
         expect(dynamicElement2.force).toEqual(new Vector2(0, 0));
-
     });
 });

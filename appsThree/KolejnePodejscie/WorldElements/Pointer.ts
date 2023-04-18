@@ -16,7 +16,7 @@ export class Pointer {
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture(this.position, 'hook.png');
+        this.view = new ViewTexture(() => { return { position: this.position.value, rotation: 0 } }, 'hook.png');
         pointerUpdater.addElement(this);
     }
 }

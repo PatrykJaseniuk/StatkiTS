@@ -59,6 +59,8 @@ export class WorldModifiers {
         // this.previousTimeStamp = timeStamp;
 
         // console.log(timeStamp);
+
+        // this.molecularModelUpdate();
         viewsRenderer.render();
         this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
     }

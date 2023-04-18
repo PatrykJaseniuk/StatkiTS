@@ -2,7 +2,7 @@ import { Vector2 } from "three";
 import { Position } from "./Position";
 import { ViewTexture, ViewThreePoints } from "./View";
 import { Interaction } from "./Interaction";
-import { DynamicElement } from "./DynamicElement";
+import { DynamicElement, DynamicElementRotation } from "./DynamicElement";
 
 export class Ship {
 
@@ -19,7 +19,7 @@ export class Ship {
 class Anchore {
     position = new Position();
     dynamicElement = new DynamicElement(this.position);
-    view: ViewTexture = new ViewTexture(this.position, 'kotwica.png');
+    view: ViewTexture = new ViewTexture(() => { return { position: this.position.value, rotation: 0 } }, 'kotwica.png');
 
     constructor() {
         this.dynamicElement.mass = 100000;
@@ -29,7 +29,7 @@ class Anchore {
 class Kadlub {
     position: Position = new Position();
     dynamicElement = new DynamicElement(this.position);
-    view: ViewTexture = new ViewTexture(this.position, 'kadlub.png');
+    view: ViewTexture = new ViewTexture(() => { return { position: this.position.value, rotation: 0 } }, 'kadlub.png');
     constructor() {
         this.dynamicElement.mass = 100;
     }
@@ -57,5 +57,20 @@ class HullRotation {
         this.interactions.push(interaction3);
 
         this.View = new ViewThreePoints(positions, 'kadlub.png');
+    }
+}
+
+export class HullRotation2 {
+
+    dynamicElemet: DynamicElementRotation = new DynamicElementRotation(100, 100);
+    view: ViewTexture;
+
+    constructor() {
+        this.view = new ViewTexture(() => {
+            const posRot = this.dynamicElemet.getPositionRotation();
+            console.log(posRot);
+            return posRot;
+        }, 'kadlub.png');
+        this.dynamicElemet.setPosition(new Vector2(0, 0));
     }
 }

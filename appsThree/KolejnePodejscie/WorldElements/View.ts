@@ -69,11 +69,10 @@ export class ViewThreePoints {
     positions: Position[];
     constructor(positions: Position[], picturePath: string) {
         this.positions = positions;
-        this.ViewTexture = new ViewTexture(positions[0], picturePath);
-        this.ViewTexture.onUpdate = this.onUpdate = this.onUpdate.bind(this);
+        this.ViewTexture = new ViewTexture(() => this.getPositionRotation(), picturePath);
     }
 
-    onUpdate(position: THREE.Vec2, rotation: number): { position: THREE.Vec2, rotation: number } {
+    getPositionRotation(): PositionRotation {
         const botomEdge = this.positions[1].value.clone().sub(this.positions[2].value);
         const ortoganalToBotomEdge = new THREE.Vector2(-botomEdge.y, botomEdge.x); // rotate 90 degrees, GPT proposition
         const rotationOfTriangle = Math.atan2(ortoganalToBotomEdge.y, ortoganalToBotomEdge.x);
@@ -84,27 +83,28 @@ export class ViewThreePoints {
         const positionRotation = { position: centerOfTriangle, rotation: rotationOfTriangle };
         return positionRotation;
     }
-
 }
 
 interface View extends WorldElement {
     get3DObject(): THREE.Object3D<THREE.Event>;
 }
 
+export interface PositionRotation { position: THREE.Vector2, rotation: number };
+
+
 export class ViewTexture implements View {
     update() {
-        const positionRotation = this.onUpdate(this.position.value, this.rotation);
+        const positionRotation = this.getPositionRotation();
         this.mesh.position.set(positionRotation.position.x, positionRotation.position.y, 0);
         this.mesh.rotation.z = positionRotation.rotation;
     }
-    position: Position;
-    rotation: number = 0;
+    // position: Position;
+    // rotation: number = 0;
     private mesh: THREE.Mesh;
 
-
-    constructor(position: Position, picturePath: string) {
-        this.position = position;
-
+    constructor(onUpdate: () => PositionRotation, picturePath: string) {
+        // this.position = position;
+        this.getPositionRotation = onUpdate;
         // add picture to scene
         const loader = new THREE.TextureLoader();
         const texture = loader.load(picturePath);
@@ -117,8 +117,8 @@ export class ViewTexture implements View {
         //register view for rendering
         viewsRenderer.addView(this)
     }
-    onUpdate(position: THREE.Vec2, rotation: number) {
-        return { position: position, rotation: rotation };
+    getPositionRotation(): PositionRotation {
+        return { position: new THREE.Vector2(), rotation: 0 };
     }
 
     get3DObject(): THREE.Object3D<THREE.Event> {

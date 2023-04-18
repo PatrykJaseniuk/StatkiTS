@@ -21,4 +21,7 @@ W tym przypadku model bryły obrotowej będzie się składał z trzech, a nie z 
 
 ## Realizacja
 
-Zkorzystałem z rozwiązania 2
+Skorzystałem z rozwiązania 2
+
+# 7.1 
+Stworzę element świata, który będzie rozszerzeniem dotychczasowego elementu dynamicznego o wymiar obrotu [DynamicElement](DynamicElement.ts) .

@@ -18,6 +18,7 @@
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
     "@types/three": "^0.148.0",
+    "detect-collisions": "^7.0.5",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "jest": "^29.5.0",

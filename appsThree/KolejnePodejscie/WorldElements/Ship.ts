@@ -68,7 +68,7 @@ export class HullRotation2 {
     constructor() {
         this.view = new ViewTexture(() => {
             const posRot = this.dynamicElemet.getPositionRotation();
-            console.log(posRot);
+            // console.log(posRot);
             return posRot;
         }, 'kadlub.png');
         this.dynamicElemet.setPosition(new Vector2(0, 0));

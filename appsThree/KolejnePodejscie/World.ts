@@ -8,6 +8,7 @@ import { Pointer } from "./WorldElements/Pointer";
 import { Position } from "./WorldElements/Position";
 import { HullRotation2, Ship, ShipRotation } from "./WorldElements/Ship";
 import { ViewLine, ViewTexture } from "./WorldElements/View";
+import { CollisionPoint, CollisionTriangle } from "./WorldElements/Collision";
 
 export class World {
     constructor() {
@@ -49,6 +50,9 @@ export class World {
         const interactionCreateor = new InteractionCreator(pointer);
         interactionCreateor.addDynamicElement(hullRotation2.dynamicElemet.dynamicElements[0]);
         // const view = new ViewTexture(() => { return { position: new Vector2(), rotation: 0 } }, 'kadlub.png');
+        const collissionTriangle = new CollisionTriangle(hullRotation2.dynamicElemet.dynamicElements[0].position, hullRotation2.dynamicElemet.dynamicElements[1].position, hullRotation2.dynamicElemet.dynamicElements[2].position);
+
+        const collisionPoint = new CollisionPoint(pointer.position);
     }
 }
 

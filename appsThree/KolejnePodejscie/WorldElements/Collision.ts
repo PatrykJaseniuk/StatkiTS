@@ -1,48 +1,137 @@
-import { Body, BodyType, Box, System } from "detect-collisions";
+import { Body, BodyType, Box, Point, Polygon, PotentialVector, System } from "detect-collisions";
 import { Position } from "./Position";
 import { Updater, WorldElement } from "./Template";
-import { PositionRotation } from "./View";
+import * as SAT from "sat";
+import { ViewLine } from "./View";
 
-export class CollisionElement {
+export class CollisionPoint extends Point implements WorldElement {
+    position: Position
 
+    constructor(position: Position) {
+        super({ x: position.value.x, y: position.value.y });
+        this.position = position;
 
-    collisionBody: Body;
-    constructor(getPositionRotation: () => PositionRotation) {
-
-        this.getPositionRotation = getPositionRotation;
-        const { position } = getPositionRotation();
-        this.collisionBody = new Box(position, 10, 10);
-        this.collisionBody.
-
-            // collisionElementsUpdater.addElement(this);
+        collisionPoints.addElement(this);
     }
 
-    getPositionRotation: () => PositionRotation;
-
     update(): void {
-        throw new Error("Method not implemented.");
+        this.setPosition(this.position.value.x, this.position.value.y);
     }
     destroy(): void {
-        throw new Error("Method not implemented.");
+        collisionPoints.removeElement(this);
     }
 }
 
-class NewBody implements  {
+class CollisionPoints extends Updater<CollisionPoint> {
+    addElement(element: CollisionPoint): void {
+        super.addElement(element);
+        collisionSystem.addElement(element);
+    }
+
+    removeElement(element: CollisionPoint): void {
+        super.removeElement(element);
+        collisionSystem.removeElement(element);
+    }
 }
 
+export const collisionPoints = new CollisionPoints();
 
-class CollisionElements extends Updater<CollisionElement> {
-    collisionsElements: CollisionElement[] = [];
+interface CollisionPointOverlapV {
+    point: CollisionPoint;
+    overlapV: PotentialVector;
+}
+
+export class CollisionTriangle extends Polygon implements WorldElement {
+
+    position1: Position;
+    position2: Position;
+    position3: Position;
+    positions: Position[] = [];
+
+
+    collisionPointsOverlaps: Set<CollisionPointOverlapV> = new Set();
+
+
+    constructor(position1: Position, position2: Position, position3: Position) {
+        const positions = [position1, position2, position3];
+        const pointsForCollision = positions.map((e) => ({ x: e.value.x, y: e.value.y }))
+        super({ x: 0, y: 0 }, pointsForCollision);
+        this.positions = positions;
+        this.position1 = position1;
+        this.position2 = position2;
+        this.position3 = position3;
+
+        const line = new ViewLine(position1, position2);
+
+        collisionTriangles.addElement(this);
+    }
+
+    update(): void {
+        const pointsForCollision = this.positions.map((e) => (new SAT.Vector(e.value.x, e.value.y)))
+        this.setPoints(pointsForCollision);
+    }
+    destroy(): void {
+        collisionTriangles.removeElement(this);
+    }
+
+    addColidingPoint(point: CollisionPoint, overlapV: PotentialVector) {
+        this.collisionPointsOverlaps.add({ point, overlapV });
+    }
+}
+
+class CollisionTriangles extends Updater<CollisionTriangle> {
+    addElement(element: CollisionTriangle): void {
+        super.addElement(element);
+        collisionSystem.addElement(element);
+    }
+    removeElement(element: CollisionTriangle): void {
+        super.removeElement(element);
+        collisionSystem.removeElement(element);
+    }
+}
+
+const collisionTriangles = new CollisionTriangles();
+
+class CollisionSystem {
     system = new System();
 
-    addElement(element: CollisionElement): void {
-        this.collisionsElements.push(element);
-        this.system.insert(element.collisionBody);
+    addElement(body: Body) {
+        this.system.insert(body);
     }
-    update(): void {
-        this.system.checkAll((response) => {});
+
+    removeElement(body: Body) {
+        this.system.remove(body);
+    }
+
+    update() {
+        collisionPoints.update();
+        collisionTriangles.update();
+        this.system.update();
+
+        this.system.checkAll((response) => {
+
+            handleCollision(response.a, response.b, response.overlapV);
+            handleCollision(response.b, response.a, response.overlapV.scale(-1));
+
+            function handleCollision(a: Body, b: Body, overlapV: PotentialVector) {
+                if (a instanceof CollisionTriangle && b instanceof CollisionPoint) {
+                    saveCollision(a, b, overlapV);
+                    console.log("Collision");
+                }
+
+            }
+
+            function saveCollision(triangle: CollisionTriangle, point: CollisionPoint, overlapV: PotentialVector) {
+                triangle.addColidingPoint(point, overlapV);
+            }
+        });
     }
 }
 
-export const collisionElementsUpdater = new CollisionElements();
+export const collisionSystem = new CollisionSystem();
+
+
+
+
+
 

@@ -67,7 +67,7 @@ export class DynamicElementRotation {
         let sideLength = length * 3 / Math.sqrt(3);// side of equilateral triangle
         const dtMax = 4; //max time step
         let springRate = calculateMaxSpringRate(mass, dtMax);
-        // springRate = 0.5;
+        springRate = 0.01;
         this.mass = mass;
         this.length = length;
 

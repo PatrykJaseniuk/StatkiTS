@@ -46,7 +46,7 @@ export class ViewsRenderer {
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(800, 800);
         // set background color blue
-        this.renderer.setClearColor(0xff00ff);
+        this.renderer.setClearColor(0x6000ff);
 
         return this.renderer.domElement;
     }

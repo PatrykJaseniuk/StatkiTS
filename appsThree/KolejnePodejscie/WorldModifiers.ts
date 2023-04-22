@@ -1,3 +1,4 @@
+import { collisionSystem } from "./WorldElements/Collision";
 import { dynamicElementUpdater } from "./WorldElements/DynamicElement";
 import { frictionInteractionUpdater } from "./WorldElements/FrictionInteraction";
 import { interactionUpdater } from "./WorldElements/Interaction";
@@ -8,19 +9,20 @@ import { viewsRenderer } from "./WorldElements/View";
 export class WorldModifiers {
     previousTimeStamp: number | undefined = undefined;
 
-
     start() {
         this.setRefreshRateDurationInterval();
         this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
-        viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointerUpdater.update(event); console.log('pointer move') });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointerUpdater.onPointerDown(event); console.log('pointer down') });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointerUpdater.onPointerUp(event); console.log('pointer up') });
+        viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointerUpdater.update(event); });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointerUpdater.onPointerDown(event); });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointerUpdater.onPointerUp(event); });
+        this.intervals.push(setInterval(() => collisionSystem.update(), 50));
         this.intervals.push(setInterval(() => this.logs(), 1000));
     }
+
     logs(): void {
         const SumOfMomenums = dynamicElementUpdater.getSumOfMomentums();
-        console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
+        // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
         // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
 
 
@@ -40,6 +42,7 @@ export class WorldModifiers {
         const domElement = viewsRenderer.init();
         return domElement;
     }
+
     private clearAllModifiers() {
         viewsRenderer.clear();
         interactionUpdater.clear();

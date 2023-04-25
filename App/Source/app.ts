@@ -20,6 +20,7 @@ export async function app(): Promise<CanvaApp> {
         },
         start: (width, height) => {
             worldModifiers.start();
+            viewsRenderer.setSize(width, height);
         },
         stop: () => {
             worldModifiers.stop();

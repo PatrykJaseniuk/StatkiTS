@@ -1,31 +1,26 @@
 import { collisionSystem } from "./WorldElements/Collision";
-import { dynamicElementUpdater } from "./WorldElements/DynamicElement";
-import { frictionInteractionUpdater } from "./WorldElements/FrictionInteraction";
-import { interactionUpdater } from "./WorldElements/Interaction";
-import { interactionCreatorUpdater } from "./WorldElements/InteractionCreator";
-import { pointerUpdater } from "./WorldElements/Pointer";
+import { DynamicRotationElements, dynamicElements } from "./WorldElements/DynamicElement";
+import { frictionInteractions } from "./WorldElements/FrictionInteraction";
+import { interactions } from "./WorldElements/Interaction";
+import { interactionCreators } from "./WorldElements/InteractionCreator";
+import { pointers } from "./WorldElements/Pointer";
 import { viewsRenderer } from "./WorldElements/View";
 
 export class WorldModifiers {
-    previousTimeStamp: number | undefined = undefined;
+    private previousTimeStamp: number | undefined = undefined;
+    private intervals: NodeJS.Timer[] = [];
+    private animationFrameId: number = 0;
 
     start() {
         this.setRefreshRateDurationInterval();
-        this.intervals.push(setInterval(() => interactionCreatorUpdater.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
+        this.intervals.push(setInterval(() => interactionCreators.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
-        viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointerUpdater.update(event); });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointerUpdater.onPointerDown(event); });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointerUpdater.onPointerUp(event); });
+        this.intervals.push(setInterval(() => DynamicRotationElements.update(), 10));
+        viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
+        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
         this.intervals.push(setInterval(() => collisionSystem.update(), 50));
         this.intervals.push(setInterval(() => this.logs(), 1000));
-    }
-
-    logs(): void {
-        const SumOfMomenums = dynamicElementUpdater.getSumOfMomentums();
-        // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
-        // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
-
-
     }
 
     stop() {
@@ -33,9 +28,7 @@ export class WorldModifiers {
             clearInterval(interval);
         })
         cancelAnimationFrame(this.animationFrameId);
-        clearTimeout(this.dynamicTimeOutID);
         this.clearAllModifiers();
-
     }
 
     returnHtmlElement() {
@@ -43,10 +36,15 @@ export class WorldModifiers {
         return domElement;
     }
 
+    private logs(): void {
+        const SumOfMomenums = dynamicElements.getSumOfMomentums();
+        // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
+        // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
+    }
     private clearAllModifiers() {
         viewsRenderer.clear();
-        interactionUpdater.clear();
-        frictionInteractionUpdater.clear();
+        interactions.clear();
+        frictionInteractions.clear();
     }
 
     private setRefreshRateDurationInterval(timeStamp: number | undefined = undefined) {
@@ -68,18 +66,14 @@ export class WorldModifiers {
         this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
     }
 
-    private intervals: NodeJS.Timer[] = [];
-    private animationFrameId: number = 0;
-    dynamicTimeOutID: NodeJS.Timeout = setTimeout(() => { }, 0)
-
-    molecularModelUpdate() {
+    private molecularModelUpdate() {
         const realWorldDt = 10;
-        const SimulationMaximumDT = interactionUpdater.getSimulationMaximumDT();
+        const SimulationMaximumDT = interactions.getSimulationMaximumDT();
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
         for (let i = 0; i < iterations; i++) {
-            interactionUpdater.update();
-            frictionInteractionUpdater.update();
-            dynamicElementUpdater.update(SimulationMaximumDT);
+            interactions.update();
+            frictionInteractions.update();
+            dynamicElements.update(SimulationMaximumDT);
         }
     }
 }

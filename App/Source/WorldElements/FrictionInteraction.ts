@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { Updater, WorldElement } from "./Template";
+import { WorldElements, WorldElement } from "./Template";
 
 
 export class FrictionInteraction implements WorldElement {
@@ -14,7 +14,7 @@ export class FrictionInteraction implements WorldElement {
         this.dynamicElement2 = dynamicElement2;
         this.frictionRate = frictionRate;
 
-        frictionInteractionUpdater.addElement(this);
+        frictionInteractions.addElement(this);
     }
 
     update(): void {
@@ -28,8 +28,8 @@ export class FrictionInteraction implements WorldElement {
         this.dynamicElement2.force.add(negativeForce);
     }
     destroy(): void {
-        frictionInteractionUpdater.removeElement(this);
+        frictionInteractions.removeElement(this);
     }
 }
 
-export const frictionInteractionUpdater = new Updater<FrictionInteraction>();
+export const frictionInteractions = new WorldElements();

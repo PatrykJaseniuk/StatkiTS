@@ -1,7 +1,8 @@
 import { Vec2, Vector2 } from 'three';
 import { Position } from './Position';
-import { Updater, WorldElement } from './Template';
+import { WorldElements, WorldElement } from './Template';
 import { ViewTexture, viewsRenderer, ViewsRenderer } from './View';
+import { PositionRotation } from './PositionRotation';
 
 export class Pointer {
     update(pointerPosition: Vector2) {
@@ -16,12 +17,12 @@ export class Pointer {
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture(() => { return { position: this.position.value, rotation: 0 } }, 'hook.png');
-        pointerUpdater.addElement(this);
+        this.view = new ViewTexture({ position: this.position, rotation: 0 }, 'hook.png');
+        pointers.addElement(this);
     }
 }
 
-class PointerUpdater {
+class Pointers {
     private elements: Pointer[] = [];
 
     update(event: PointerEvent): void {
@@ -61,4 +62,4 @@ class PointerUpdater {
     }
 }
 
-export const pointerUpdater = new PointerUpdater();
+export const pointers = new Pointers();

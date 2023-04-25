@@ -1,8 +1,97 @@
 import * as THREE from "three";
 import { Position } from "./Position";
 import { WorldElement } from "./Template";
+import { PositionRotation } from "./PositionRotation";
 
 
+
+
+
+interface View extends WorldElement {
+    get3DObject(): THREE.Object3D<THREE.Event>;
+}
+
+
+export class ViewTexture implements View {
+    private mesh: THREE.Mesh;
+    private positionRotation: PositionRotation;
+
+    constructor(positionRotation: PositionRotation, picturePath: string) {
+        this.positionRotation = positionRotation;
+
+
+        // add picture to scene
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load(picturePath);
+        const planeGeo = new THREE.PlaneGeometry(60, 20);
+        const planeMat = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+        });
+        this.mesh = new THREE.Mesh(planeGeo, planeMat);
+        //register view for rendering
+        viewsRenderer.addView(this)
+    }
+
+    update() {
+        this.mesh.position.set(this.positionRotation.position.value.x, this.positionRotation.position.value.y, 0);
+        this.mesh.rotation.z = this.positionRotation.rotation;
+    }
+
+    get3DObject(): THREE.Object3D<THREE.Event> {
+        return this.mesh;
+    }
+
+    destroy(): void {
+        throw new Error("Method not implemented.");
+    }
+}
+
+export class ViewLine implements View {
+
+    color: number = 0x00ff00;
+    private readonly p1: Position;
+    private readonly p2: Position;
+    private line: THREE.Line;
+
+    constructor(p1: Position, p2: Position) {
+        this.p1 = p1;
+        this.p2 = p2;
+
+        const material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
+
+        const vertices: THREE.Vector3[] = [];
+        vertices.push(new THREE.Vector3(p1.value.x, p1.value.y, 0));
+        vertices.push(new THREE.Vector3(p2.value.x, p2.value.y, 0));
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
+        this.line = new THREE.Line(geometry, material);
+
+        viewsRenderer.addView(this)
+    }
+
+    get3DObject(): THREE.Object3D<THREE.Event> {
+        return this.line;
+    }
+
+    update(): void {
+        this.color = this.onUpdate(this.p1, this.p2, this.color);
+        const vertices: THREE.Vector3[] = [];
+        vertices.push(new THREE.Vector3(this.p1.value.x, this.p1.value.y, 0));
+        vertices.push(new THREE.Vector3(this.p2.value.x, this.p2.value.y, 0));
+
+        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
+        this.line.geometry = geometry;
+        this.line.material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
+        this.line.material.needsUpdate = true;
+    }
+
+    onUpdate: (p1: Position, p2: Position, color: number) => number = (p1, p2, color) => color;
+
+    destroy(): void {
+        viewsRenderer.removeView(this);
+    }
+}
 
 export class ViewsRenderer {
     removeView(view: View) {
@@ -60,118 +149,4 @@ export class ViewsRenderer {
     }
 }
 
-
-
 export const viewsRenderer = new ViewsRenderer();
-
-export class ViewThreePoints {
-    ViewTexture: ViewTexture;
-    positions: Position[];
-    constructor(positions: Position[], picturePath: string) {
-        this.positions = positions;
-        this.ViewTexture = new ViewTexture(() => this.getPositionRotation(), picturePath);
-    }
-
-    getPositionRotation(): PositionRotation {
-        const botomEdge = this.positions[1].value.clone().sub(this.positions[2].value);
-        const ortoganalToBotomEdge = new THREE.Vector2(-botomEdge.y, botomEdge.x); // rotate 90 degrees, GPT proposition
-        const rotationOfTriangle = Math.atan2(ortoganalToBotomEdge.y, ortoganalToBotomEdge.x);
-
-        const centerOfTriangle = this.positions[0].value.clone().add(this.positions[1].value).add(this.positions[2].value).divideScalar(3); // GPT proposition
-
-
-        const positionRotation = { position: centerOfTriangle, rotation: rotationOfTriangle };
-        return positionRotation;
-    }
-}
-
-interface View extends WorldElement {
-    get3DObject(): THREE.Object3D<THREE.Event>;
-}
-
-export interface PositionRotation { position: THREE.Vector2, rotation: number };
-
-
-export class ViewTexture implements View {
-    update() {
-        const positionRotation = this.getPositionRotation();
-        this.mesh.position.set(positionRotation.position.x, positionRotation.position.y, 0);
-        this.mesh.rotation.z = positionRotation.rotation;
-    }
-    // position: Position;
-    // rotation: number = 0;
-    private mesh: THREE.Mesh;
-
-    constructor(onUpdate: () => PositionRotation, picturePath: string) {
-        // this.position = position;
-        this.getPositionRotation = onUpdate;
-        // add picture to scene
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(picturePath);
-        const planeGeo = new THREE.PlaneGeometry(60, 20);
-        const planeMat = new THREE.MeshBasicMaterial({
-            map: texture,
-            transparent: true,
-        });
-        this.mesh = new THREE.Mesh(planeGeo, planeMat);
-        //register view for rendering
-        viewsRenderer.addView(this)
-    }
-    getPositionRotation(): PositionRotation {
-        return { position: new THREE.Vector2(), rotation: 0 };
-    }
-
-    get3DObject(): THREE.Object3D<THREE.Event> {
-        return this.mesh;
-    }
-
-    destroy(): void {
-        throw new Error("Method not implemented.");
-    }
-}
-
-export class ViewLine implements View {
-
-    color: number = 0x00ff00;
-    private readonly p1: Position;
-    private readonly p2: Position;
-    private line: THREE.Line;
-
-    constructor(p1: Position, p2: Position) {
-        this.p1 = p1;
-        this.p2 = p2;
-
-        const material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
-
-        const vertices: THREE.Vector3[] = [];
-        vertices.push(new THREE.Vector3(p1.value.x, p1.value.y, 0));
-        vertices.push(new THREE.Vector3(p2.value.x, p2.value.y, 0));
-
-        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
-        this.line = new THREE.Line(geometry, material);
-
-        viewsRenderer.addView(this)
-    }
-
-    get3DObject(): THREE.Object3D<THREE.Event> {
-        return this.line;
-    }
-
-    update(): void {
-        this.color = this.onUpdate(this.p1, this.p2, this.color);
-        const vertices: THREE.Vector3[] = [];
-        vertices.push(new THREE.Vector3(this.p1.value.x, this.p1.value.y, 0));
-        vertices.push(new THREE.Vector3(this.p2.value.x, this.p2.value.y, 0));
-
-        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
-        this.line.geometry = geometry;
-        this.line.material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
-        this.line.material.needsUpdate = true;
-    }
-
-    onUpdate: (p1: Position, p2: Position, color: number) => number = (p1, p2, color) => color;
-
-    destroy(): void {
-        viewsRenderer.removeView(this);
-    }
-}

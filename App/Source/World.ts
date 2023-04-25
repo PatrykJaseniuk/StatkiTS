@@ -6,7 +6,7 @@ import { Interaction } from "./WorldElements/Interaction";
 import { InteractionCreator } from "./WorldElements/InteractionCreator";
 import { Pointer } from "./WorldElements/Pointer";
 import { Position } from "./WorldElements/Position";
-import { HullRotation2, Ship, ShipRotation } from "./WorldElements/Ship";
+import { HullRotation2, Ship } from "./WorldElements/Ship";
 import { ViewLine, ViewTexture } from "./WorldElements/View";
 import { CollisionPoint, CollisionTriangle } from "./WorldElements/Collision";
 

@@ -1,5 +1,5 @@
-import { DynamicElement, dynamicElementUpdater } from "../../Source/WorldElements/DynamicElement";
-import { FrictionInteraction, frictionInteractionUpdater } from "../../Source/WorldElements/FrictionInteraction";
+import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
+import { FrictionInteraction, frictionInteractions } from "../../Source/WorldElements/FrictionInteraction";
 import { Vector2 } from "three";
 import { Position } from "../../Source/WorldElements/Position";
 
@@ -22,8 +22,8 @@ describe("FrictionInteraction", () => {
     });
 
     afterEach(() => {
-        dynamicElementUpdater.clear();
-        frictionInteractionUpdater.clear();
+        dynamicElements.clear();
+        frictionInteractions.clear();
     });
 
     it("should add force to the dynamic elements", () => {
@@ -41,7 +41,7 @@ describe("FrictionInteraction", () => {
         expect(dynamicElement2.force.x).toBeCloseTo(frictionRate);
 
         // When
-        dynamicElementUpdater.update(0.1);
+        dynamicElements.update(0.1);
 
         // Then
         expect(dynamicElement1.force).toEqual(new Vector2(0, 0));

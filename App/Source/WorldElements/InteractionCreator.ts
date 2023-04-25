@@ -2,7 +2,7 @@ import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { Interaction, InteractionWithPosition } from "./Interaction";
 import { Pointer } from "./Pointer";
-import { Updater, WorldElement } from "./Template";
+import { WorldElements, WorldElement } from "./Template";
 import { ViewLine } from "./View";
 
 
@@ -16,7 +16,7 @@ export class InteractionCreator implements WorldElement {
     constructor(pointer: Pointer) {
         this.pointer = pointer;
 
-        interactionCreatorUpdater.addElement(this);
+        interactionCreators.addElement(this);
     }
 
     addDynamicElement(dynamicElement: DynamicElement): void {
@@ -55,13 +55,13 @@ export class InteractionCreator implements WorldElement {
     }
 
     destroy(): void {
-        interactionCreatorUpdater.removeElement(this);
+        interactionCreators.removeElement(this);
     }
 }
 
 type Direction = 'up' | 'down';
 
-export const interactionCreatorUpdater = new Updater<InteractionCreator>();
+export const interactionCreators = new WorldElements();
 
 
 

@@ -4,8 +4,8 @@ import { Interaction, calculateMaxSpringRate } from "./Interaction";
 import { Position } from "./Position";
 import { WorldElement } from "./Template";
 
-export class DynamicCollisionTriangle implements WorldElement{
-    
+export class DynamicCollisionTriangle implements WorldElement {
+
     readonly dynamicCollisionPoint1: DynamicCollisionPoint;
     readonly dynamicCollisionPoint2: DynamicCollisionPoint;
     readonly dynamicCollisionPoint3: DynamicCollisionPoint;
@@ -15,9 +15,8 @@ export class DynamicCollisionTriangle implements WorldElement{
     private interaction1: Interaction;
     private interaction2: Interaction;
     private interaction3: Interaction;
-    
-    constructor(dynamicCollisionPoint1: DynamicCollisionPoint, dynamicCollisionPoint2: DynamicCollisionPoint, dynamicCollisionPoint3: DynamicCollisionPoint)
-    {
+
+    constructor(dynamicCollisionPoint1: DynamicCollisionPoint, dynamicCollisionPoint2: DynamicCollisionPoint, dynamicCollisionPoint3: DynamicCollisionPoint) {
         this.dynamicCollisionPoint1 = dynamicCollisionPoint1;
         this.dynamicCollisionPoint2 = dynamicCollisionPoint2;
         this.dynamicCollisionPoint3 = dynamicCollisionPoint3;
@@ -39,14 +38,13 @@ export class DynamicCollisionTriangle implements WorldElement{
     }
 }
 
-class DynamicCollisionPoint implements WorldElement{
-    
+class DynamicCollisionPoint implements WorldElement {
+
     readonly position: Position;
     readonly collisionPoint: CollisionPoint;
     readonly dynamicElement: DynamicElement;
-    
-    constructor(position: Position)
-    {
+
+    constructor(position: Position) {
         this.position = position;
         this.collisionPoint = new CollisionPoint(position);
         this.dynamicElement = new DynamicElement(position);

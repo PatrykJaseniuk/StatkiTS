@@ -1,6 +1,6 @@
 import { Body, BodyType, Box, Point, Polygon, PotentialVector, System } from "detect-collisions";
 import { Position } from "./Position";
-import { Updater, WorldElement } from "./Template";
+import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
 import { ViewLine } from "./View";
 
@@ -22,19 +22,7 @@ export class CollisionPoint extends Point implements WorldElement {
     }
 }
 
-class CollisionPoints extends Updater<CollisionPoint> {
-    addElement(element: CollisionPoint): void {
-        super.addElement(element);
-        collisionSystem.addElement(element);
-    }
 
-    removeElement(element: CollisionPoint): void {
-        super.removeElement(element);
-        collisionSystem.removeElement(element);
-    }
-}
-
-export const collisionPoints = new CollisionPoints();
 
 interface CollisionPointOverlapV {
     point: CollisionPoint;
@@ -79,7 +67,21 @@ export class CollisionTriangle extends Polygon implements WorldElement {
     }
 }
 
-class CollisionTriangles extends Updater<CollisionTriangle> {
+class CollisionPoints extends WorldElements {
+    addElement(element: CollisionPoint): void {
+        super.addElement(element);
+        collisionSystem.addElement(element);
+    }
+
+    removeElement(element: CollisionPoint): void {
+        super.removeElement(element);
+        collisionSystem.removeElement(element);
+    }
+}
+
+const collisionPoints = new CollisionPoints();
+
+class CollisionTriangles extends WorldElements {
     addElement(element: CollisionTriangle): void {
         super.addElement(element);
         collisionSystem.addElement(element);
@@ -102,7 +104,7 @@ class CollisionSystem {
     removeElement(body: Body) {
         this.system.remove(body);
     }
-    
+
     update() {
         collisionPoints.update();
         collisionTriangles.update();

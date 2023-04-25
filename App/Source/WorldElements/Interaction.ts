@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { Updater, WorldElement } from "./Template";
+import { WorldElements, WorldElement } from "./Template";
 import { Position } from "./Position";
 
 export class Interaction implements WorldElement {
@@ -17,7 +17,7 @@ export class Interaction implements WorldElement {
         this.dumperRate = dumperRate ? dumperRate : 0.1;
         this.distance = distance ? distance : dynamicElement1.position.value.distanceTo(dynamicElement2.position.value);
 
-        interactionUpdater.addElement(this);
+        interactions.addElement(this);
     }
 
     update(): void {
@@ -40,7 +40,7 @@ export class Interaction implements WorldElement {
 
     destroy(): void {
         // every object which has reference to this object should remove it
-        interactionUpdater.removeElement(this);
+        interactions.removeElement(this);
     }
 }
 
@@ -59,7 +59,7 @@ export class InteractionWithPosition implements WorldElement {
         this.dumperRate = dumperRate;
         this.distance = distance;
 
-        interactionUpdater.addElement(this);
+        interactions.addElement(this);
     }
     update(): void {
         const pointsShift = this.position.value.clone().sub(this.dynamicElement.position.value);
@@ -74,18 +74,18 @@ export class InteractionWithPosition implements WorldElement {
         this.dynamicElement.force.add(dumperForceOn1);
     }
     destroy(): void {
-        interactionUpdater.removeElement(this);
+        interactions.removeElement(this);
     }
 }
 
-class InteractionUpdater extends Updater<WorldElement> {
+class Interactions extends WorldElements {
     getSimulationMaximumDT() {
         const dt = 1; //TODO: calculate dt
         return dt
     }
 }
 
-export const interactionUpdater = new InteractionUpdater();
+export const interactions = new Interactions();
 
 function calculateSpringForceOn1(pointsShift: Vector2, pointDirection: Vector2, springRate: number, distance: number) {
     // acording to third law of Newton and spring force

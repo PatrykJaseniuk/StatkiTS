@@ -1,8 +1,8 @@
 
 
-export class Updater<T extends WorldElement> {
-    protected elements: T[] = []
-        ; removeElement(element: T) {
+export class WorldElements {
+    protected elements: WorldElement[] = []
+        ; removeElement(element: WorldElement) {
             this.elements = this.elements.filter((e) => e != element);
         }
     update() {
@@ -10,10 +10,7 @@ export class Updater<T extends WorldElement> {
             element.update();
         })
     }
-
-
-
-    addElement(element: T) {
+    addElement(element: WorldElement) {
         this.elements.push(element);
     }
 

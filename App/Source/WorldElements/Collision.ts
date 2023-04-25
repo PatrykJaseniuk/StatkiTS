@@ -102,7 +102,7 @@ class CollisionSystem {
     removeElement(body: Body) {
         this.system.remove(body);
     }
-
+    
     update() {
         collisionPoints.update();
         collisionTriangles.update();

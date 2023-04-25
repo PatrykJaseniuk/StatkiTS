@@ -10,12 +10,12 @@ export class Interaction implements WorldElement {
     springRate: number;
     dumperRate: number;
 
-    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, springRate: number, dumperRate: number, distance: number) {
+    constructor(dynamicElement1: DynamicElement, dynamicElement2: DynamicElement, springRate?: number, dumperRate?: number, distance?: number) {
         this.dynamicElement1 = dynamicElement1;
         this.dynamicElement2 = dynamicElement2;
-        this.springRate = springRate;
-        this.dumperRate = dumperRate;
-        this.distance = distance;
+        this.springRate = springRate ? springRate : calculateMaxSpringRate(Math.min(dynamicElement1.mass, dynamicElement2.mass), 1);
+        this.dumperRate = dumperRate ? dumperRate : 0.1;
+        this.distance = distance ? distance : dynamicElement1.position.value.distanceTo(dynamicElement2.position.value);
 
         interactionUpdater.addElement(this);
     }
@@ -100,4 +100,10 @@ function calculateDumperForceOn1(velocityShift: Vector2, dumperRate: number, poi
     const velocityShiftPointDirection = pointDirection.clone().multiplyScalar(velocityShift.dot(pointDirection));
     const dumperForceOn1 = velocityShiftPointDirection.clone().multiplyScalar(dumperRate);
     return dumperForceOn1;
+}
+
+export function calculateMaxSpringRate(mass: number, dt: number) {
+    // https://en.wikipedia.org/wiki/Energy_drift
+    const springRateMax = mass / (dt * dt);
+    return springRateMax;
 }

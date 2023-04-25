@@ -1,9 +1,8 @@
-import { Container, Typography } from "@mui/material";
-import { border, Box } from "@mui/system";
 import React, { useEffect, useRef, useState } from "react"
-import { WebGLRenderer } from "three";
-import { isPropertySignature, readConfigFile } from "typescript"
-import { CanvaApp } from "../appsThree/KolejnePodejscie/app";
+import { CanvaApp } from "../App/Source/app";
+import { Box } from "@mui/material";
+
+
 
 
 
@@ -77,10 +76,6 @@ const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
                 height: '100%',
             }}
         >
-            {/* <Typography>pixiApp</Typography> */}
-            {/* <div ref={ref}></div> */}
-            {/* width {width}
-            height {height} */}
         </Box>
     )
 }

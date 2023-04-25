@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import Layout from '../components/layout'
-import { Box, Container, Typography } from '@mui/material'
+import { Box } from '@mui/material'
+import { app } from '../App/Source/app'
+import CanvaAppComponent from '../components/CanvaApp'
 
 export async function getStaticProps() {
   return {
@@ -20,12 +21,10 @@ export default function Home() {
       </Head>
 
       <main>
-        {/* <Box sx={{ border: '1px dashed red', width: '100%', height: '100%' }}>
-          <Typography variant='h1'>Hello World</Typography>
-        </Box> */}
-        <Box sx={{ height: '100vh', width: '100%', border: '1px dashed red' }}>
-          <Layout />
+        <Box sx={{ height: '100vh', border: 'red' }}>
+          <CanvaAppComponent app={app} />
         </Box>
+
       </main>
     </div>
   )

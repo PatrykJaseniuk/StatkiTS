@@ -21,3 +21,5 @@ Na początek usunę z projektu wszystkie inne wersje programu. Będzie  tylko je
 ### 8.1.2
 Zmienię nazewnictwo. Kontenery Elementów świata `WorldElement` będą się nazywać :  [nazwaElementuSwiata]s. Ponadto klasa `WorldElements` nie będzie szablonem, bo nie ma takiej potrzeby.
 
+# 8.2
+Dodałem klasę [Triangle](Triangle.ts) 

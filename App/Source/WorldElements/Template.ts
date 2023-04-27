@@ -1,15 +1,17 @@
 
 
 export class WorldElements {
-    protected elements: WorldElement[] = []
-        ; removeElement(element: WorldElement) {
-            this.elements = this.elements.filter((e) => e != element);
-        }
+    protected elements: WorldElement[] = [];
     update() {
         this.elements.forEach((element) => {
             element.update();
         })
     }
+
+    removeElement(element: WorldElement) {
+        this.elements = this.elements.filter((e) => e != element);
+    }
+
     addElement(element: WorldElement) {
         this.elements.push(element);
     }

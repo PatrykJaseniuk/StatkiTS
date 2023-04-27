@@ -1,13 +1,6 @@
-
-import { Vector2 } from "three";
-import { DynamicElement, DynamicElementRotation } from "./WorldElements/DynamicElement";
-import { FrictionInteraction } from "./WorldElements/FrictionInteraction";
-import { Interaction } from "./WorldElements/Interaction";
 import { InteractionCreator } from "./WorldElements/InteractionCreator";
 import { Pointer } from "./WorldElements/Pointer";
-import { Position } from "./WorldElements/Position";
-import { HullRotation2, Ship } from "./WorldElements/Ship";
-import { ViewLine, ViewTexture } from "./WorldElements/View";
+import { HullRotation2 } from "./WorldElements/Ship";
 import { CollisionPoint, CollisionTriangle } from "./WorldElements/Collision";
 
 export class World {

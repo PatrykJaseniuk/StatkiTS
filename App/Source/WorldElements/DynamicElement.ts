@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
-import { Interaction } from "./Interaction";
+import { SpringInteraction, calculateMaxSpringRate } from "./Interaction";
 import { ViewLine } from "./View";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElements, WorldElement } from "./Template";
@@ -60,14 +60,15 @@ class DynamicElements {
         return sum;
     }
 }
+export const dynamicElements = new DynamicElements();
 
 
-export class DynamicElementRotation implements WorldElement {
+export class DynamicRotationElement implements WorldElement {
 
     readonly positionRotation: PositionRotation;
     private positions: Position[] = [];
     dynamicElements: DynamicElement[] = [];
-    private interactions: Interaction[] = [];
+    private interactions: SpringInteraction[] = [];
     private lines: ViewLine[] = [];
     private mass = 1;
     private length = 1;
@@ -100,9 +101,9 @@ export class DynamicElementRotation implements WorldElement {
         this.dynamicElements.push(new DynamicElement(this.positions[1], mass));
         this.dynamicElements.push(new DynamicElement(this.positions[2], mass));
 
-        this.interactions.push(new Interaction(this.dynamicElements[0], this.dynamicElements[1], springRate, this.dumperRate, sideLength));
-        this.interactions.push(new Interaction(this.dynamicElements[0], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
-        this.interactions.push(new Interaction(this.dynamicElements[1], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
+        this.interactions.push(new SpringInteraction(this.dynamicElements[0], this.dynamicElements[1], springRate, this.dumperRate, sideLength));
+        this.interactions.push(new SpringInteraction(this.dynamicElements[0], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
+        this.interactions.push(new SpringInteraction(this.dynamicElements[1], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
 
         this.lines.push(new ViewLine(this.positions[0], this.positions[1]));
         this.lines.push(new ViewLine(this.positions[0], this.positions[2]));
@@ -174,10 +175,9 @@ export class DynamicElementRotation implements WorldElement {
 
 export const DynamicRotationElements = new WorldElements();
 
-function calculateMaxSpringRate(mass: number, dt: number) {
-    // https://en.wikipedia.org/wiki/Energy_drift
-    const springRateMax = mass / (dt * dt);
-    return springRateMax;
-}
+// function calculateMaxSpringRate(mass: number, dt: number) {
+//     // https://en.wikipedia.org/wiki/Energy_drift
+//     const springRateMax = mass / (dt * dt);
+//     return springRateMax;
+// }
 
-export const dynamicElements = new DynamicElements();

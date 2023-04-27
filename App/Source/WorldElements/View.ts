@@ -30,7 +30,7 @@ export class ViewTexture implements View {
         });
         this.mesh = new THREE.Mesh(planeGeo, planeMat);
         //register view for rendering
-        viewsRenderer.addView(this)
+        views.addView(this)
     }
 
     update() {
@@ -67,7 +67,7 @@ export class ViewLine implements View {
         const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
         this.line = new THREE.Line(geometry, material);
 
-        viewsRenderer.addView(this)
+        views.addView(this)
     }
 
     get3DObject(): THREE.Object3D<THREE.Event> {
@@ -89,11 +89,11 @@ export class ViewLine implements View {
     onUpdate: (p1: Position, p2: Position, color: number) => number = (p1, p2, color) => color;
 
     destroy(): void {
-        viewsRenderer.removeView(this);
+        views.removeView(this);
     }
 }
 
-export class ViewsRenderer {
+export class Views {
     removeView(view: View) {
         this.scene.remove(view.get3DObject());
         this.views = this.views.filter((v) => v != view);
@@ -149,4 +149,4 @@ export class ViewsRenderer {
     }
 }
 
-export const viewsRenderer = new ViewsRenderer();
+export const views = new Views();

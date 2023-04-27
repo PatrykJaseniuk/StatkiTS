@@ -1,10 +1,10 @@
 import { collisionSystem } from "./WorldElements/Collision";
 import { DynamicRotationElements, dynamicElements } from "./WorldElements/DynamicElement";
 import { frictionInteractions } from "./WorldElements/FrictionInteraction";
-import { interactions } from "./WorldElements/Interaction";
+import { springInteractions } from "./WorldElements/Interaction";
 import { interactionCreators } from "./WorldElements/InteractionCreator";
 import { pointers } from "./WorldElements/Pointer";
-import { viewsRenderer } from "./WorldElements/View";
+import { views } from "./WorldElements/View";
 
 export class WorldModifiers {
     private previousTimeStamp: number | undefined = undefined;
@@ -16,9 +16,9 @@ export class WorldModifiers {
         this.intervals.push(setInterval(() => interactionCreators.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
         this.intervals.push(setInterval(() => DynamicRotationElements.update(), 10));
-        viewsRenderer.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
-        viewsRenderer.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
+        views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
+        views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
+        views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
         this.intervals.push(setInterval(() => collisionSystem.update(), 50));
         this.intervals.push(setInterval(() => this.logs(), 1000));
     }
@@ -32,7 +32,7 @@ export class WorldModifiers {
     }
 
     returnHtmlElement() {
-        const domElement = viewsRenderer.init();
+        const domElement = views.init();
         return domElement;
     }
 
@@ -42,8 +42,8 @@ export class WorldModifiers {
         // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
     }
     private clearAllModifiers() {
-        viewsRenderer.clear();
-        interactions.clear();
+        views.clear();
+        springInteractions.clear();
         frictionInteractions.clear();
     }
 
@@ -62,16 +62,16 @@ export class WorldModifiers {
         // console.log(timeStamp);
 
         // this.molecularModelUpdate();
-        viewsRenderer.render();
+        views.render();
         this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
     }
 
     private molecularModelUpdate() {
         const realWorldDt = 10;
-        const SimulationMaximumDT = interactions.getSimulationMaximumDT();
+        const SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
         for (let i = 0; i < iterations; i++) {
-            interactions.update();
+            springInteractions.update();
             frictionInteractions.update();
             dynamicElements.update(SimulationMaximumDT);
         }

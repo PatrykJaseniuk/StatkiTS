@@ -1,5 +1,5 @@
 import { World } from "./World";
-import { viewsRenderer } from "./WorldElements/View";
+import { views } from "./WorldElements/View";
 import { WorldModifiers } from "./WorldModifiers";
 
 export interface CanvaApp {
@@ -20,13 +20,13 @@ export async function app(): Promise<CanvaApp> {
         },
         start: (width, height) => {
             worldModifiers.start();
-            viewsRenderer.setSize(width, height);
+            views.setSize(width, height);
         },
         stop: () => {
             worldModifiers.stop();
         },
         resize: function (width: number, height: number) {
-            viewsRenderer.setSize(width, height);
+            views.setSize(width, height);
         }
     }
     return app;

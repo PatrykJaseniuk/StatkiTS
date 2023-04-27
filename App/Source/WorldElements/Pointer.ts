@@ -1,7 +1,7 @@
 import { Vec2, Vector2 } from 'three';
 import { Position } from './Position';
 import { WorldElements, WorldElement } from './Template';
-import { ViewTexture, viewsRenderer, ViewsRenderer } from './View';
+import { ViewTexture, views, Views } from './View';
 import { PositionRotation } from './PositionRotation';
 
 export class Pointer {
@@ -37,14 +37,14 @@ class Pointers {
     }
 
     private onPointerMove(event: PointerEvent) {
-        let clientWidth = viewsRenderer.renderer != null ? viewsRenderer.renderer.domElement.clientWidth : 0;
-        let clientHeight = viewsRenderer.renderer != null ? viewsRenderer.renderer.domElement.clientHeight : 0;
+        let clientWidth = views.renderer != null ? views.renderer.domElement.clientWidth : 0;
+        let clientHeight = views.renderer != null ? views.renderer.domElement.clientHeight : 0;
         let mousePositionNDC = new Vector2();
         mousePositionNDC.x = (event.offsetX / clientWidth) * 2 - 1;
         mousePositionNDC.y = -(event.offsetY / clientHeight) * 2 + 1;
         let mousePositionCameraSpace = new Vector2();
-        mousePositionCameraSpace.x = mousePositionNDC.x * viewsRenderer.camera.right;
-        mousePositionCameraSpace.y = mousePositionNDC.y * viewsRenderer.camera.top;
+        mousePositionCameraSpace.x = mousePositionNDC.x * views.camera.right;
+        mousePositionCameraSpace.y = mousePositionNDC.y * views.camera.top;
         // console.log(mousePositionCameraSpace);
         event.x
         return mousePositionCameraSpace;

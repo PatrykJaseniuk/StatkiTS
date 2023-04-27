@@ -4,6 +4,12 @@ import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
 import { ViewLine } from "./View";
 
+interface CollisionPointOverlapV {
+    point: CollisionPoint;
+    overlapV: PotentialVector;
+}
+
+
 export class CollisionPoint extends Point implements WorldElement {
     position: Position
 
@@ -22,12 +28,6 @@ export class CollisionPoint extends Point implements WorldElement {
     }
 }
 
-
-
-interface CollisionPointOverlapV {
-    point: CollisionPoint;
-    overlapV: PotentialVector;
-}
 
 export class CollisionTriangle extends Polygon implements WorldElement {
 
@@ -120,7 +120,6 @@ class CollisionSystem {
                     saveCollision(a, b, overlapV);
                     console.log("Collision");
                 }
-
             }
 
             function saveCollision(triangle: CollisionTriangle, point: CollisionPoint, overlapV: PotentialVector) {
@@ -131,9 +130,3 @@ class CollisionSystem {
 }
 
 export const collisionSystem = new CollisionSystem();
-
-
-
-
-
-

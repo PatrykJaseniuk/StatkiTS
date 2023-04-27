@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { Interaction, InteractionWithPosition } from "./Interaction";
+import { SpringInteraction, SpringInteractionWithPosition } from "./Interaction";
 import { Pointer } from "./Pointer";
 import { WorldElements, WorldElement } from "./Template";
 import { ViewLine } from "./View";
@@ -10,7 +10,7 @@ export class InteractionCreator implements WorldElement {
 
     private dynamicElements: DynamicElement[] = [];
     private pointer: Pointer;
-    private interactions: (InteractionWithPosition)[] = [];
+    private interactions: (SpringInteractionWithPosition)[] = [];
     private lines: ViewLine[] = [];
 
     constructor(pointer: Pointer) {
@@ -31,7 +31,7 @@ export class InteractionCreator implements WorldElement {
             destroyAllinteractions(this.interactions);
 
 
-        function handlePointerDown(pointer: Pointer, dynamicElements: DynamicElement[], interactions: InteractionWithPosition[]) {
+        function handlePointerDown(pointer: Pointer, dynamicElements: DynamicElement[], interactions: SpringInteractionWithPosition[]) {
 
             const dynamicElementPointed = dynamicElements.find((dynamicElement) => {
                 const distance = pointer.position.value.distanceTo(dynamicElement.position.value);
@@ -41,12 +41,12 @@ export class InteractionCreator implements WorldElement {
             dynamicElementPointed && hendleDynamicElementPointed(dynamicElementPointed, interactions, pointer);
         }
 
-        function hendleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: InteractionWithPosition[], pointer: Pointer) {
-            const interaction = new InteractionWithPosition(dynamicElementPointed, pointer.position, 0.1, 1, 0);
+        function hendleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: SpringInteractionWithPosition[], pointer: Pointer) {
+            const interaction = new SpringInteractionWithPosition(dynamicElementPointed, pointer.position, 0.1, 1, 0);
             interactions.push(interaction);
         }
 
-        function destroyAllinteractions(interactions: InteractionWithPosition[]) {
+        function destroyAllinteractions(interactions: SpringInteractionWithPosition[]) {
             interactions.forEach((interaction) => {
                 interaction.destroy();
             });
@@ -59,7 +59,7 @@ export class InteractionCreator implements WorldElement {
     }
 }
 
-type Direction = 'up' | 'down';
+// type Direction = 'up' | 'down';
 
 export const interactionCreators = new WorldElements();
 

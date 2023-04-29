@@ -1,7 +1,7 @@
 import { collisionSystem } from "./WorldElements/Collision";
 import { DynamicRotationElements, dynamicElements } from "./WorldElements/DynamicElement";
 import { frictionInteractions } from "./WorldElements/FrictionInteraction";
-import { springInteractions } from "./WorldElements/Interaction";
+import { springInteractions } from "./WorldElements/SpringInteraction";
 import { interactionCreators } from "./WorldElements/InteractionCreator";
 import { pointers } from "./WorldElements/Pointer";
 import { views } from "./WorldElements/View";

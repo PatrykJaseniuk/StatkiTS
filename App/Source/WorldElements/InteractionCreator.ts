@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { SpringInteraction, SpringInteractionWithPosition } from "./Interaction";
+import { SpringInteraction, SpringInteractionWithPosition } from "./SpringInteraction";
 import { Pointer } from "./Pointer";
 import { WorldElements, WorldElement } from "./Template";
 import { ViewLine } from "./View";
@@ -38,10 +38,10 @@ export class InteractionCreator implements WorldElement {
                 return distance < 50;
             });
 
-            dynamicElementPointed && hendleDynamicElementPointed(dynamicElementPointed, interactions, pointer);
+            dynamicElementPointed && handleDynamicElementPointed(dynamicElementPointed, interactions, pointer);
         }
 
-        function hendleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: SpringInteractionWithPosition[], pointer: Pointer) {
+        function handleDynamicElementPointed(dynamicElementPointed: DynamicElement, interactions: SpringInteractionWithPosition[], pointer: Pointer) {
             const interaction = new SpringInteractionWithPosition(dynamicElementPointed, pointer.position, 0.1, 1, 0);
             interactions.push(interaction);
         }

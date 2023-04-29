@@ -4,54 +4,55 @@ import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
 import { ViewLine } from "./View";
 
-interface CollisionPointOverlapV {
-    point: CollisionPoint;
-    overlapV: PotentialVector;
-}
+// interface CollisionPointOverlapV {
+//     point: CollidingPoint;
+//     overlapV: PotentialVector;
+// }
 
 
-export class CollisionPoint extends Point implements WorldElement {
+export class CollidingPoint extends Point implements WorldElement {
     position: Position
+    overlapV: PotentialVector = {};
 
     constructor(position: Position) {
         super({ x: position.value.x, y: position.value.y });
         this.position = position;
 
-        collisionPoints.addElement(this);
+        collidingPoints.addElement(this);
     }
 
     update(): void {
         this.setPosition(this.position.value.x, this.position.value.y);
     }
     destroy(): void {
-        collisionPoints.removeElement(this);
+        collidingPoints.removeElement(this);
     }
 }
 
 
-export class CollisionTriangle extends Polygon implements WorldElement {
+export class CollidingTriangle extends Polygon implements WorldElement {
 
+    position0: Position;
     position1: Position;
     position2: Position;
-    position3: Position;
     positions: Position[] = [];
 
 
-    collisionPointsOverlaps: Set<CollisionPointOverlapV> = new Set();
+    collidingPointsOverlaps: Set<CollidingPoint> = new Set();
 
 
-    constructor(position1: Position, position2: Position, position3: Position) {
-        const positions = [position1, position2, position3];
+    constructor(position0: Position, position1: Position, position2: Position) {
+        const positions = [position0, position1, position2];
         const pointsForCollision = positions.map((e) => ({ x: e.value.x, y: e.value.y }))
         super({ x: 0, y: 0 }, pointsForCollision);
         this.positions = positions;
+        this.position0 = position0;
         this.position1 = position1;
         this.position2 = position2;
-        this.position3 = position3;
 
-        const line = new ViewLine(position1, position2);
+        const line = new ViewLine(position0, position1);
 
-        collisionTriangles.addElement(this);
+        collidingTriangles.addElement(this);
     }
 
     update(): void {
@@ -59,40 +60,54 @@ export class CollisionTriangle extends Polygon implements WorldElement {
         this.setPoints(pointsForCollision);
     }
     destroy(): void {
-        collisionTriangles.removeElement(this);
+        collidingTriangles.removeElement(this);
     }
 
-    addColidingPoint(point: CollisionPoint, overlapV: PotentialVector) {
-        this.collisionPointsOverlaps.add({ point, overlapV });
+    addColidingPoint(point: CollidingPoint) {
+        this.collidingPointsOverlaps.add(point);
     }
 }
 
-class CollisionPoints extends WorldElements {
-    addElement(element: CollisionPoint): void {
+class CollidingPoints extends WorldElements {
+    protected elements: CollidingPoint[] = [];
+    addElement(element: CollidingPoint): void {
         super.addElement(element);
         collisionSystem.addElement(element);
     }
 
-    removeElement(element: CollisionPoint): void {
+    removeElement(element: CollidingPoint): void {
         super.removeElement(element);
         collisionSystem.removeElement(element);
     }
+    clear(): void {
+        this.elements.forEach((e) => {
+            collisionSystem.removeElement(e);
+        });
+        super.clear()
+    }
 }
 
-const collisionPoints = new CollisionPoints();
+export const collidingPoints = new CollidingPoints();
 
-class CollisionTriangles extends WorldElements {
-    addElement(element: CollisionTriangle): void {
+class CollidingTriangles extends WorldElements {
+    protected elements: CollidingTriangle[] = [];
+    addElement(element: CollidingTriangle): void {
         super.addElement(element);
         collisionSystem.addElement(element);
     }
-    removeElement(element: CollisionTriangle): void {
+    removeElement(element: CollidingTriangle): void {
         super.removeElement(element);
         collisionSystem.removeElement(element);
     }
+    clear(): void {
+        this.elements.forEach((e) => {
+            collisionSystem.removeElement(e)
+        })
+        super.clear();
+    }
 }
 
-const collisionTriangles = new CollisionTriangles();
+export const collidingTriangles = new CollidingTriangles();
 
 class CollisionSystem {
     system = new System();
@@ -103,11 +118,12 @@ class CollisionSystem {
 
     removeElement(body: Body) {
         this.system.remove(body);
+        this.system.update();
     }
 
     update() {
-        collisionPoints.update();
-        collisionTriangles.update();
+        collidingPoints.update();
+        collidingTriangles.update();
         this.system.update();
 
         this.system.checkAll((response) => {
@@ -116,14 +132,15 @@ class CollisionSystem {
             handleCollision(response.b, response.a, response.overlapV.scale(-1));
 
             function handleCollision(a: Body, b: Body, overlapV: PotentialVector) {
-                if (a instanceof CollisionTriangle && b instanceof CollisionPoint) {
+                if (a instanceof CollidingTriangle && b instanceof CollidingPoint) {
                     saveCollision(a, b, overlapV);
                     console.log("Collision");
                 }
             }
 
-            function saveCollision(triangle: CollisionTriangle, point: CollisionPoint, overlapV: PotentialVector) {
-                triangle.addColidingPoint(point, overlapV);
+            function saveCollision(triangle: CollidingTriangle, point: CollidingPoint, overlapV: PotentialVector) {
+                point.overlapV = overlapV;
+                triangle.addColidingPoint(point);
             }
         });
     }

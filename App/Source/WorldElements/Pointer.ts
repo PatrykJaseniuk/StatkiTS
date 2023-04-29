@@ -36,6 +36,10 @@ class Pointers {
         this.elements.push(element);
     }
 
+    clear() {
+        this.elements = [];
+    }
+
     private onPointerMove(event: PointerEvent) {
         let clientWidth = views.renderer != null ? views.renderer.domElement.clientWidth : 0;
         let clientHeight = views.renderer != null ? views.renderer.domElement.clientHeight : 0;

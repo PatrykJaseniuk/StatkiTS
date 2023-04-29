@@ -1,25 +1,9 @@
-// export class Pointer {
-//     update(pointerPosition: Vector2) {
-//         this.position.value = pointerPosition;
 
-//         console.log('position' + this.position.value);
-//         console.log("mesh position" + this.view.mesh.position);
-//     }
-//     position: Position;
-//     view: View;
 
-//     constructor() {
-//         this.position = new Position();
-//         this.view = new View(this.position, 'hook.png');
-//         pointerUpdater.addElement(this);
-//     }
-// }
-
-// test for Pointer class
-
-import { Pointer, pointerUpdater } from "./Pointer";
+import { Pointer } from "../../Source/WorldElements/Pointer";
+import { views } from "../../Source/WorldElements/View";
 import { Vector2 } from "three";
-import { viewsRenderer } from "./View";
+
 
 describe('Pointer', () => {
     const pointer = new Pointer();
@@ -32,7 +16,7 @@ describe('Pointer', () => {
         pointer.update(new Vector2(1, 1));
         expect(pointer.position.value).toEqual(new Vector2(1, 1));
     });
-    viewsRenderer.clear();
+    views.clear();
 });
 
 // test for PointerUpdater class

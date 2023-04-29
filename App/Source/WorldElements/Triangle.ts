@@ -12,9 +12,10 @@ export class Triangle implements WorldElement {
 
 
     constructor(position0: Position, position1: Position, position2: Position, positionRotation: PositionRotation) {
+        this.position0 = position0;
         this.position1 = position1;
         this.position2 = position2;
-        this.position0 = position0;
+
         this.positionRotation = positionRotation;
 
 
@@ -22,7 +23,7 @@ export class Triangle implements WorldElement {
         triangles.addElement(this)
     }
     destroy(): void {
-        throw new Error("Method not implemented.");
+        triangles.removeElement(this)
     }
 
     update(): void {
@@ -30,10 +31,10 @@ export class Triangle implements WorldElement {
         this.positionRotation.position.value = positionRotation.position.value;
         this.positionRotation.rotation = positionRotation.rotation;
     }
-    
+
 
     private getPositionRotation(): PositionRotation {
-        const botomEdge = this.position1.value.clone().sub(this.position2.value);
+        const botomEdge = this.position0.value.clone().sub(this.position1.value);
         const ortoganalToBotomEdge = new Vector2(-botomEdge.y, botomEdge.x); // rotate 90 degrees, GPT proposition
         const rotationOfTriangle = Math.atan2(ortoganalToBotomEdge.y, ortoganalToBotomEdge.x);
 

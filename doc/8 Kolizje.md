@@ -23,3 +23,6 @@ Zmienię nazewnictwo. Kontenery Elementów świata `WorldElement` będą się na
 
 # 8.2
 Dodałem klasę [Triangle](Triangle.ts) 
+
+# 8.3 
+Testy

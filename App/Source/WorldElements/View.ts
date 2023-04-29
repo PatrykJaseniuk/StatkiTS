@@ -13,8 +13,8 @@ interface View extends WorldElement {
 
 
 export class ViewTexture implements View {
-    private mesh: THREE.Mesh;
-    private positionRotation: PositionRotation;
+    readonly mesh: THREE.Mesh;
+    readonly positionRotation: PositionRotation;
 
     constructor(positionRotation: PositionRotation, picturePath: string) {
         this.positionRotation = positionRotation;
@@ -52,7 +52,7 @@ export class ViewLine implements View {
     color: number = 0x00ff00;
     private readonly p1: Position;
     private readonly p2: Position;
-    private line: THREE.Line;
+    readonly line: THREE.Line;
 
     constructor(p1: Position, p2: Position) {
         this.p1 = p1;

@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
-import { SpringInteraction, calculateMaxSpringRate } from "./Interaction";
+import { SpringInteraction, calculateMaxSpringRate } from "./SpringInteraction";
 import { ViewLine } from "./View";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElements, WorldElement } from "./Template";

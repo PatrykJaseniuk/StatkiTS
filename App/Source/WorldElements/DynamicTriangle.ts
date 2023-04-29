@@ -1,7 +1,7 @@
 
 import { WorldElement, WorldElements } from "./Template";
 import { DynamicElement } from "./DynamicElement";
-import { SpringInteraction } from "./Interaction";
+import { SpringInteraction } from "./SpringInteraction";
 import { Triangle } from "./Triangle";
 
 export class DynamicTriangle implements WorldElement {
@@ -22,20 +22,17 @@ export class DynamicTriangle implements WorldElement {
         this.mass = mass;
         this.springRate = springRate;
         this.dumperRate = dumperRate;
-
         this.triangle = triangle;
 
         const massOfElement = mass / 3;
+
         this.dynamicElement0 = new DynamicElement(triangle.position0, massOfElement);
         this.dynamicElement1 = new DynamicElement(triangle.position1, massOfElement);
         this.dynamicElement2 = new DynamicElement(triangle.position2, massOfElement);
 
-        const distance01 = triangle.position0.value.distanceTo(triangle.position1.value);
-        const distance02 = triangle.position0.value.distanceTo(triangle.position2.value);
-        const distance12 = triangle.position1.value.distanceTo(triangle.position2.value);
-        this.interaction0 = new SpringInteraction(this.dynamicElement0, this.dynamicElement1, springRate, dumperRate, distance01);
-        this.interaction1 = new SpringInteraction(this.dynamicElement0, this.dynamicElement2, springRate, dumperRate, distance02);
-        this.interaction2 = new SpringInteraction(this.dynamicElement1, this.dynamicElement2, springRate, dumperRate, distance12);
+        this.interaction0 = new SpringInteraction(this.dynamicElement0, this.dynamicElement1, springRate, dumperRate);
+        this.interaction1 = new SpringInteraction(this.dynamicElement0, this.dynamicElement2, springRate, dumperRate);
+        this.interaction2 = new SpringInteraction(this.dynamicElement1, this.dynamicElement2, springRate, dumperRate);
 
         dynamicTriangles.addElement(this);
     }

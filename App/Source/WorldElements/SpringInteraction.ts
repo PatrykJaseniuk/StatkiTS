@@ -7,15 +7,15 @@ export class SpringInteraction implements WorldElement {
     readonly dynamicElement0: DynamicElement;
     readonly dynamicElement1: DynamicElement;
     readonly distance: number;
-    readonly springRate: number;
+    springRate: number;
     readonly dumperRate: number;
 
     constructor(dynamicElement0: DynamicElement, dynamicElement1: DynamicElement, springRate?: number, dumperRate?: number, distance?: number) {
         this.dynamicElement0 = dynamicElement0;
-        this.dynamicElement1 = dynamicElement0;
+        this.dynamicElement1 = dynamicElement1;
         this.springRate = springRate ? springRate : calculateMaxSpringRate(Math.min(dynamicElement0.mass, dynamicElement0.mass), 1);
-        this.dumperRate = dumperRate ? dumperRate : 0.1;
-        this.distance = distance ? distance : dynamicElement0.position.value.distanceTo(dynamicElement0.position.value);
+        this.dumperRate = dumperRate != undefined ? dumperRate : 0.1;
+        this.distance = distance != undefined ? distance : dynamicElement0.position.value.distanceTo(dynamicElement1.position.value);
 
         springInteractions.addElement(this);
     }

@@ -1,92 +1,77 @@
-import { InteractionCreator } from "./InteractionCreator";
-import { DynamicElement } from "./DynamicElement";
-import { Pointer } from "./Pointer";
-import { Interaction } from "./Interaction";
+
 import { jest } from "@jest/globals";
-import { Position } from "./Position";
+import { InteractionCreator, interactionCreators } from "../../Source/WorldElements/InteractionCreator";
+import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
+import { Pointer, pointers } from "../../Source/WorldElements/Pointer";
+import { Position } from "../../Source/WorldElements/Position";
+import { SpringInteractionWithPosition } from "../../Source/WorldElements/SpringInteraction";
+
 
 describe("InteractionCreator", () => {
     let interactionCreator: InteractionCreator;
-    let dynamicElements: DynamicElement[];
+    let dynamicElement0: DynamicElement
+    let dynamicElement1: DynamicElement
+    let dynamicElement2: DynamicElement
     let pointer: Pointer;
 
     beforeEach(() => {
-        const p1 = new Position();
-        const p2 = new Position();
-        const p3 = new Position();
+        dynamicElement0 = new DynamicElement(new Position());
+        dynamicElement1 = new DynamicElement(new Position());
+        dynamicElement2 = new DynamicElement(new Position());
 
-        dynamicElements = [new DynamicElement(p1), new DynamicElement(p2), new DynamicElement(p3)];
-        pointer = {} as Pointer;
+        pointer = new Pointer();
 
         interactionCreator = new InteractionCreator(pointer);
-        interactionCreator.dynamicElements = dynamicElements;
     });
+    afterEach(() => {
+        dynamicElements.clear();
+        interactionCreators.clear();
+        pointers.clear();
+    })
+    describe('addDynamicElement', () => {
+        it('should be added', () => {
+            interactionCreator.addDynamicElement(dynamicElement0);
+            interactionCreator.addDynamicElement(dynamicElement1);
+            interactionCreator.addDynamicElement(dynamicElement2);
 
-    describe("update()", () => {
-        it("should add interaction and increment counter with moreInteractions", () => {
-            interactionCreator.direction = "down";
-            const moreInteractionsSpy = jest.spyOn(
-                interactionCreator,
-                "moreInteractions"
-            );
+            expect(interactionCreator['dynamicElements'].length).toBe(3);
+        })
+
+    })
+
+
+    describe('update', () => {
+
+        it('should handle pointer down', () => {
+            interactionCreator.addDynamicElement(dynamicElement0)
+            pointer.isPointerDown = true;
+            dynamicElement0.position.value.set(0, 0);
+            pointer.position.value.set(10, 10);
+
+
+            interactionCreator.update();
+            expect(interactionCreator['interactions'].length).toBe(1);
+        })
+
+        it('should destroy all', () => {
+            interactionCreator['interactions'].push(new SpringInteractionWithPosition(dynamicElement0, pointer.position, 1, 1, 1));
+
+            pointer.isPointerDown = false;
 
             interactionCreator.update();
 
-            expect(interactionCreator.interactions).toEqual([
-                new Interaction(dynamicElements[0], dynamicElements[0], 1),
-            ]);
-            expect(moreInteractionsSpy).toHaveBeenCalled();
-        });
+            expect(interactionCreator['interactions'].length).toBe(0);
+        })
+    })
 
-        it("should remove interaction", () => {
+    describe('destroy', () => {
+        it('should by destroyed', () => {
+            interactionCreator.destroy();
 
-            const lessInteractionsSpy = jest.spyOn(interactionCreator, "lessInteractions")
-            const destroySpy = jest.spyOn(Interaction.prototype, "destroy");
+            expect(interactionCreators['elements'].length).toBe(0);
+        })
 
-            interactionCreator.update();
-            interactionCreator.update();
-            interactionCreator.update();
+    })
 
-            expect(interactionCreator.interactions.length).toEqual(3);
-            interactionCreator.update();
-            expect(interactionCreator.interactions.length).toEqual(2);
-            expect(destroySpy).toHaveBeenCalled();
-            expect(lessInteractionsSpy).toHaveBeenCalled();
-        });
-    });
 
-    describe("moreInteractions()", () => {
-        it("should add interaction", () => {
-            const interaction = new Interaction(
-                dynamicElements[0],
-                dynamicElements[1],
-                1
-            );
-            const interactionsLength = interactionCreator.interactions.length;
-
-            interactionCreator.moreInteractions();
-
-            expect(interactionCreator.interactions.length).toEqual(
-                interactionsLength + 1
-            );
-            expect(interactionCreator.interactions.pop()).toEqual(interaction);
-        });
-    });
-
-    describe("lessInteractions()", () => {
-        it("should remove interaction", () => {
-            const interaction = new Interaction(
-                dynamicElements[0],
-                dynamicElements[1],
-                1
-            );
-            const destroySpy = jest.spyOn(interaction, "destroy");
-            interactionCreator.interactions = [interaction];
-
-            interactionCreator.lessInteractions();
-
-            expect(interactionCreator.interactions).toEqual([]);
-            expect(destroySpy).toHaveBeenCalled();
-        });
-    });
 });

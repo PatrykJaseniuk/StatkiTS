@@ -3,6 +3,7 @@ import { Position } from "./Position";
 import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
 import { ViewLine } from "./View";
+import { DynamicElement } from "./DynamicElement";
 
 // interface CollisionPointOverlapV {
 //     point: CollidingPoint;
@@ -12,10 +13,12 @@ import { ViewLine } from "./View";
 
 export class CollidingPoint extends Point implements WorldElement {
     position: Position
-    overlapV: PotentialVector = {};
+    // overlapV: PotentialVector = {};
+    dynamicElement: DynamicElement
 
-    constructor(position: Position) {
+    constructor(position: Position, dynamciElement: DynamicElement) {
         super({ x: position.value.x, y: position.value.y });
+        this.dynamicElement = dynamciElement;
         this.position = position;
 
         collidingPoints.addElement(this);
@@ -29,6 +32,10 @@ export class CollidingPoint extends Point implements WorldElement {
     }
 }
 
+export interface CollidingPointOverlapV {
+    collidingPoint: CollidingPoint;
+    overlapV: PotentialVector;
+}
 
 export class CollidingTriangle extends Polygon implements WorldElement {
 
@@ -38,7 +45,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
     positions: Position[] = [];
 
 
-    collidingPointsOverlaps: Set<CollidingPoint> = new Set();
+    collidingPointsOverlapVectors: Set<CollidingPointOverlapV> = new Set();
 
 
     constructor(position0: Position, position1: Position, position2: Position) {
@@ -63,8 +70,9 @@ export class CollidingTriangle extends Polygon implements WorldElement {
         collidingTriangles.removeElement(this);
     }
 
-    addColidingPoint(point: CollidingPoint) {
-        this.collidingPointsOverlaps.add(point);
+    addColidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector) {
+        const cPoV = { collidingPoint: point, overlapV: overlapV };
+        this.collidingPointsOverlapVectors.add(cPoV);
     }
 }
 
@@ -129,18 +137,23 @@ class CollisionSystem {
         this.system.checkAll((response) => {
 
             handleCollision(response.a, response.b, response.overlapV);
-            handleCollision(response.b, response.a, response.overlapV.scale(-1));
+            // handleCollision(response.b, response.a, response.overlapV.clone().scale(-1));
 
             function handleCollision(a: Body, b: Body, overlapV: PotentialVector) {
                 if (a instanceof CollidingTriangle && b instanceof CollidingPoint) {
-                    saveCollision(a, b, overlapV);
-                    console.log("Collision");
+                    const pos = b.position.value;
+                    const overlap = overlapV;
+
+                    const overlapVDeepCopy = { x: overlap.x, y: overlap.y };
+
+                    saveCollision(a, b, overlapVDeepCopy);
+                    // console.log("Collision");
                 }
             }
 
             function saveCollision(triangle: CollidingTriangle, point: CollidingPoint, overlapV: PotentialVector) {
-                point.overlapV = overlapV;
-                triangle.addColidingPoint(point);
+                // point.overlapV = overlapV;
+                triangle.addColidingPointOverlapV(point, overlapV);
             }
         });
     }

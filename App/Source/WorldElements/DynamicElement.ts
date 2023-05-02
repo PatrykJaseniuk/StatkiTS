@@ -1,7 +1,7 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
 import { SpringInteraction, calculateMaxSpringRate } from "./SpringInteraction";
-import { ViewLine } from "./View";
+import { ViewLine, ViewPoint } from "./View";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElements, WorldElement } from "./Template";
 
@@ -12,9 +12,14 @@ export class DynamicElement {
     velocity = new Vector2(0, 0);
     position: Position
 
+    viewPoint: ViewPoint
+
     constructor(position: Position, mass: number = 1) {
         this.mass = mass;
         this.position = position;
+
+        this.viewPoint = new ViewPoint(position);
+
         dynamicElements.addElement(this);
     }
 

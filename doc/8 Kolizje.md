@@ -16,7 +16,7 @@ ColidingPoint i CollidingTriangle będą się znajdować w jednym Obiekcie (Syst
 Sprzątanie
 
 ### 8.1.1
-Na początek usunę z projektu wszystkie inne wersje programu. Będzie  tylko jedna bez menu.
+Na początek usunę z projektu wszystkie inne wersje programu. Będzie  tylko jedna. Nie będzie menu.
 
 ### 8.1.2
 Zmienię nazewnictwo. Kontenery Elementów świata `WorldElement` będą się nazywać :  [nazwaElementuSwiata]s. Ponadto klasa `WorldElements` nie będzie szablonem, bo nie ma takiej potrzeby.
@@ -26,3 +26,11 @@ Dodałem klasę [Triangle](Triangle.ts)
 
 # 8.3 
 Testy
+
+# 8.4
+Debugowanie.
+### Problem 
+Trójkąt, który koliduje z punktem, po wywołaniu metody `update` na `colisionSystem` powinien mieć w sobie pary wszystkich punktów, które z nim kolidują, oraz `overlapV` dla tego punktu.    
+Podczas debugowania zauważyłem, że `collisionSystem` właściwie znajduje punkty overlapV i trójkąty, wywołuje dla tych kolizji funkcje, które zapisują tę informację w odpowiednim `CollidingTriangle`. Jednak po metodzie `update` w obiekcie `CollidingTriangle` znajduje się inny overlapV. 
+### Rozwiązanie
+Problem wynikał z referencji na ten sam obiekt overlapV, który później był modyfikowany. Wystarczyło wykonać kopię wartości. Jednak nie wiem, gdzie dokładnie następuje nadpisanie. 

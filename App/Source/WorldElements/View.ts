@@ -93,6 +93,31 @@ export class ViewLine implements View {
     }
 }
 
+export class ViewPoint implements View {
+    readonly position: Position;
+    readonly circle: THREE.Mesh;
+
+    constructor(position: Position) {
+        this.position = position;
+
+        const geometry = new THREE.CircleGeometry(5, 32);
+        const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        this.circle = new THREE.Mesh(geometry, material);
+        views.addView(this)
+    }
+
+
+    get3DObject(): THREE.Object3D<THREE.Event> {
+        return this.circle;
+    }
+    update(): void {
+        this.circle.position.set(this.position.value.x, this.position.value.y, 0);
+    }
+    destroy(): void {
+        views.removeView(this);
+    }
+}
+
 export class Views {
     removeView(view: View) {
         this.scene.remove(view.get3DObject());

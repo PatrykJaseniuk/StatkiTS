@@ -19,7 +19,7 @@ export class WorldModifiers {
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
         this.intervals.push(setInterval(() => DynamicRotationElements.update(), 10));
         this.intervals.push(setInterval(() => triangles.update(), 10));
-        this.intervals.push(setInterval(() => dynamicCollindingTriangles.update(), 10));
+        // this.intervals.push(setInterval(() => dynamicCollindingTriangles.update(), 10));
         views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
         views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
         views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
@@ -75,6 +75,8 @@ export class WorldModifiers {
         const SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
         for (let i = 0; i < iterations; i++) {
+            collisionSystem.update();
+            dynamicCollindingTriangles.update();
             springInteractions.update();
             frictionInteractions.update();
             dynamicElements.update(SimulationMaximumDT);

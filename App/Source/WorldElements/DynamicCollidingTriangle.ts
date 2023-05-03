@@ -6,7 +6,7 @@ import { WorldElement, WorldElements } from "./Template";
 import { DynamicCollidingPoint } from "./DynamicCollidingPoint";
 import { Vector2 } from "three";
 import { DynamicTriangle } from "./DynamicTriangle";
-import { ViewLine } from "./View";
+// import { ViewLine } from "./View";
 
 export class DynamicCollidingTriangle implements WorldElement {
 
@@ -18,7 +18,7 @@ export class DynamicCollidingTriangle implements WorldElement {
 
     readonly collidingTriangle: CollidingTriangle;
 
-    readonly collisionInteractions: SpringInteraction[] = [];
+    readonly springInteractions: SpringInteraction[] = [];
 
     // private viewLine: ViewLine | undefined = undefined;
 
@@ -37,7 +37,7 @@ export class DynamicCollidingTriangle implements WorldElement {
 
 
     update(): void {
-        this.collisionInteractions.forEach((e) => e.destroy());
+        this.springInteractions.forEach((e) => e.destroy());
 
         this.collidingTriangle.collidingPointsOverlapVectors.forEach((e) => {
             !this.isPointFromThisTriangle(e.collidingPoint) && this.handleCollision(e);
@@ -61,13 +61,13 @@ export class DynamicCollidingTriangle implements WorldElement {
         this.createInteraction(this.dynamicCollidingPoint2, collidingPointOverlapV.collidingPoint, posNotOverlap);
 
         this.collidingTriangle.collidingPointsOverlapVectors.clear();
-        console.log('collision')
+        // console.log('collision')
     }
 
     private createInteraction(dynamicCollidingPoint: DynamicCollidingPoint, collidingPoint: CollidingPoint, posNotOverlap: Vector2) {
         const distance = posNotOverlap.distanceTo(dynamicCollidingPoint.dynamicElement.position.value);
         const interaction = new SpringInteraction(dynamicCollidingPoint.dynamicElement, collidingPoint.dynamicElement, 0.01, 0.1, distance);
-        this.collisionInteractions.push(interaction);
+        this.springInteractions.push(interaction);
     }
 
     isPointFromThisTriangle(e: CollidingPoint): boolean {

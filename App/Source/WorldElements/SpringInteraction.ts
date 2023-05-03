@@ -2,7 +2,7 @@ import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { WorldElements, WorldElement } from "./Template";
 import { Position } from "./Position";
-import { ViewLine } from "./View";
+// import { ViewLine } from "./View";
 
 export class SpringInteraction implements WorldElement {
     readonly dynamicElement0: DynamicElement;
@@ -57,7 +57,7 @@ export class SpringInteractionWithPosition implements WorldElement {
     readonly dumperRate: number;
     readonly distance: number;
 
-    readonly viewLine: ViewLine;
+    // readonly viewLine: ViewLine;
 
     constructor(dynamicElement: DynamicElement, position: Position, springRate: number, dumperRate: number, distance: number) {
         this.dynamicElement = dynamicElement;
@@ -65,7 +65,7 @@ export class SpringInteractionWithPosition implements WorldElement {
         this.springRate = springRate;
         this.dumperRate = dumperRate;
         this.distance = distance;
-        this.viewLine = new ViewLine(this.dynamicElement.position, this.position);
+        // this.viewLine = new ViewLine(this.dynamicElement.position, this.position);
 
         springInteractions.addElement(this);
     }
@@ -83,7 +83,7 @@ export class SpringInteractionWithPosition implements WorldElement {
     }
     destroy(): void {
         springInteractions.removeElement(this);
-        this.viewLine.destroy();
+        // this.viewLine.destroy();
     }
 }
 

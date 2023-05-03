@@ -2,7 +2,7 @@ import { Body, BodyType, Box, Point, Polygon, PotentialVector, System } from "de
 import { Position } from "./Position";
 import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
-import { ViewLine } from "./View";
+// import { ViewLine } from "./View";
 import { DynamicElement } from "./DynamicElement";
 
 // interface CollisionPointOverlapV {
@@ -57,7 +57,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
         this.position1 = position1;
         this.position2 = position2;
 
-        const line = new ViewLine(position0, position1);
+        // const line = new ViewLine(position0, position1);
 
         collidingTriangles.addElement(this);
     }

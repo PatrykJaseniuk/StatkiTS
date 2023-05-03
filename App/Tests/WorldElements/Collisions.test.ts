@@ -6,6 +6,7 @@ import { DynamicTriangle } from "../../Source/WorldElements/DynamicTriangle";
 import { Triangle } from "../../Source/WorldElements/Triangle";
 import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
 import { DynamicCollidingTriangle } from "../../Source/WorldElements/DynamicCollidingTriangle";
+import { mesureTime } from "../tools";
 
 describe('CollidingPoint', () => {
     let collidingPoint: CollidingPoint
@@ -102,35 +103,6 @@ describe('CollisionSystem', () => {
         collidingPoints.clear();
     })
     describe('update', () => {
-        // it('should have point', () => {
-        //     collisionSystem.update()
-
-        //     const hasPoint = collidingTriangle.collidingPoints.has(collidingPoint);
-        //     expect(hasPoint).toBe(true);
-        // })
-
-        // it('should have poin to have OverlapV =(-1,0)', () => {
-        //     collisionSystem.update()
-
-        //     expect(collidingPoint.overlapV.x).toBeCloseTo(-1);
-        //     expect(collidingPoint.overlapV.y).toBeCloseTo(0);
-
-        //     //only one point should have overlapV
-        //     collidingTriangle.collidingPoints.forEach((point) => {
-        //         expect(point.overlapV.x).toBeCloseTo(-1);
-        //         expect(point.overlapV.y).toBeCloseTo(0);
-        //     })
-        // })
-
-        // it('should have poin to have OverlapV =(0,-1)', () => {
-        //     collidingPoint.position.value.set(2, 1);
-
-        //     collisionSystem.update()
-
-        //     expect(collidingPoint.overlapV.x).toBeCloseTo(0);
-        //     expect(collidingPoint.overlapV.y).toBeCloseTo(-1);
-        // })
-
         it('should have poin which have OverlapV =(-1,0)', () => {
 
             collidingPoint.position.value.set(5, 5);
@@ -140,20 +112,22 @@ describe('CollisionSystem', () => {
             const triangle = new Triangle(pos0t1, pos1t1, pos2t1, new PositionRotation);
             const dynamicTriangle = new DynamicTriangle(triangle, 1, 1, 1);
             const dynamicColidingTriangle = new DynamicCollidingTriangle(dynamicTriangle);
-            const colPoit0T1 = dynamicColidingTriangle.dynamicCollidingPoint0.collidingPoint;
 
             collisionSystem.update()
 
-
-            // let isFound = false;
             collidingTriangle.collidingPointsOverlapVectors.forEach((cPoV) => {
                 expect(cPoV.overlapV.x).toBeCloseTo(-1);
                 expect(cPoV.overlapV.y).toBeCloseTo(0);
             })
+        });
 
-            // expect(colPoit0T1.overlapV.x).toBeCloseTo(-1);
-            // expect(colPoit0T1.overlapV.x).toBeCloseTo(0);
+        test('calculation complex', () => {
+            for (let i = 0; i < 100; i++) {
+                new CollidingTriangle(new Position(new Vector2(0, 0)), new Position(new Vector2(5, 0)), new Position(new Vector2(0, 5)));
+                new CollidingPoint(new Position(new Vector2(1 + 0.001 * i, 2)), new DynamicElement(new Position(new Vector2(1, 2)), 1));
+            }
 
+            mesureTime(() => { collisionSystem.update() }, 100);
         });
     })
 })

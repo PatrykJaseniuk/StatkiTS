@@ -7,6 +7,7 @@ import { pointers } from "./WorldElements/Pointer";
 import { views } from "./WorldElements/View";
 import { triangles } from "./WorldElements/Triangle";
 import { dynamicCollindingTriangles } from "./WorldElements/DynamicCollidingTriangle";
+import { mesureTime } from "../Tests/tools";
 
 export class WorldModifiers {
     private previousTimeStamp: number | undefined = undefined;
@@ -23,7 +24,7 @@ export class WorldModifiers {
         views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
         views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
         views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
-        this.intervals.push(setInterval(() => collisionSystem.update(), 10));
+        // this.intervals.push(setInterval(() => collisionSystem.update(), 10));
         this.intervals.push(setInterval(() => this.logs(), 1000));
     }
 
@@ -44,6 +45,9 @@ export class WorldModifiers {
         const SumOfMomenums = dynamicElements.getSumOfMomentums();
         // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
         // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
+
+        console.log('colision system computing time: ', this.collisionSystemDuration, ' ms');
+        this.collisionSystemDuration = 0;
     }
     private clearAllModifiers() {
         views.clear();
@@ -74,14 +78,18 @@ export class WorldModifiers {
         const realWorldDt = 10;
         const SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
+
         for (let i = 0; i < iterations; i++) {
-            collisionSystem.update();
+            this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
             dynamicCollindingTriangles.update();
             springInteractions.update();
             frictionInteractions.update();
             dynamicElements.update(SimulationMaximumDT);
         }
     }
+
+    // tests
+    private collisionSystemDuration: number = 0;
 }
 
 

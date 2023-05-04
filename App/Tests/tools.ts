@@ -15,3 +15,7 @@ export function calculateMaximumDt(springRate: number, mass1: number, mass2: num
     let omegaMax = Math.sqrt(springRate / massMinn);
     return Math.sqrt(2) / omegaMax;
 }
+
+export class Logger{
+    
+}

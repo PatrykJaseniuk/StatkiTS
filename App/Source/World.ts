@@ -34,7 +34,25 @@ export class World {
 
         const t0 = new ReadyTriangle(new Vector2(0, 0), new Vector2(0, 200), new Vector2(200, 0), interactionCreateor);
         const t1 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t2 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t3 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t4 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t5 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t6 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t7 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t8 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
+        const t9 = new ReadyTriangle(new Vector2(0, 0), new Vector2(200, 0), new Vector2(0, 200), interactionCreateor);
         t1.trinagle.setPosition(new Vector2(401, 0));
+        t2.trinagle.setPosition(new Vector2(802, 0));
+        t3.trinagle.setPosition(new Vector2(1203, 0));
+
+        t4.trinagle.setPosition(new Vector2(0, 401));
+        t5.trinagle.setPosition(new Vector2(401, 401));
+        t6.trinagle.setPosition(new Vector2(802, 401));
+        t7.trinagle.setPosition(new Vector2(1203, 401));
+
+        t8.trinagle.setPosition(new Vector2(0, 802));
+        t9.trinagle.setPosition(new Vector2(401, 802));
 
         const collidingPoint = new CollidingPoint(pointer.position, dynamicElementPointer);
 

@@ -38,6 +38,7 @@ export class DynamicCollidingTriangle implements WorldElement {
 
     update(): void {
         this.springInteractions.forEach((e) => e.destroy());
+        this.springInteractions.length = 0;
 
         this.collidingTriangle.collidingPointsOverlapVectors.forEach((e) => {
             !this.isPointFromThisTriangle(e.collidingPoint) && this.handleCollision(e);
@@ -49,19 +50,14 @@ export class DynamicCollidingTriangle implements WorldElement {
 
     private handleCollision(collidingPointOverlapV: CollidingPointOverlapV) {
 
-        //vector form THREE library
+        // vector form THREE library
         const overlapVThree = new Vector2(collidingPointOverlapV.overlapV.x, collidingPointOverlapV.overlapV.y);
         const posNotOverlap = collidingPointOverlapV.collidingPoint.position.value.clone().add(overlapVThree);
-
-        // this.viewLine?.destroy();
-        // this.viewLine = new ViewLine(new Position(posNotOverlap), collidingPointOverlapV.collidingPoint.position);
 
         this.createInteraction(this.dynamicCollidingPoint0, collidingPointOverlapV.collidingPoint, posNotOverlap);
         this.createInteraction(this.dynamicCollidingPoint1, collidingPointOverlapV.collidingPoint, posNotOverlap);
         this.createInteraction(this.dynamicCollidingPoint2, collidingPointOverlapV.collidingPoint, posNotOverlap);
 
-        this.collidingTriangle.collidingPointsOverlapVectors.clear();
-        // console.log('collision')
     }
 
     private createInteraction(dynamicCollidingPoint: DynamicCollidingPoint, collidingPoint: CollidingPoint, posNotOverlap: Vector2) {

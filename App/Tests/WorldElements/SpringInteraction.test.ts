@@ -109,15 +109,23 @@ describe("SpringInteraction", () => {
     })
 
     describe('constructor', () => {
-        
+
         test('computional complexity', () => {
 
             const dynamicElement1 = new DynamicElement(new Position());
             const dynamicElement2 = new DynamicElement(new Position());
-            const time = mesureTime(() => {
+            const tabSpringInteractions: SpringInteraction[] = [];
+            const time1 = mesureTime(() => {
                 const si = new SpringInteraction(dynamicElement1, dynamicElement2, 1, 0, 0)
-                si.destroy();
-            }, 100000);
+                tabSpringInteractions.push(si);
+            }, 500);
+            const time2 = mesureTime(() => {
+                tabSpringInteractions.forEach(si => si.destroy());
+            }, 1)
+            const time = time1 + time2;
+            console.log(time);
+            springInteractions.getSimulationMaximumDT();
+            const items = springInteractions['elements'];
             expect(time).toBeLessThan(100);
         })
     });

@@ -127,7 +127,15 @@ describe('CollisionSystem', () => {
                 new CollidingPoint(new Position(new Vector2(1 + 0.001 * i, 2)), new DynamicElement(new Position(new Vector2(1, 2)), 1));
             }
 
-            mesureTime(() => { collisionSystem.update() }, 100);
+            const time = mesureTime(() => { collisionSystem.update() }, 10);
+
+            console.log(time);
+
+            const time2 = mesureTime(() => { collisionSystem.system.checkAll(() => { }) }, 10);
+
+            console.log(time2);
         });
+
+
     })
 })

@@ -18,3 +18,20 @@ Rozszerzę testy ElementówSwiata o test złożoności obliczeniowej. (zmierzę 
 
 Jest wyświetla czas wykonania każdego z testów. 
 
+#### Obserwacje
+Każde kolejne wywołanie funkcji `colisionSystem.update` jest bardziej złożone obliczeniowo (trawa dłużej). Tak jakby były dodawane nowe obiekty do systemu. 🤔
+
+#### Rozwiązanie problemu 
+problem był spowodowany wyciekiem pamięci (memory leaking) w obiektach klasy `DynamicCollidingTriangle`.  Poprawiłem metodę update tej klasy. Dodałem jedną linijkę, która opróżnia kontener. 
+
+```ts
+update(): void {
+this.springInteractions.forEach((e) => e.destroy());
+this.springInteractions.length = 0; // dodałem tą linijke 
+
+this.collidingTriangle.collidingPointsOverlapVectors.forEach((e) => {
+!this.isPointFromThisTriangle(e.collidingPoint) && this.handleCollision(e);
+});
+
+}
+```

@@ -1,7 +1,7 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
 import { SpringInteraction, calculateMaxSpringRate } from "./SpringInteraction";
-import { ViewLine, ViewPoint } from "./View";
+import { ViewPoint } from "./View";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElements, WorldElement } from "./Template";
 
@@ -74,7 +74,7 @@ export class DynamicRotationElement implements WorldElement {
     private positions: Position[] = [];
     dynamicElements: DynamicElement[] = [];
     private interactions: SpringInteraction[] = [];
-    private lines: ViewLine[] = [];
+    // private lines: ViewLine[] = [];
     private mass = 1;
     private length = 1;
     // springRate = 0.5;
@@ -110,9 +110,9 @@ export class DynamicRotationElement implements WorldElement {
         this.interactions.push(new SpringInteraction(this.dynamicElements[0], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
         this.interactions.push(new SpringInteraction(this.dynamicElements[1], this.dynamicElements[2], springRate, this.dumperRate, sideLength));
 
-        this.lines.push(new ViewLine(this.positions[0], this.positions[1]));
-        this.lines.push(new ViewLine(this.positions[0], this.positions[2]));
-        this.lines.push(new ViewLine(this.positions[1], this.positions[2]));
+        // this.lines.push(new ViewLine(this.positions[0], this.positions[1]));
+        // this.lines.push(new ViewLine(this.positions[0], this.positions[2]));
+        // this.lines.push(new ViewLine(this.positions[1], this.positions[2]));
 
         DynamicRotationElements.addElement(this);
     }
@@ -129,9 +129,9 @@ export class DynamicRotationElement implements WorldElement {
         this.interactions.forEach((interaction) => {
             interaction.destroy();
         })
-        this.lines.forEach((line) => {
-            line.destroy();
-        })
+        // this.lines.forEach((line) => {
+        //     line.destroy();
+        // })
 
     }
 

@@ -4,6 +4,7 @@ import { Vector2 } from "three";
 import { Position } from "../../Source/WorldElements/Position";
 import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
 import { SpringInteraction, SpringInteractionWithPosition, calculateMaxSpringRate, springInteractions } from "../../Source/WorldElements/SpringInteraction";
+import { calculateMaximumDt, mesureTime } from "../tools";
 
 describe("SpringInteraction", () => {
     let position0: Position;
@@ -94,7 +95,41 @@ describe("SpringInteraction", () => {
                 expect(momentum0.distanceTo(momentum1) <= 0.01 * momentum0.length()).toBeTruthy();
             }
         });
+
+
+        test('computational complexity', () => {
+            // for(let i=0; i<1000; i++){
+            //     new SpringInteraction(new DynamicElement(new Position()), new DynamicElement(new Position()), 1, 0, 0);
+            // }
+
+            const time = mesureTime(() => { springInteraction.update() }, 100000);
+
+            expect(time).toBeLessThan(100);
+        });
     })
+
+    describe('constructor', () => {
+
+        test('computional complexity', () => {
+
+            const dynamicElement1 = new DynamicElement(new Position());
+            const dynamicElement2 = new DynamicElement(new Position());
+            const tabSpringInteractions: SpringInteraction[] = [];
+            const time1 = mesureTime(() => {
+                const si = new SpringInteraction(dynamicElement1, dynamicElement2, 1, 0, 0)
+                tabSpringInteractions.push(si);
+            }, 500);
+            const time2 = mesureTime(() => {
+                tabSpringInteractions.forEach(si => si.destroy());
+            }, 1)
+            const time = time1 + time2;
+            console.log(time);
+            springInteractions.getSimulationMaximumDT();
+            const items = springInteractions['elements'];
+            expect(time).toBeLessThan(100);
+        })
+    });
+
 
     describe('destroy', () => {
         it('should by destroy', () => {
@@ -116,6 +151,9 @@ describe("SpringInteraction", () => {
             expect(calculateMaxSpringRate(1, 1)).toBe(1);
         })
     })
+
+
+
 
 });
 
@@ -163,10 +201,5 @@ describe('springInteractions', () => {
     })
 })
 
-function calculateMaximumDt(springRate: number, mass1: number, mass2: number) {
 
-    let massMinn = Math.min(mass1, mass2);
-    let omegaMax = Math.sqrt(springRate / massMinn);
-    return Math.sqrt(2) / omegaMax;
-}
 

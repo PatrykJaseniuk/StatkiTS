@@ -2,8 +2,9 @@ import { Body, BodyType, Box, Point, Polygon, PotentialVector, System } from "de
 import { Position } from "./Position";
 import { WorldElements, WorldElement } from "./Template";
 import * as SAT from "sat";
-import { ViewLine } from "./View";
+// import { ViewLine } from "./View";
 import { DynamicElement } from "./DynamicElement";
+import { mesureTime } from "../../Tests/tools";
 
 // interface CollisionPointOverlapV {
 //     point: CollidingPoint;
@@ -45,7 +46,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
     positions: Position[] = [];
 
 
-    collidingPointsOverlapVectors: Set<CollidingPointOverlapV> = new Set();
+    collidingPointsOverlapVectors: CollidingPointOverlapV[] = [];
 
 
     constructor(position0: Position, position1: Position, position2: Position) {
@@ -57,7 +58,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
         this.position1 = position1;
         this.position2 = position2;
 
-        const line = new ViewLine(position0, position1);
+        // const line = new ViewLine(position0, position1);
 
         collidingTriangles.addElement(this);
     }
@@ -72,7 +73,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
 
     addColidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector) {
         const cPoV = { collidingPoint: point, overlapV: overlapV };
-        this.collidingPointsOverlapVectors.add(cPoV);
+        this.collidingPointsOverlapVectors.push(cPoV);
     }
 }
 
@@ -98,7 +99,7 @@ class CollidingPoints extends WorldElements {
 export const collidingPoints = new CollidingPoints();
 
 class CollidingTriangles extends WorldElements {
-    protected elements: CollidingTriangle[] = [];
+    override elements: CollidingTriangle[] = [];
     addElement(element: CollidingTriangle): void {
         super.addElement(element);
         collisionSystem.addElement(element);
@@ -134,10 +135,12 @@ class CollisionSystem {
         collidingTriangles.update();
         this.system.update();
 
-        this.system.checkAll((response) => {
+        collidingTriangles.elements.forEach((triangle) => {
+            triangle.collidingPointsOverlapVectors = [];
+        });
 
+        this.system.checkAll((response) => {
             handleCollision(response.a, response.b, response.overlapV);
-            // handleCollision(response.b, response.a, response.overlapV.clone().scale(-1));
 
             function handleCollision(a: Body, b: Body, overlapV: PotentialVector) {
                 if (a instanceof CollidingTriangle && b instanceof CollidingPoint) {

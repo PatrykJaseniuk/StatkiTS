@@ -3,7 +3,7 @@ import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction, SpringInteractionWithPosition } from "./SpringInteraction";
 import { Pointer } from "./Pointer";
 import { WorldElements, WorldElement } from "./Template";
-import { ViewLine } from "./View";
+// import { ViewLine } from "./View";
 
 
 export class InteractionCreator implements WorldElement {
@@ -11,7 +11,7 @@ export class InteractionCreator implements WorldElement {
     private dynamicElements: DynamicElement[] = [];
     private pointer: Pointer;
     private interactions: (SpringInteractionWithPosition)[] = [];
-    private lines: ViewLine[] = [];
+    // private lines: ViewLine[] = [];
 
     constructor(pointer: Pointer) {
         this.pointer = pointer;

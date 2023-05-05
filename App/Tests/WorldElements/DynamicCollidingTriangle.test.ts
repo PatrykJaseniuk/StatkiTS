@@ -1,12 +1,13 @@
 
 import { DynamicCollidingTriangle, dynamicCollindingTriangles } from "../../Source/WorldElements/DynamicCollidingTriangle";
 import { DynamicTriangle } from "../../Source/WorldElements/DynamicTriangle";
-import { CollidingPoint, collisionSystem } from "../../Source/WorldElements/Collision";
+import { CollidingPoint, CollidingPointOverlapV, collisionSystem } from "../../Source/WorldElements/Collision";
 import { Triangle, triangles } from "../../Source/WorldElements/Triangle";
 import { Position } from "../../Source/WorldElements/Position";
 import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
 import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
 import { Vector2 } from "three";
+import { mesureTime } from "../tools";
 
 describe("DynamicCollidingTriangle", () => {
 
@@ -23,6 +24,9 @@ describe("DynamicCollidingTriangle", () => {
 
         const position = new Position(new Vector2(0.2, 0.2));
         colidingPoint = new CollidingPoint(position, new DynamicElement(position, 1));
+
+        collisionSystem.update();
+        // 
     });
 
     afterEach(() => {
@@ -33,19 +37,38 @@ describe("DynamicCollidingTriangle", () => {
 
     test('isPointFromThisTriangle', () => {
 
-        collisionSystem.update();
+
 
         expect(dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.size).toBe(4);
 
         const pointsOfTriangle = [];
-        dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.forEach((collidingPoint) => {
-            dynamicCollidingTriangle.isPointFromThisTriangle(collidingPoint) && pointsOfTriangle.push(collidingPoint);
+        dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.forEach((cPoV) => {
+            dynamicCollidingTriangle.isPointFromThisTriangle(cPoV.collidingPoint) && pointsOfTriangle.push(cPoV);
         });
 
         expect(pointsOfTriangle.length).toBe(3);
     });
 
-    test('createInteraction', () => {
+    describe('update', () => {
 
+        it('should create 3 interactions', () => {
+
+            dynamicCollidingTriangle.update();
+
+            expect(dynamicCollidingTriangle['springInteractions'].length).toBe(3);
+        });
+
+        test('computional complexity', () => {
+
+            const time = mesureTime(() => {
+                const cPoV: CollidingPointOverlapV = { collidingPoint: colidingPoint, overlapV: { x: 0.2, y: 0.2 } }
+                dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.add(cPoV)
+                dynamicCollidingTriangle.update()
+            }, 100)
+
+            expect(time).toBeLessThan(100);
+        })
     });
 });
+
+

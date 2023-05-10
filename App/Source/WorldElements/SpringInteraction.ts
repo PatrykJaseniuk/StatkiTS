@@ -2,7 +2,7 @@ import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { WorldElements, WorldElement } from "./Template";
 import { Position } from "./Position";
-// import { ViewLine } from "./View";
+import { ViewLine } from "./View";
 
 export class SpringInteraction implements WorldElement {
     readonly dynamicElement0: DynamicElement;
@@ -11,7 +11,7 @@ export class SpringInteraction implements WorldElement {
     springRate: number;
     readonly dumperRate: number;
 
-    // readonly viewLine: ViewLine;
+    readonly viewLine: ViewLine;
 
     constructor(dynamicElement0: DynamicElement, dynamicElement1: DynamicElement, springRate?: number, dumperRate?: number, distance?: number) {
         this.dynamicElement0 = dynamicElement0;
@@ -19,7 +19,7 @@ export class SpringInteraction implements WorldElement {
         this.springRate = springRate ? springRate : calculateMaxSpringRate(Math.min(dynamicElement0.mass, dynamicElement0.mass), 1);
         this.dumperRate = dumperRate != undefined ? dumperRate : 0.1;
         this.distance = distance != undefined ? distance : dynamicElement0.position.value.distanceTo(dynamicElement1.position.value);
-        // this.viewLine = new ViewLine(this.dynamicElement0.position, this.dynamicElement1.position);
+        this.viewLine = new ViewLine(this.dynamicElement0.position, this.dynamicElement1.position);
 
         springInteractions.addElement(this);
     }
@@ -45,7 +45,7 @@ export class SpringInteraction implements WorldElement {
     destroy(): void {
         // every object which has reference to this object should remove it
         springInteractions.removeElement(this);
-        // this.viewLine.destroy();
+        this.viewLine.destroy();
     }
 }
 

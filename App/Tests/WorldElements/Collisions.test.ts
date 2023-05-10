@@ -115,7 +115,7 @@ describe('CollisionSystem', () => {
 
             collisionSystem.update()
 
-            collidingTriangle.collidingPointsOverlapVectors.forEach((cPoV) => {
+            collidingTriangle.collidingPointsOverlapV.forEach((cPoV) => {
                 expect(cPoV.overlapV.x).toBeCloseTo(-1);
                 expect(cPoV.overlapV.y).toBeCloseTo(0);
             })

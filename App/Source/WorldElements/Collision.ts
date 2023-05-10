@@ -5,6 +5,7 @@ import * as SAT from "sat";
 // import { ViewLine } from "./View";
 import { DynamicElement } from "./DynamicElement";
 import { mesureTime } from "../../Tests/tools";
+import { type } from "os";
 
 // interface CollisionPointOverlapV {
 //     point: CollidingPoint;
@@ -38,7 +39,12 @@ export interface CollidingPointOverlapV {
     overlapV: PotentialVector;
 }
 
-export class CollidingTriangle extends Polygon implements WorldElement {
+interface CollidingArea {
+    collidingPointsOverlapV: CollidingPointOverlapV[];
+    addCollidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector): void;
+}
+
+export class CollidingTriangle extends Polygon implements CollidingArea, WorldElement {
 
     position0: Position;
     position1: Position;
@@ -46,8 +52,7 @@ export class CollidingTriangle extends Polygon implements WorldElement {
     positions: Position[] = [];
 
 
-    collidingPointsOverlapVectors: CollidingPointOverlapV[] = [];
-
+    collidingPointsOverlapV: CollidingPointOverlapV[] = [];
 
     constructor(position0: Position, position1: Position, position2: Position) {
         const positions = [position0, position1, position2];
@@ -71,20 +76,67 @@ export class CollidingTriangle extends Polygon implements WorldElement {
         collidingTriangles.removeElement(this);
     }
 
-    addColidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector) {
+    addCollidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector) {
         const cPoV = { collidingPoint: point, overlapV: overlapV };
-        this.collidingPointsOverlapVectors.push(cPoV);
+        this.collidingPointsOverlapV.push(cPoV);
     }
 }
 
-class CollidingPoints extends WorldElements {
-    protected elements: CollidingPoint[] = [];
-    addElement(element: CollidingPoint): void {
+export class CollidingPolygon extends Polygon implements WorldElement, CollidingArea {
+    positions: Position[] = [];
+
+    collidingPointsOverlapV: CollidingPointOverlapV[] = [];
+
+    constructor(positions: Position[]) {
+        const pointsInProperFormat = positions.map((e) => ({ x: e.value.x, y: e.value.y }))
+        super({ x: 0, y: 0 }, pointsInProperFormat);
+        this.positions = positions;
+
+        collidingPolygons.addElement(this);
+    }
+
+    update(): void {
+        const properFormat = this.positions.map((e) => (new SAT.Vector(e.value.x, e.value.y)))
+        this.setPoints(properFormat);
+    }
+    destroy(): void {
+        collidingPolygons.removeElement(this);
+    }
+
+    addCollidingPointOverlapV(point: CollidingPoint, overlapV: PotentialVector) {
+        const cPoV = { collidingPoint: point, overlapV: overlapV };
+        this.collidingPointsOverlapV.push(cPoV);
+    }
+}
+
+// class CollidingPolygons extends WorldElements {
+//     protected elements: ColidingPolygon[] = [];
+//     addElement(element: ColidingPolygon): void {
+//         super.addElement(element);
+//         collisionSystem.addElement(element);
+//     }
+
+//     removeElement(element: ColidingPolygon): void {
+//         super.removeElement(element);
+//         collisionSystem.removeElement(element);
+//     }
+//     clear(): void {
+//         this.elements.forEach((e) => {
+//             collisionSystem.removeElement(e);
+//         });
+//         super.clear()
+//     }
+// }
+
+
+class CollidingWorldElement<T extends WorldElement & Body> extends WorldElements {
+    elements: T[] = [];
+    addElement(element: T): void {
         super.addElement(element);
         collisionSystem.addElement(element);
     }
 
-    removeElement(element: CollidingPoint): void {
+    removeElement(element: T): void {
         super.removeElement(element);
         collisionSystem.removeElement(element);
     }
@@ -96,27 +148,30 @@ class CollidingPoints extends WorldElements {
     }
 }
 
-export const collidingPoints = new CollidingPoints();
+export const collidingPoints = new CollidingWorldElement();
+const collidingTriangles = new CollidingWorldElement<CollidingTriangle>();
+const collidingPolygons = new CollidingWorldElement<CollidingPolygon>();
 
-class CollidingTriangles extends WorldElements {
-    override elements: CollidingTriangle[] = [];
-    addElement(element: CollidingTriangle): void {
-        super.addElement(element);
-        collisionSystem.addElement(element);
-    }
-    removeElement(element: CollidingTriangle): void {
-        super.removeElement(element);
-        collisionSystem.removeElement(element);
-    }
-    clear(): void {
-        this.elements.forEach((e) => {
-            collisionSystem.removeElement(e)
-        })
-        super.clear();
-    }
-}
 
-export const collidingTriangles = new CollidingTriangles();
+// class CollidingTriangles extends WorldElements {
+//     override elements: CollidingTriangle[] = [];
+//     addElement(element: CollidingTriangle): void {
+//         super.addElement(element);
+//         collisionSystem.addElement(element);
+//     }
+//     removeElement(element: CollidingTriangle): void {
+//         super.removeElement(element);
+//         collisionSystem.removeElement(element);
+//     }
+//     clear(): void {
+//         this.elements.forEach((e) => {
+//             collisionSystem.removeElement(e)
+//         })
+//         super.clear();
+//     }
+// }
+
+// export const collidingTriangles = new CollidingTriangles();
 
 class CollisionSystem {
     system = new System();
@@ -133,30 +188,29 @@ class CollisionSystem {
     update() {
         collidingPoints.update();
         collidingTriangles.update();
+        collidingPolygons.update();
         this.system.update();
 
         collidingTriangles.elements.forEach((triangle) => {
-            triangle.collidingPointsOverlapVectors = [];
+            triangle.collidingPointsOverlapV = [];
+        });
+        collidingPolygons.elements.forEach((polygon) => {
+            polygon.collidingPointsOverlapV = [];
         });
 
         this.system.checkAll((response) => {
-            handleCollision(response.a, response.b, response.overlapV);
 
-            function handleCollision(a: Body, b: Body, overlapV: PotentialVector) {
-                if (a instanceof CollidingTriangle && b instanceof CollidingPoint) {
-                    const pos = b.position.value;
-                    const overlap = overlapV;
+            const a = response.a;
+            const b = response.b;
+            const overlapV = response.overlapV;
 
-                    const overlapVDeepCopy = { x: overlap.x, y: overlap.y };
+            if ((a instanceof CollidingTriangle || a instanceof CollidingPolygon) && b instanceof CollidingPoint) {
 
-                    saveCollision(a, b, overlapVDeepCopy);
-                    // console.log("Collision");
-                }
-            }
-
-            function saveCollision(triangle: CollidingTriangle, point: CollidingPoint, overlapV: PotentialVector) {
-                // point.overlapV = overlapV;
-                triangle.addColidingPointOverlapV(point, overlapV);
+                const area = a;
+                const point = b;
+                const overlapV = response.overlapV;
+                const overlapVDeepCopy = { x: overlapV.x, y: overlapV.y };
+                area.addCollidingPointOverlapV(point, overlapVDeepCopy);
             }
         });
     }

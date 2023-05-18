@@ -8,6 +8,7 @@ import { views } from "./WorldElements/View";
 import { triangles } from "./WorldElements/Triangle";
 import { dynamicCollindingTriangles } from "./WorldElements/DynamicCollidingTriangle";
 import { mesureTime } from "../Tests/tools";
+import { dynamicCollidingPolygons } from "./WorldElements/DynamicCollidingPolygon";
 
 export class WorldModifiers {
     private previousTimeStamp: number | undefined = undefined;
@@ -43,11 +44,41 @@ export class WorldModifiers {
 
     private logs(): void {
         const SumOfMomenums = dynamicElements.getSumOfMomentums();
+
         // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
         // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
 
-        console.log('colision system computing time: ', this.collisionSystemDuration, ' ms');
+        // console.log('colision system computing time: ', this.collisionSystemDuration, ' ms');
+        // this.collisionSystemDuration = 0;
+        // console.log('dynamic colliding triangles computing time: ', this.dynamicCollidingTrianglesDuration, ' ms');
+        // this.dynamicCollidingTrianglesDuration = 0;
+        // console.log('dynamic colliding polygons computing time: ', this.dynamicCollidingPolygonsDuration, ' ms');
+        // this.dynamicCollidingPolygonsDuration = 0;
+        // console.log('spring interactions computing time: ', this.springInteractionsDuration, ' ms');
+        // this.springInteractionsDuration = 0;
+        // console.log('friction interactions computing time: ', this.frictionInteractionsDuration, ' ms');
+        // this.frictionInteractionsDuration = 0;
+        // console.log('dynamic elements computing time: ', this.dynamicElementsDuration, ' ms');
+        // this.dynamicElementsDuration = 0;
+
+        // log abowe in table format
+        console.table({
+            'colision system computing time': this.collisionSystemDuration,
+            'dynamic colliding triangles computing time': this.dynamicCollidingTrianglesDuration,
+            'dynamic colliding polygons computing time': this.dynamicCollidingPolygonsDuration,
+            'spring interactions computing time': this.springInteractionsDuration,
+            'friction interactions computing time': this.frictionInteractionsDuration,
+            'dynamic elements computing time': this.dynamicElementsDuration,
+            'sum of momentums': SumOfMomenums.x.toFixed(5) + ' ' + SumOfMomenums.y.toFixed(5),
+        });
         this.collisionSystemDuration = 0;
+        this.dynamicCollidingTrianglesDuration = 0;
+        this.dynamicCollidingPolygonsDuration = 0;
+        this.springInteractionsDuration = 0;
+        this.frictionInteractionsDuration = 0;
+        this.dynamicElementsDuration = 0;
+
+
     }
     private clearAllModifiers() {
         views.clear();
@@ -76,20 +107,32 @@ export class WorldModifiers {
 
     private molecularModelUpdate() {
         const realWorldDt = 10;
-        const SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
+        let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
+        SimulationMaximumDT = 0.5;
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
 
         for (let i = 0; i < iterations; i++) {
+
             this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
-            dynamicCollindingTriangles.update();
-            springInteractions.update();
-            frictionInteractions.update();
-            dynamicElements.update(SimulationMaximumDT);
+            this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
+            // dynamicCollindingTriangles.update();
+            // springInteractions.update();
+            // frictionInteractions.update();
+            // dynamicElements.update(SimulationMaximumDT);
+            this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
+            this.springInteractionsDuration += mesureTime(() => springInteractions.update(), 1);
+            this.frictionInteractionsDuration += mesureTime(() => frictionInteractions.update(), 1);
+            this.dynamicElementsDuration += mesureTime(() => dynamicElements.update(SimulationMaximumDT), 1);
         }
     }
 
     // tests
     private collisionSystemDuration: number = 0;
+    private dynamicCollidingTrianglesDuration: number = 0;
+    private dynamicCollidingPolygonsDuration: number = 0;
+    private springInteractionsDuration: number = 0;
+    private frictionInteractionsDuration: number = 0;
+    private dynamicElementsDuration: number = 0;
 }
 
 

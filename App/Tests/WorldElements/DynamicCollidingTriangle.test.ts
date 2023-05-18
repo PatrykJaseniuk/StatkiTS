@@ -39,10 +39,10 @@ describe("DynamicCollidingTriangle", () => {
 
 
 
-        expect(dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.size).toBe(4);
+        expect(dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapV.size).toBe(4);
 
         const pointsOfTriangle = [];
-        dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.forEach((cPoV) => {
+        dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapV.forEach((cPoV) => {
             dynamicCollidingTriangle.isPointFromThisTriangle(cPoV.collidingPoint) && pointsOfTriangle.push(cPoV);
         });
 
@@ -62,7 +62,7 @@ describe("DynamicCollidingTriangle", () => {
 
             const time = mesureTime(() => {
                 const cPoV: CollidingPointOverlapV = { collidingPoint: colidingPoint, overlapV: { x: 0.2, y: 0.2 } }
-                dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapVectors.add(cPoV)
+                dynamicCollidingTriangle.collidingTriangle.collidingPointsOverlapV.add(cPoV)
                 dynamicCollidingTriangle.update()
             }, 100)
 

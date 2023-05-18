@@ -44,6 +44,7 @@ export class WorldModifiers {
 
     private logs(): void {
         const SumOfMomenums = dynamicElements.getSumOfMomentums();
+
         // console.log('SumOfMomenums: ', SumOfMomenums.x.toFixed(5), ' ', SumOfMomenums.y.toFixed(5));
         // log SumOfMomentums z dokładnością do 5 miejsc po przecinku
 
@@ -68,6 +69,7 @@ export class WorldModifiers {
             'spring interactions computing time': this.springInteractionsDuration,
             'friction interactions computing time': this.frictionInteractionsDuration,
             'dynamic elements computing time': this.dynamicElementsDuration,
+            'sum of momentums': SumOfMomenums.x.toFixed(5) + ' ' + SumOfMomenums.y.toFixed(5),
         });
         this.collisionSystemDuration = 0;
         this.dynamicCollidingTrianglesDuration = 0;
@@ -105,7 +107,8 @@ export class WorldModifiers {
 
     private molecularModelUpdate() {
         const realWorldDt = 10;
-        const SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
+        let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
+        SimulationMaximumDT = 0.5;
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
 
         for (let i = 0; i < iterations; i++) {

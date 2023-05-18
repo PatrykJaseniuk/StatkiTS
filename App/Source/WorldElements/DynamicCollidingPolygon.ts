@@ -10,9 +10,23 @@ import { DynamicCollidingPoint } from "./DynamicCollidingPoint";
 import { DynamicElement, dynamicElements } from "./DynamicElement";
 import { SpringInteraction } from "./SpringInteraction";
 import { WorldElement, WorldElements } from "./Template";
+import { ViewLine } from "./View";
 
 
 export class DynamicCollidingPolygon implements WorldElement {
+    connectDynamicElement(mast1: DynamicElement) {
+
+        this.dyanmicElements.forEach((dynamicElement) => {
+            const springInteraction = new SpringInteraction(dynamicElement, mast1, 0.1, 0.1);
+            this.basicInteractions.push(springInteraction);
+        });
+    }
+    translate(arg0: Vector2) {
+        this.positions.forEach((position) => {
+            position.value.add(arg0);
+        });
+        this.update();
+    }
 
     positions: Position[] = [];
     collidingPolygon: CollidingPolygon;
@@ -21,9 +35,16 @@ export class DynamicCollidingPolygon implements WorldElement {
     basicInteractions: SpringInteraction[] = [];
     bauncingInteracions: SpringInteraction[] = [];
     dyanmicElementsBouncing: DynamicElement[] = [];
+    centerDynamicElement: DynamicElement;
     private readonly numberOfBouncingDynamicElements = 4;
 
+    // private readonly lineP1 = new Position(new Vector2(0, 0));
+    // private readonly linewP2 = new Position(new Vector2(0, 0));
+    // private readonly viewLine: ViewLine;
+
     constructor(positions: Position[]) {
+        // this.viewLine = new ViewLine(this.lineP1, this.linewP2);
+
         this.positions = positions;
         this.collidingPolygon = new CollidingPolygon(positions);
         this.dyanmicElements = positions.map((position) => {
@@ -34,10 +55,13 @@ export class DynamicCollidingPolygon implements WorldElement {
             return new DynamicCollidingPoint(dynamicElement);
         });
 
-        const centerDynamicElement = calculateCenterDynamicElement(positions);
+        this.centerDynamicElement = calculateCenterDynamicElement(positions);
+
+        // this.dyanmicElements.push(centerDynamicElement);
+        // this.positions.push(centerDynamicElement.position);
 
         const insideInteractions = this.dynamicColidingPoints.map((dynamicCollidingPoint) => {
-            return new SpringInteraction(dynamicCollidingPoint.dynamicElement, centerDynamicElement, 0.1, 0.1);
+            return new SpringInteraction(dynamicCollidingPoint.dynamicElement, this.centerDynamicElement, 0.1, 0.1);
         });
 
         const outsideInteractinos = this.dynamicColidingPoints.map((dynamicCollidingPoint, index, dynamicCollidingPoints) => {
@@ -71,18 +95,16 @@ export class DynamicCollidingPolygon implements WorldElement {
         const overlapVThree = new Vector2(collidingPointOverlapV.overlapV.x, collidingPointOverlapV.overlapV.y);
         const posNotOverlap = collidingPointOverlapV.collidingPoint.position.value.clone().add(overlapVThree);
 
+        // this.lineP1.value = collidingPointOverlapV.collidingPoint.position.value;
+        // this.linewP2.value = posNotOverlap;
 
         this.dyanmicElements.forEach((dynamicElement) => {
             this.createInteraction(dynamicElement, collidingPointOverlapV.collidingPoint, posNotOverlap)
         });
-
-        // this.createInteraction(this.dynamicCollidingPoint0, collidingPointOverlapV.collidingPoint, posNotOverlap);
-        // this.createInteraction(this.dynamicCollidingPoint1, collidingPointOverlapV.collidingPoint, posNotOverlap);
-        // this.createInteraction(this.dynamicCollidingPoint2, collidingPointOverlapV.collidingPoint, posNotOverlap);
     }
     private createInteraction(dynamicElement: DynamicElement, collidingPoint: CollidingPoint, posNotOverlap: Vector2) {
         const distance = posNotOverlap.distanceTo(dynamicElement.position.value);
-        const interaction = new SpringInteraction(dynamicElement, collidingPoint.dynamicElement, 0.0001, 0, distance);
+        const interaction = new SpringInteraction(dynamicElement, collidingPoint.dynamicElement, 0.01, 0, distance);
         this.bauncingInteracions.push(interaction);
     }
 

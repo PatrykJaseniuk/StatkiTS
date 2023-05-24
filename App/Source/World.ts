@@ -2,7 +2,7 @@ import { InteractionCreator } from "./WorldElements/InteractionCreator";
 import { Pointer } from "./WorldElements/Pointer";
 import { HullRotation2 } from "./WorldElements/Ship";
 import { CollidingPoint, CollidingTriangle } from "./WorldElements/Collision";
-import { ViewTexture } from "./WorldElements/View";
+import { ViewTexture, views } from "./WorldElements/View";
 import { PositionRotation } from "./WorldElements/PositionRotation";
 import { Vector2 } from "three";
 import { Triangle } from "./WorldElements/Triangle";
@@ -14,58 +14,53 @@ import { Hull } from "./WorldElements/Hull";
 import { DynamicCollidingPolygon } from "./WorldElements/DynamicCollidingPolygon";
 import { Hull2 } from "./WorldElements/Hull2";
 import { Ship2 } from "./WorldElements/Ship2";
+import { actionBinder } from "./WorldElements/ActionBinder";
+import { Renderer } from "pixi.js";
 
 export class World {
     constructor() {
+        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 });
+
+
         let pointer = new Pointer();
-        // const dynamicElementPointer = new DynamicElement(pointer.position, 100);
+
         const interactionCreateor = new InteractionCreator(pointer);
-        // const collidingPoint = new CollidingPoint(pointer.position, dynamicElementPointer);
 
-        const positions = [
-            new Position(new Vector2(0, 0)),
-            new Position(new Vector2(-10, 50)),
-            new Position(new Vector2(0, 100)),
-            new Position(new Vector2(50, 110)),
-            new Position(new Vector2(100, 100)),
-            new Position(new Vector2(110, 50)),
-            new Position(new Vector2(100, 0)),
-            new Position(new Vector2(50, -10)),
-        ];
-
-        const shapeOfFirstHalfOfShip = [
-            new Position(new Vector2(17, 176)),
-            new Position(new Vector2(208, 205)),
-            new Position(new Vector2(362, 218)),
-            new Position(new Vector2(539, 210)),
-            new Position(new Vector2(606, 195)),
-            new Position(new Vector2(650, 167)),
-            new Position(new Vector2(672, 127)),
-        ];
-
-        const shapeOfSecondHalfOfShip = shapeOfFirstHalfOfShip.map((position) => {
-            return new Position(new Vector2(position.value.x, -position.value.y + 220));
-        });
-
-        // const shapeOfShip = shapeOfFirstHalfOfShip.concat(shapeOfSecondHalfOfShip.reverse());
-        // const hull = new DynamicCollidingPolygon(shapeOfShip);
-
-        // const hull2 = new DynamicCollidingPolygon(shapeOfShip.map((position) => {
-        //     return new Position(new Vector2(position.value.x, position.value.y - 250));
-        // }));
 
         const ship = new Ship2();
         // const hull3 = ship.hull;
+        actionBinder.actions.sail1Left.action = () => { ship.turnSail("back", -0.1) };
+        actionBinder.actions.sail1Right.action = () => { ship.turnSail('back', 0.1) };
+
+        actionBinder.actions.sail2Left.action = () => { ship.turnSail('front', -0.1) };
+        actionBinder.actions.sail2Right.action = () => { ship.turnSail('front', 0.1) };
+
+
+        const positionRotation = new PositionRotation();
+        const triangle = new Triangle(ship.sail1.mast.position, ship.hull.shapeOfFirstHalfOfShip[5], ship.hull.shapeOfSecondHalfOfShip[5], positionRotation);
+
+        views.camera.positionRotation = positionRotation;
+        views.camera.speed = ship.sail1.mast.velocity;
 
         const sail1 = ship.sail1;
+        const sail2 = ship.sail2;
 
-        interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement0);
-        interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement1);
-        interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement2);
 
-        interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement0);
-        interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement1);
-        interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement2);
+        interactionCreateor.addDynamicElement(sail1.yardLeft);
+        interactionCreateor.addDynamicElement(sail1.yardRight);
+        interactionCreateor.addDynamicElement(sail1.mast);
+
+        interactionCreateor.addDynamicElement(sail2.yardLeft);
+        interactionCreateor.addDynamicElement(sail2.yardRight);
+        interactionCreateor.addDynamicElement(sail2.mast);
+
+        // interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement0);
+        // interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement1);
+        // interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement2);
+
+        // interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement0);
+        // interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement1);
+        // interactionCreateor.addDynamicElement(ship.sail2.dynamicTriangle.dynamicElement2);
         // // hull2.translate(new Vector2(0, 400));
         // hull3.dynamicCollidingPolygon.dyanmicElements.forEach((dynamicElement) => {
         //     interactionCreateor.addDynamicElement(dynamicElement);

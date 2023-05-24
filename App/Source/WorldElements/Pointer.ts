@@ -5,8 +5,14 @@ import { ViewTexture, views, Views } from './View';
 import { PositionRotation } from './PositionRotation';
 
 export class Pointer {
-    update(pointerPosition: Vector2) {
-        this.position.value = pointerPosition;
+    update(cameraSpace: Vector2) {
+
+        const worldSpace = cameraSpace.clone().add(views.camera.positionRotation.position.value);
+        worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation);
+
+
+        this.position.value = worldSpace;
+        this.view.positionRotation.rotation = views.camera.positionRotation.rotation;
 
         // console.log('position' + this.position.value);
         // console.log("mesh position" + this.view.mesh.position);
@@ -17,18 +23,18 @@ export class Pointer {
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture({ position: this.position, rotation: 0 }, 'hook.png');
+        this.view = new ViewTexture({ position: this.position, rotation: views.camera.positionRotation.rotation }, 'hook.png');
         pointers.addElement(this);
     }
 }
 
 class Pointers {
     private elements: Pointer[] = [];
+    private cameraSpaceLocation: Vector2 = new Vector2();
 
-    update(event: PointerEvent): void {
-        let pointerPosition = this.onPointerMove(event);
+    update(): void {
         this.elements.forEach((element) => {
-            element.update(pointerPosition);
+            element.update(this.cameraSpaceLocation);
         })
     }
 
@@ -40,18 +46,19 @@ class Pointers {
         this.elements = [];
     }
 
-    private onPointerMove(event: PointerEvent) {
+    onPointerMove(event: PointerEvent) {
         let clientWidth = views.renderer != null ? views.renderer.domElement.clientWidth : 0;
         let clientHeight = views.renderer != null ? views.renderer.domElement.clientHeight : 0;
         let mousePositionNDC = new Vector2();
         mousePositionNDC.x = (event.offsetX / clientWidth) * 2 - 1;
         mousePositionNDC.y = -(event.offsetY / clientHeight) * 2 + 1;
         let mousePositionCameraSpace = new Vector2();
-        mousePositionCameraSpace.x = mousePositionNDC.x * views.camera.right;
-        mousePositionCameraSpace.y = mousePositionNDC.y * views.camera.top;
+        mousePositionCameraSpace.x = mousePositionNDC.x * views.camera.threeCamera.right;
+        mousePositionCameraSpace.y = mousePositionNDC.y * views.camera.threeCamera.top;
         // console.log(mousePositionCameraSpace);
         event.x
-        return mousePositionCameraSpace;
+
+        this.cameraSpaceLocation = mousePositionCameraSpace
     }
 
     onPointerDown(event: PointerEvent) {

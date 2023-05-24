@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { Position } from "./Position";
 import { WorldElement } from "./Template";
 import { PositionRotation } from "./PositionRotation";
+import { Ocean } from "./Ocean/ViewOcean";
 
 
 
@@ -12,23 +13,37 @@ interface View extends WorldElement {
 }
 
 
+
 export class ViewTexture implements View {
     readonly mesh: THREE.Mesh;
     readonly positionRotation: PositionRotation;
 
-    constructor(positionRotation: PositionRotation, picturePath: string) {
+    constructor(positionRotation: PositionRotation, picturePath: string, size?: { width: number, height: number }) {
         this.positionRotation = positionRotation;
 
+        //    clone texture in both directions
+        // const texture = new THREE.TextureLoader().load(picturePath);
+        // texture.wrapS = THREE.RepeatWrapping;
+        // texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.set(500, 500);
 
-        // add picture to scene
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(picturePath);
-        const planeGeo = new THREE.PlaneGeometry(60, 20);
-        const planeMat = new THREE.MeshBasicMaterial({
-            map: texture,
-            transparent: true,
-        });
-        this.mesh = new THREE.Mesh(planeGeo, planeMat);
+        // clone texture beter (to not have a seam)
+        const texture = new THREE.TextureLoader().load(picturePath);
+        texture.wrapS = THREE.MirroredRepeatWrapping;
+        texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.repeat.set(500, 500);
+        // texture.magFilter = THREE.NearestFilter;
+        // texture.minFilter = THREE.LinearMipMapLinearFilter;
+        // texture.anisotropy = 16;
+
+
+
+        //create plane
+        const geometry = new THREE.PlaneGeometry(size?.width ?? 1, size?.height ?? 1);
+        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        this.mesh = new THREE.Mesh(geometry, material);
+
+
         //register view for rendering
         views.addView(this)
     }
@@ -52,22 +67,40 @@ export class ViewLine implements View {
     color: number = 0x00ff00;
     private readonly p1: Position;
     private readonly p2: Position;
-    readonly line: THREE.Line;
+    readonly line: THREE.Mesh
 
     constructor(p1: Position, p2: Position) {
         this.p1 = p1;
         this.p2 = p2;
 
-        const material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
+        const planeGeo = new THREE.PlaneGeometry(1, 2);
+        const planeMat = new THREE.MeshBasicMaterial({
+            color: 'red',
+            // transparent: true,
+        });
+        this.line = new THREE.Mesh(planeGeo, planeMat);
 
-        const vertices: THREE.Vector3[] = [];
-        vertices.push(new THREE.Vector3(p1.value.x, p1.value.y, 0));
-        vertices.push(new THREE.Vector3(p2.value.x, p2.value.y, 0));
-
-        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
-        this.line = new THREE.Line(geometry, material);
-
+        // const length = p1.value.distanceTo(p2.value);
+        // this.line.scale.set(length, 1, 1);
+        // this.line.position.set(p1.value.x, p1.value.y, 0);
+        // this.line.lookAt(new THREE.Vector3(p2.value.x, p2.value.y, 0));
+        this.setPosition(p1.value, p2.value);
         views.addView(this)
+    }
+
+    setPosition(p1: THREE.Vector2, p2: THREE.Vector2) {
+
+
+
+        const p1p2 = p2.clone().sub(p1);
+        const length = p1p2.length();
+        this.line.scale.set(length, 1, 1);
+
+        const angle = Math.atan2(p1p2.y, p1p2.x);
+        this.line.rotation.z = angle;
+
+        const positionCorrection = p1p2.clone().multiplyScalar(0.5);
+        this.line.position.set(p1.x + positionCorrection.x, p1.y + positionCorrection.y, 0);
     }
 
     get3DObject(): THREE.Object3D<THREE.Event> {
@@ -75,15 +108,13 @@ export class ViewLine implements View {
     }
 
     update(): void {
-        this.color = this.onUpdate(this.p1, this.p2, this.color);
-        const vertices: THREE.Vector3[] = [];
-        vertices.push(new THREE.Vector3(this.p1.value.x, this.p1.value.y, 0));
-        vertices.push(new THREE.Vector3(this.p2.value.x, this.p2.value.y, 0));
-
-        const geometry = new THREE.BufferGeometry().setFromPoints(vertices);
-        this.line.geometry = geometry;
-        this.line.material = new THREE.LineBasicMaterial({ color: this.color, linewidth: 30 });
-        this.line.material.needsUpdate = true;
+        this.setPosition(this.p1.value, this.p2.value);
+        const newLineColor = this.onUpdate(this.p1, this.p2, this.color);
+        //set new collor to line
+        this.line.material = new THREE.MeshBasicMaterial({
+            color: newLineColor,
+            // transparent: true,
+        });
     }
 
     onUpdate: (p1: Position, p2: Position, color: number) => number = (p1, p2, color) => color;
@@ -118,6 +149,32 @@ export class ViewPoint implements View {
     }
 }
 
+
+
+class Camera {
+
+    positionRotation = new PositionRotation();
+    speed: THREE.Vector2 = new THREE.Vector2(0, 0);
+    private size: number = 10;
+    threeCamera = new THREE.OrthographicCamera(-1000, 1000, 1000, -1000, -100, 1000);
+
+    setWidthHeight(width: number, height: number) {
+        this.threeCamera.left = -width / 2 * this.size;
+        this.threeCamera.right = width / 2 * this.size;
+        this.threeCamera.top = height / 2 * this.size;
+        this.threeCamera.bottom = -height / 2 * this.size;
+        this.threeCamera.updateProjectionMatrix();
+    }
+
+    update() {
+        const speedfactor = 500;
+        const speedMove = this.speed.clone().multiplyScalar(speedfactor);
+        const newPosition = this.positionRotation.position.value.clone().add(speedMove);
+        this.threeCamera.position.set(newPosition.x, newPosition.y, 100);
+        this.threeCamera.rotation.z = this.positionRotation.rotation;
+    };
+}
+
 export class Views {
     removeView(view: View) {
         this.scene.remove(view.get3DObject());
@@ -128,7 +185,8 @@ export class Views {
         this.views.forEach((wiew) => {
             wiew.update();
         })
-        this.renderer?.render(this.scene, this.camera);
+        this.camera.update();
+        this.renderer?.render(this.scene, this.camera.threeCamera);
     }
 
     addView(view: View) {
@@ -145,15 +203,16 @@ export class Views {
 
     private views: View[];
     private scene: THREE.Scene;
-    camera: THREE.OrthographicCamera;
+    camera: Camera
     renderer: THREE.WebGLRenderer | null = null;
 
     constructor() {
         this.views = [];
         this.scene = new THREE.Scene();
-        this.camera = new THREE.OrthographicCamera(-100, 100, 100, -100, -10, 1000);;
+        this.camera = new Camera();
 
-        this.scene.add(this.camera);
+        this.scene.add(this.camera.threeCamera);
+
     }
 
     init() {
@@ -161,16 +220,16 @@ export class Views {
         this.renderer.setSize(800, 800);
         // set background color blue
         this.renderer.setClearColor(0x6000ff);
-
         return this.renderer.domElement;
     }
     setSize(width: number, height: number) {
         this.renderer?.setSize(width, height);
-        this.camera.left = -width / 2;
-        this.camera.right = width / 2;
-        this.camera.top = height / 2;
-        this.camera.bottom = -height / 2;
-        this.camera.updateProjectionMatrix();
+        this.camera.setWidthHeight(width, height);
+        // this.camera.threeCamera.left = -width / 2;
+        // this.camera.threeCamera.right = width / 2;
+        // this.camera.threeCamera.top = height / 2;
+        // this.camera.threeCamera.bottom = -height / 2;
+        // this.camera.threeCamera.updateProjectionMatrix();
     }
 }
 

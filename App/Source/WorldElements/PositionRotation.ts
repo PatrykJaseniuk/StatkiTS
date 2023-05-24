@@ -1,3 +1,4 @@
+import { Vec2, Vector2 } from "three";
 import { Position } from "./Position";
 
 export class PositionRotation {

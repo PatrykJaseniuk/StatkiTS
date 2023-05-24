@@ -9,6 +9,8 @@ import { triangles } from "./WorldElements/Triangle";
 import { dynamicCollindingTriangles } from "./WorldElements/DynamicCollidingTriangle";
 import { mesureTime } from "../Tests/tools";
 import { dynamicCollidingPolygons } from "./WorldElements/DynamicCollidingPolygon";
+import { fluidInteractors } from "./WorldElements/FluidIinteractor";
+import { actionBinder } from "./WorldElements/ActionBinder";
 
 export class WorldModifiers {
     private previousTimeStamp: number | undefined = undefined;
@@ -19,13 +21,14 @@ export class WorldModifiers {
         this.setRefreshRateDurationInterval();
         this.intervals.push(setInterval(() => interactionCreators.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
-        this.intervals.push(setInterval(() => DynamicRotationElements.update(), 10));
-        this.intervals.push(setInterval(() => triangles.update(), 10));
-        // this.intervals.push(setInterval(() => dynamicCollindingTriangles.update(), 10));
-        views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.update(event); });
+        views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.onPointerMove(event); });
         views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
-        views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
-        // this.intervals.push(setInterval(() => collisionSystem.update(), 10));
+        views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => {
+            pointers.onPointerUp(event);
+        });
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            actionBinder.onKeyDown(event);
+        });
         this.intervals.push(setInterval(() => this.logs(), 1000));
     }
 
@@ -63,12 +66,15 @@ export class WorldModifiers {
 
         // log abowe in table format
         console.table({
-            'colision system computing time': this.collisionSystemDuration,
-            'dynamic colliding triangles computing time': this.dynamicCollidingTrianglesDuration,
-            'dynamic colliding polygons computing time': this.dynamicCollidingPolygonsDuration,
-            'spring interactions computing time': this.springInteractionsDuration,
-            'friction interactions computing time': this.frictionInteractionsDuration,
-            'dynamic elements computing time': this.dynamicElementsDuration,
+            'colision system ': this.collisionSystemDuration,
+            'dynamic colliding triangles ': this.dynamicCollidingTrianglesDuration,
+            'dynamic colliding polygons ': this.dynamicCollidingPolygonsDuration,
+            'spring interactions ': this.springInteractionsDuration,
+            'friction interactions ': this.frictionInteractionsDuration,
+            'dynamic elements ': this.dynamicElementsDuration,
+            'fluid interactors ': this.fluidInteractorsDuration,
+            'triangle ': this.trianglesDuration,
+            'dynamic rotation elements ': this.dynamicRotationElementsDuration,
             'sum of momentums': SumOfMomenums.x.toFixed(5) + ' ' + SumOfMomenums.y.toFixed(5),
         });
         this.collisionSystemDuration = 0;
@@ -77,8 +83,9 @@ export class WorldModifiers {
         this.springInteractionsDuration = 0;
         this.frictionInteractionsDuration = 0;
         this.dynamicElementsDuration = 0;
-
-
+        this.fluidInteractorsDuration = 0;
+        this.trianglesDuration = 0;
+        this.dynamicRotationElementsDuration = 0;
     }
     private clearAllModifiers() {
         views.clear();
@@ -108,21 +115,21 @@ export class WorldModifiers {
     private molecularModelUpdate() {
         const realWorldDt = 10;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
-        SimulationMaximumDT = 0.5;
+        SimulationMaximumDT = 0.1;
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
 
         for (let i = 0; i < iterations; i++) {
-
-            this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
+            // this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
             this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
-            // dynamicCollindingTriangles.update();
-            // springInteractions.update();
-            // frictionInteractions.update();
-            // dynamicElements.update(SimulationMaximumDT);
             this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
             this.springInteractionsDuration += mesureTime(() => springInteractions.update(), 1);
             this.frictionInteractionsDuration += mesureTime(() => frictionInteractions.update(), 1);
             this.dynamicElementsDuration += mesureTime(() => dynamicElements.update(SimulationMaximumDT), 1);
+            this.fluidInteractorsDuration += mesureTime(() => fluidInteractors.update(), 1);
+            this.trianglesDuration += mesureTime(() => triangles.update(), 1);
+            this.dynamicRotationElementsDuration += mesureTime(() => DynamicRotationElements.update(), 1);
+            pointers.update();
+
         }
     }
 
@@ -133,6 +140,9 @@ export class WorldModifiers {
     private springInteractionsDuration: number = 0;
     private frictionInteractionsDuration: number = 0;
     private dynamicElementsDuration: number = 0;
+    private fluidInteractorsDuration: number = 0;
+    private trianglesDuration: number = 0;
+    private dynamicRotationElementsDuration: number = 0;
 }
 
 

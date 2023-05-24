@@ -6,9 +6,11 @@ import { DynamicElement } from "./DynamicElement";
 export class Hull2 {
 
     dynamicCollidingPolygon: DynamicCollidingPolygon;
+    shapeOfFirstHalfOfShip: Position[];
+    shapeOfSecondHalfOfShip: Position[];
     constructor(location?: Vector2) {
 
-        const shapeOfFirstHalfOfShip = [
+        this.shapeOfFirstHalfOfShip = [
             new Position(new Vector2(17, 176)),
             new Position(new Vector2(208, 205)),
             new Position(new Vector2(362, 218)),
@@ -18,11 +20,11 @@ export class Hull2 {
             new Position(new Vector2(672, 127)),
         ];
 
-        const shapeOfSecondHalfOfShip = shapeOfFirstHalfOfShip.map((position) => {
+        this.shapeOfSecondHalfOfShip = this.shapeOfFirstHalfOfShip.map((position) => {
             return new Position(new Vector2(position.value.x, -position.value.y + 220));
         });
 
-        const shapeOfShip = shapeOfFirstHalfOfShip.concat(shapeOfSecondHalfOfShip.reverse());
+        const shapeOfShip = this.shapeOfFirstHalfOfShip.concat(this.shapeOfSecondHalfOfShip.reverse());
 
         this.dynamicCollidingPolygon = new DynamicCollidingPolygon(shapeOfShip);
 

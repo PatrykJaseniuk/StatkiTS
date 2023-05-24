@@ -76,6 +76,12 @@ export class Triangle implements WorldElement {
         this.position1.value.add(positionRotation.position.value);
         this.position2.value.add(positionRotation.position.value);
     }
+
+    getNormal(): Vector2 {
+        const botomEdge = this.position0.value.clone().sub(this.position1.value);
+        const ortoganalToBotomEdge = new Vector2(-botomEdge.y, botomEdge.x); // rotate 90 degrees, GPT proposition
+        return ortoganalToBotomEdge.normalize();
+    }
 }
 
 export const triangles = new WorldElements()

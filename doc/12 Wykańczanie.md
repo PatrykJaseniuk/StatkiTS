@@ -1,5 +1,5 @@
 # Cel 🥅
-+ Grafika ( wygląd kadłubu, żagli, miecza itd. )
++ Grafika (wygląd kadłuba, żagli, miecza itd.)
 + dodanie steru z tyłu statku
 + interakcja:
 	+ przybliżanie oddalanie kamery

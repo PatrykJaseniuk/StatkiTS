@@ -18,29 +18,22 @@ export class ViewTexture implements View {
     readonly mesh: THREE.Mesh;
     readonly positionRotation: PositionRotation;
 
-    constructor(positionRotation: PositionRotation, picturePath: string, size?: { width: number, height: number }) {
+    constructor(positionRotation: PositionRotation, picturePath: string, size: { width: number, height: number }, repeat?: { x: number, y: number }) {
         this.positionRotation = positionRotation;
-
-        //    clone texture in both directions
-        // const texture = new THREE.TextureLoader().load(picturePath);
-        // texture.wrapS = THREE.RepeatWrapping;
-        // texture.wrapT = THREE.RepeatWrapping;
-        // texture.repeat.set(500, 500);
 
         // clone texture beter (to not have a seam)
         const texture = new THREE.TextureLoader().load(picturePath);
-        texture.wrapS = THREE.MirroredRepeatWrapping;
-        texture.wrapT = THREE.MirroredRepeatWrapping;
-        texture.repeat.set(500, 500);
-        // texture.magFilter = THREE.NearestFilter;
-        // texture.minFilter = THREE.LinearMipMapLinearFilter;
-        // texture.anisotropy = 16;
 
-
+        const setRepeat = (repeat: { x: number, y: number }, texture: THREE.Texture) => {
+            texture.wrapS = THREE.MirroredRepeatWrapping;
+            texture.wrapT = THREE.MirroredRepeatWrapping;
+            texture.repeat.set(repeat.x, repeat.y);
+        }
+        repeat && setRepeat(repeat, texture);
 
         //create plane
-        const geometry = new THREE.PlaneGeometry(size?.width ?? 1, size?.height ?? 1);
-        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        const geometry = new THREE.PlaneGeometry(size.width, size.height);
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
         this.mesh = new THREE.Mesh(geometry, material);
 
 
@@ -76,7 +69,7 @@ export class ViewLine implements View {
         const planeGeo = new THREE.PlaneGeometry(1, 2);
         const planeMat = new THREE.MeshBasicMaterial({
             color: 'red',
-            // transparent: true,
+            transparent: true,
         });
         this.line = new THREE.Mesh(planeGeo, planeMat);
 
@@ -155,7 +148,7 @@ class Camera {
 
     positionRotation = new PositionRotation();
     speed: THREE.Vector2 = new THREE.Vector2(0, 0);
-    private size: number = 10;
+    private size: number = 1;
     threeCamera = new THREE.OrthographicCamera(-1000, 1000, 1000, -1000, -100, 1000);
 
     setWidthHeight(width: number, height: number) {

@@ -23,7 +23,7 @@ export class Pointer {
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture({ position: this.position, rotation: views.camera.positionRotation.rotation }, 'hook.png');
+        this.view = new ViewTexture({ position: this.position, rotation: views.camera.positionRotation.rotation }, 'hook.png', { width: 50, height: 50 });
         pointers.addElement(this);
     }
 }

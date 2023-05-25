@@ -8,6 +8,7 @@ import { FluidInteractor, WaterInteractor, WindInteractor } from "./FluidIintera
 import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction } from "./SpringInteraction";
 import { type } from "os";
+import { ViewTexture } from "./View";
 
 type Side = 'left' | 'right';
 type SailLocation = 'front' | 'back';
@@ -82,6 +83,11 @@ class Sword {
 
 
 class Sail {
+    yardView: ViewTexture;
+    // sailView: ViewTexture;
+    positionRotation: PositionRotation;
+    triangle: Triangle;
+
     mast: DynamicElement;
     yardLeft: DynamicElement;
     yardRight: DynamicElement;
@@ -94,11 +100,13 @@ class Sail {
     area = 1;
 
     constructor(position: Vector2) {
+        const width = 400;
+        const height = 50;
         this.mast = new DynamicElement(new Position(position));
-        this.yardLeft = new DynamicElement(new Position(new Vector2(0, 200).add(position)));
-        this.yardRight = new DynamicElement(new Position(new Vector2(0, -200).add(position)));
+        this.yardLeft = new DynamicElement(new Position(new Vector2(0, width / 2).add(position)));
+        this.yardRight = new DynamicElement(new Position(new Vector2(0, -width / 2).add(position)));
 
-        this.aditionalDynamicElement = new DynamicElement(new Position(new Vector2(-50, 0).add(position)));
+        this.aditionalDynamicElement = new DynamicElement(new Position(new Vector2(-height, 0).add(position)));
 
         this.interactions.push(new SpringInteraction(this.mast, this.yardLeft, 0.1, 0.1));
         this.interactions.push(new SpringInteraction(this.mast, this.yardRight, 0.1, 0.1));
@@ -112,16 +120,13 @@ class Sail {
             yardPerpendicular.normalize();
             return yardPerpendicular;
         }
-
-
-
-        // const positionRotation = new PositionRotation();
-        // const triangle = new Triangle(new Position(new Vector2(0, 0)), new Position(new Vector2(30, -200)), new Position(new Vector2(30, 200)), positionRotation);
-
-        // this.dynamicTriangle = new DynamicTriangle(triangle, 3, 0.1, 0.1);
-
-
-
         this.windInteractor = WindInteractor(() => getNormal(), () => this.area, this.mast);
+
+        this.positionRotation = new PositionRotation();
+        this.triangle = new Triangle(this.aditionalDynamicElement.position, this.yardLeft.position, this.yardRight.position, this.positionRotation);
+
+        this.yardView = new ViewTexture(this.positionRotation, 'yard.png', { height, width });
     }
+
+
 }

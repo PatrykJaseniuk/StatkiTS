@@ -3,12 +3,13 @@ import { DynamicTriangle } from "./DynamicTriangle";
 import { Hull2 } from "./Hull2";
 import { Triangle } from "./Triangle";
 import { Position } from "./Position";
-import { PositionRotation } from "./PositionRotation";
+import { PositionRotation, Rotation } from "./PositionRotation";
 import { FluidInteractor, WaterInteractor, WindInteractor } from "./FluidIinteractor";
 import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction } from "./SpringInteraction";
 import { type } from "os";
 import { ViewTexture } from "./View";
+import { get } from "http";
 
 type Side = 'left' | 'right';
 type SailLocation = 'front' | 'back';
@@ -26,6 +27,8 @@ export class Ship2 {
     sail2: Sail
 
     sword: FluidInteractor;
+
+    // ster: Ster;
 
     ropes: Rope[] = [];
 
@@ -59,6 +62,9 @@ export class Ship2 {
         this.ropes.push({ side: 'right', sail: 'front', interaction: ropeRightSail1 });
         this.ropes.push({ side: 'left', sail: 'back', interaction: ropeLeftSail2 });
         this.ropes.push({ side: 'right', sail: 'back', interaction: ropeRightSail2 });
+
+        // this.ster = new Ster(new Position(new Vector2(50, centerY)), this.hull.positionRotation.rotation);
+        // this.hull.dynamicCollidingPolygon.connectDynamicElement(this.ster.dynamicElement);
     }
 
     turnSail(sailLocation: SailLocation, angle: number) {
@@ -76,15 +82,35 @@ export class Ship2 {
     }
 }
 
-class Sword {
+class Ster {
+    dynamicElement: DynamicElement;
+    fluidInteractor: FluidInteractor;
+    rotationOfHull: Rotation;
+    rotationOfSter: Rotation = new Rotation();
+    area = 0.1;
+    view: ViewTexture;
+    constructor(position: Position, rotationOfHull: Rotation) {
+        this.rotationOfHull = rotationOfHull;
+        const positionRotation = new PositionRotation(position, rotationOfHull);
+        this.dynamicElement = new DynamicElement(position);
+        const getNormalOfSter = () => {
+            const vector = new Vector2(0, 1);
+            vector.rotateAround(new Vector2(0, 0), this.rotationOfHull.value);
+            return vector;
+        }
+        this.fluidInteractor = WaterInteractor(getNormalOfSter, () => this.area, this.dynamicElement);
 
-
+        const getPositinoRotationOfSter = () => {
+            return new PositionRotation(this.dynamicElement.position, new Rotation(this.rotationOfHull.value + this.rotationOfSter.value));
+        }
+        this.view = new ViewTexture(getPositinoRotationOfSter, 'ster.png', { width: 50, height: 10 }, 1);
+    }
 }
 
 
 class Sail {
     yardView: ViewTexture;
-    // sailView: ViewTexture;
+    sailView: ViewTexture;
     positionRotation: PositionRotation;
     triangle: Triangle;
 
@@ -122,10 +148,24 @@ class Sail {
         }
         this.windInteractor = WindInteractor(() => getNormal(), () => this.area, this.mast);
 
-        this.positionRotation = new PositionRotation();
-        this.triangle = new Triangle(this.aditionalDynamicElement.position, this.yardLeft.position, this.yardRight.position, this.positionRotation);
 
-        this.yardView = new ViewTexture(this.positionRotation, 'yard.png', { height, width });
+        this.positionRotation = new PositionRotation();
+        this.triangle = new Triangle(this.yardLeft.position, this.yardRight.position, this.aditionalDynamicElement.position, this.positionRotation);
+
+        this.yardView = new ViewTexture(this.positionRotation, 'yard.png', { height, width }, 1);
+        this.yardView.rotationOffset = Math.PI / 2;
+        this.yardView.positionOffset = new Vector2(-height / 2, 0);
+
+
+        this.sailView = new ViewTexture(this.positionRotation, 'plutno.png', { height, width }, 1);
+        this.sailView.rotationOffset = Math.PI / 2;
+        this.sailView.positionOffset = new Vector2(-height / 2, 0);
+
+        const windForce = this.windInteractor.actualForce
+
+        this.sailView.newSkaleOnUpdate = () => {
+            return { x: 1, y: Math.pow((-windForce.clone().dot(getNormal()) * 50 + 1), 0.3) }
+        };
     }
 
 

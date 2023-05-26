@@ -1,5 +1,5 @@
 import { collisionSystem } from "./WorldElements/Collision";
-import { DynamicRotationElements, dynamicElements } from "./WorldElements/DynamicElement";
+import { dynamicElements } from "./WorldElements/DynamicElement";
 import { frictionInteractions } from "./WorldElements/FrictionInteraction";
 import { springInteractions } from "./WorldElements/SpringInteraction";
 import { interactionCreators } from "./WorldElements/InteractionCreator";
@@ -113,7 +113,7 @@ export class WorldModifiers {
     }
 
     private molecularModelUpdate() {
-        const realWorldDt = 10;
+        const realWorldDt = 5;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
         SimulationMaximumDT = 0.1;
         const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
@@ -127,9 +127,7 @@ export class WorldModifiers {
             this.dynamicElementsDuration += mesureTime(() => dynamicElements.update(SimulationMaximumDT), 1);
             this.fluidInteractorsDuration += mesureTime(() => fluidInteractors.update(), 1);
             this.trianglesDuration += mesureTime(() => triangles.update(), 1);
-            this.dynamicRotationElementsDuration += mesureTime(() => DynamicRotationElements.update(), 1);
             pointers.update();
-
         }
     }
 

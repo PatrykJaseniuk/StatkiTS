@@ -2,12 +2,16 @@ import { Vector2 } from "three";
 import { Position } from "./Position";
 import { DynamicCollidingPolygon } from "./DynamicCollidingPolygon";
 import { DynamicElement } from "./DynamicElement";
+import { PositionRotation, Rotation } from "./PositionRotation";
+import { Triangle } from "./Triangle";
 
 export class Hull2 {
 
     dynamicCollidingPolygon: DynamicCollidingPolygon;
     shapeOfFirstHalfOfShip: Position[];
     shapeOfSecondHalfOfShip: Position[];
+    positionRotation: PositionRotation;
+    triangle: Triangle;
     constructor(location?: Vector2) {
 
         this.shapeOfFirstHalfOfShip = [
@@ -29,15 +33,14 @@ export class Hull2 {
         this.dynamicCollidingPolygon = new DynamicCollidingPolygon(shapeOfShip);
 
         const centerOfShipY = this.dynamicCollidingPolygon.centerDynamicElement.position.value.y;
-        // shapeOfShip.forEach((position) => {
-        //     position.value.add(location);
-        // });
 
-        // const mast1 = new DynamicElement(new Position(new Vector2(200, centerOfShipY)), 1);
-        // const mast2 = new DynamicElement(new Position(new Vector2(400, centerOfShipY)), 1);
-
-        // this.dynamicCollidingPolygon.connectDynamicElement(mast1);
-        // this.dynamicCollidingPolygon.connectDynamicElement(mast2);
+        this.positionRotation = new PositionRotation(this.dynamicCollidingPolygon.centerDynamicElement.position, new Rotation());
+        this.triangle = new Triangle(
+            this.dynamicCollidingPolygon.centerDynamicElement.position,
+            this.shapeOfFirstHalfOfShip[0],
+            this.shapeOfSecondHalfOfShip[0],
+            this.positionRotation
+        );
     }
 }
 

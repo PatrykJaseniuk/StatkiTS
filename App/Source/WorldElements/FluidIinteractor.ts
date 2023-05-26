@@ -13,6 +13,7 @@ export class FluidInteractor implements WorldElement {
     getArea: () => number;
     private line: ViewLine;
     private lineEnd: Position;
+    actualForce: Vector2 = new Vector2();
 
     constructor(fluid: Fluid, normalGetter: () => Vector2, areaGetter: () => number, dynamicElement: DynamicElement) {
 
@@ -35,8 +36,7 @@ export class FluidInteractor implements WorldElement {
         const forceLength = dotNormalVelocitySquared * this.fluid.density * this.getArea();
 
         const fluidForce: Vector2 = this.getNormal().clone().multiplyScalar(forceLength);
-
-        // fluidForce.set(1, 1)
+        this.actualForce.set(fluidForce.x, fluidForce.y);
         this.dynamicElement.force.add(fluidForce);
 
         this.lineEnd.value = this.dynamicElement.position.value.clone().add(fluidForce.clone().multiplyScalar(100));

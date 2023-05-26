@@ -16,10 +16,17 @@ interface View extends WorldElement {
 
 export class ViewTexture implements View {
     readonly mesh: THREE.Mesh;
-    readonly positionRotation: PositionRotation;
+    readonly positionRotation: PositionRotation | (() => PositionRotation);
+    readonly order: number = 0;
+    rotationOffset: number = 0;
+    positionOffset: THREE.Vector2 = new THREE.Vector2();
+    newSkaleOnUpdate: () => { x: number; y: number; } = () => { return { x: 1, y: 1 } };
+    size: { width: number, height: number } = { width: 0, height: 0 };
 
-    constructor(positionRotation: PositionRotation, picturePath: string, size: { width: number, height: number }, repeat?: { x: number, y: number }) {
+    constructor(positionRotation: PositionRotation | (() => PositionRotation), picturePath: string, size: { width: number, height: number }, order: number, repeat?: { x: number, y: number },) {
+        this.order = order || -1;
         this.positionRotation = positionRotation;
+        this.size = size;
 
         // clone texture beter (to not have a seam)
         const texture = new THREE.TextureLoader().load(picturePath);
@@ -33,17 +40,36 @@ export class ViewTexture implements View {
 
         //create plane
         const geometry = new THREE.PlaneGeometry(size.width, size.height);
-        const material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-        this.mesh = new THREE.Mesh(geometry, material);
+        const material = new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            // depthWrite: false,
+            side: THREE.DoubleSide
+        });
 
+        this.mesh = new THREE.Mesh(geometry, material);
 
         //register view for rendering
         views.addView(this)
+
     }
 
     update() {
-        this.mesh.position.set(this.positionRotation.position.value.x, this.positionRotation.position.value.y, 0);
-        this.mesh.rotation.z = this.positionRotation.rotation;
+
+        const scale = this.newSkaleOnUpdate();
+        this.mesh.scale.set(scale.x, scale.y, 1);
+
+        const halfHeight = this.size.height / 4;
+        const xOffset = -(halfHeight * scale.y - halfHeight);
+
+
+        const vec = this.positionOffset.clone();
+        vec.add(new THREE.Vector2(xOffset, 0));
+        const positionRotation = this.positionRotation instanceof Function ? this.positionRotation() : this.positionRotation;
+        vec.rotateAround(new THREE.Vector2(0, 0), positionRotation.rotation.value);
+        const position = positionRotation.position.value.clone().add(vec);
+        this.mesh.position.set(position.x, position.y, this.order);
+        this.mesh.rotation.z = positionRotation.rotation.value + this.rotationOffset;
     }
 
     get3DObject(): THREE.Object3D<THREE.Event> {
@@ -69,10 +95,14 @@ export class ViewLine implements View {
         const planeGeo = new THREE.PlaneGeometry(1, 2);
         const planeMat = new THREE.MeshBasicMaterial({
             color: 'red',
-            transparent: true,
-        });
-        this.line = new THREE.Mesh(planeGeo, planeMat);
+            opacity: 1,
+            side: THREE.DoubleSide,
+        })
+        // dziwaczny bug, nie działa z transparent: true w viewTexture
+        //GPT zaproponowało żeby zrobić wrapera dla mesha
 
+        this.line = new THREE.Mesh(planeGeo, planeMat);
+        const meshWraper = new THREE.Mesh().add(this.line);
         // const length = p1.value.distanceTo(p2.value);
         // this.line.scale.set(length, 1, 1);
         // this.line.position.set(p1.value.x, p1.value.y, 0);
@@ -164,7 +194,7 @@ class Camera {
         const speedMove = this.speed.clone().multiplyScalar(speedfactor);
         const newPosition = this.positionRotation.position.value.clone().add(speedMove);
         this.threeCamera.position.set(newPosition.x, newPosition.y, 100);
-        this.threeCamera.rotation.z = this.positionRotation.rotation;
+        this.threeCamera.rotation.z = this.positionRotation.rotation.value;
     };
 }
 

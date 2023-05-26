@@ -2,28 +2,30 @@ import { Vec2, Vector2 } from 'three';
 import { Position } from './Position';
 import { WorldElements, WorldElement } from './Template';
 import { ViewTexture, views, Views } from './View';
-import { PositionRotation } from './PositionRotation';
+import { PositionRotation, Rotation } from './PositionRotation';
 
 export class Pointer {
     update(cameraSpace: Vector2) {
 
         const worldSpace = cameraSpace.clone().add(views.camera.positionRotation.position.value);
-        worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation);
+        worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation.value);
 
 
         this.position.value = worldSpace;
-        this.view.positionRotation.rotation = views.camera.positionRotation.rotation;
+        this.rotation = views.camera.positionRotation.rotation;
 
         // console.log('position' + this.position.value);
         // console.log("mesh position" + this.view.mesh.position);
     }
     position: Position;
+    rotation: Rotation;
     view: ViewTexture;
     isPointerDown: boolean = false;
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture({ position: this.position, rotation: views.camera.positionRotation.rotation }, 'hook.png', { width: 50, height: 50 });
+        this.rotation = new Rotation();
+        this.view = new ViewTexture(new PositionRotation(this.position, this.rotation), 'hook.png', { width: 50, height: 50 }, 1);
         pointers.addElement(this);
     }
 }

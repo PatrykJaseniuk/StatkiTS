@@ -1,10 +1,9 @@
 import { InteractionCreator } from "./WorldElements/InteractionCreator";
 import { Pointer } from "./WorldElements/Pointer";
-import { HullRotation2 } from "./WorldElements/Ship";
 import { CollidingPoint, CollidingTriangle } from "./WorldElements/Collision";
 import { ViewTexture, views } from "./WorldElements/View";
 import { PositionRotation } from "./WorldElements/PositionRotation";
-import { Vector2 } from "three";
+import { RepeatWrapping, Vector2 } from "three";
 import { Triangle } from "./WorldElements/Triangle";
 import { Position } from "./WorldElements/Position";
 import { DynamicTriangle } from "./WorldElements/DynamicTriangle";
@@ -19,7 +18,7 @@ import { Renderer } from "pixi.js";
 
 export class World {
     constructor() {
-        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 });
+        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 }, -10, { x: 500, y: 500 });
 
 
         let pointer = new Pointer();

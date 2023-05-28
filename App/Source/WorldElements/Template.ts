@@ -1,3 +1,4 @@
+import { Pointer } from "./Pointer";
 
 
 export class WorldElements {

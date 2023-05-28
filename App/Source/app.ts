@@ -31,4 +31,3 @@ export async function app(): Promise<CanvaApp> {
     }
     return app;
 }
-

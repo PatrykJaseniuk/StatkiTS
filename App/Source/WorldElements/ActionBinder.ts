@@ -20,6 +20,9 @@ interface Actions {
     sail2Left: Action,
     sail2Up: Action,
     sail2Down: Action,
+
+    timeSlow: Action,
+    timeNormal: Action,
 }
 
 class ActionBinder {
@@ -34,6 +37,9 @@ class ActionBinder {
         sail2Left: { key: 'ArrowLeft', action: () => { } },
         sail2Up: { key: 'ArrowUp', action: () => { } },
         sail2Down: { key: 'ArrowDown', action: () => { } },
+
+        timeSlow: { key: 'q', action: () => { } },
+        timeNormal: { key: 'e', action: () => { } },
     };
 
     onKeyDown = (event: KeyboardEvent) => {

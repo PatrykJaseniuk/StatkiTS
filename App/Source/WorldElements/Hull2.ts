@@ -2,12 +2,21 @@ import { Vector2 } from "three";
 import { Position } from "./Position";
 import { DynamicCollidingPolygon } from "./DynamicCollidingPolygon";
 import { DynamicElement } from "./DynamicElement";
+import { PositionRotation, Rotation } from "./PositionRotation";
+import { Triangle } from "./Triangle";
+import { ViewTexture } from "./View";
+import { FluidInteractor, WaterInteractor } from "./FluidIinteractor";
 
 export class Hull2 {
 
     dynamicCollidingPolygon: DynamicCollidingPolygon;
     shapeOfFirstHalfOfShip: Position[];
     shapeOfSecondHalfOfShip: Position[];
+    viewTexture: ViewTexture;
+    triangle: Triangle;
+    positionRotation = new PositionRotation();
+
+    fluidInteractor: FluidInteractor;
     constructor(location?: Vector2) {
 
         this.shapeOfFirstHalfOfShip = [
@@ -24,20 +33,26 @@ export class Hull2 {
             return new Position(new Vector2(position.value.x, -position.value.y + 220));
         });
 
-        const shapeOfShip = this.shapeOfFirstHalfOfShip.concat(this.shapeOfSecondHalfOfShip.reverse());
+        const reverserSecondhalf = this.shapeOfSecondHalfOfShip.slice().reverse();
+        const shapeOfShip = this.shapeOfFirstHalfOfShip.concat(reverserSecondhalf);
 
-        this.dynamicCollidingPolygon = new DynamicCollidingPolygon(shapeOfShip);
+        this.dynamicCollidingPolygon = new DynamicCollidingPolygon(shapeOfShip, 1000);
 
-        const centerOfShipY = this.dynamicCollidingPolygon.centerDynamicElement.position.value.y;
-        // shapeOfShip.forEach((position) => {
-        //     position.value.add(location);
-        // });
+        this.triangle = new Triangle(this.shapeOfSecondHalfOfShip[0], this.shapeOfFirstHalfOfShip[0], this.dynamicCollidingPolygon.centerDynamicElement.position, this.positionRotation);
 
-        // const mast1 = new DynamicElement(new Position(new Vector2(200, centerOfShipY)), 1);
-        // const mast2 = new DynamicElement(new Position(new Vector2(400, centerOfShipY)), 1);
+        // const centerOfShipY = this.dynamicCollidingPolygon.centerDynamicElement.position.value.y;
 
-        // this.dynamicCollidingPolygon.connectDynamicElement(mast1);
-        // this.dynamicCollidingPolygon.connectDynamicElement(mast2);
+        this.viewTexture = new ViewTexture(this.positionRotation, 'kadlub.png', { width: 680, height: 220 }, 1);
+        this.viewTexture.positionOffset = new Vector2(190, 0);
+
+        this.fluidInteractor = WaterInteractor(
+            () => {
+                const normal = this.triangle.getNormal();
+                return normal;
+            },
+            () => 0.00001,
+            this.dynamicCollidingPolygon.centerDynamicElement
+        )
     }
 }
 

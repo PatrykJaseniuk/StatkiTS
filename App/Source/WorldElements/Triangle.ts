@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
-import { PositionRotation } from "./PositionRotation";
+import { PositionRotation, Rotation } from "./PositionRotation";
 import { WorldElement, WorldElements } from "./Template";
 import { ViewLine } from "./View";
 
@@ -48,7 +48,7 @@ export class Triangle implements WorldElement {
 
         const centerOfTriangle = this.position0.value.clone().add(this.position1.value).add(this.position2.value).divideScalar(3); // GPT proposition
 
-        const positionRotation = { position: new Position(centerOfTriangle), rotation: rotationOfTriangle };
+        const positionRotation = new PositionRotation(new Position(centerOfTriangle), new Rotation(rotationOfTriangle));
         return positionRotation;
     }
     setPosition(position: Vector2) {
@@ -62,7 +62,7 @@ export class Triangle implements WorldElement {
     //GPT proposition
     setRotation(rotation: number) {
         const positionRotation = this.getPositionRotation();
-        const rotationDifference = rotation - positionRotation.rotation;
+        const rotationDifference = rotation - positionRotation.rotation.value;
         const rotationMatrix = new Vector2(Math.cos(rotationDifference), Math.sin(rotationDifference));
         this.position0.value.sub(positionRotation.position.value);
         this.position1.value.sub(positionRotation.position.value);

@@ -2,33 +2,44 @@ import { Vec2, Vector2 } from 'three';
 import { Position } from './Position';
 import { WorldElements, WorldElement } from './Template';
 import { ViewTexture, views, Views } from './View';
-import { PositionRotation } from './PositionRotation';
+import { PositionRotation, Rotation } from './PositionRotation';
 
 export class Pointer {
     update(cameraSpace: Vector2) {
 
         const worldSpace = cameraSpace.clone().add(views.camera.positionRotation.position.value);
-        worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation);
+        worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation.value);
 
 
         this.position.value = worldSpace;
-        this.view.positionRotation.rotation = views.camera.positionRotation.rotation;
+        this.rotation.value = views.camera.positionRotation.rotation.value;
 
         // console.log('position' + this.position.value);
         // console.log("mesh position" + this.view.mesh.position);
     }
     position: Position;
+    rotation: Rotation;
     view: ViewTexture;
-    isPointerDown: boolean = false;
+
+    isLMBDown: boolean = false;
+    isRMBDown: boolean = false;
+
+    wheelDelta: number = 0;
 
     constructor() {
         this.position = new Position();
-        this.view = new ViewTexture({ position: this.position, rotation: views.camera.positionRotation.rotation }, 'hook.png');
+        this.rotation = new Rotation();
+        this.view = new ViewTexture(new PositionRotation(this.position, this.rotation), 'hook.png', { width: 50, height: 50 }, 1);
         pointers.addElement(this);
     }
 }
 
 class Pointers {
+    onWheel(event: WheelEvent) {
+        this.elements.forEach((element) => {
+            element.wheelDelta = event.deltaY;
+        })
+    }
     private elements: Pointer[] = [];
     private cameraSpaceLocation: Vector2 = new Vector2();
 
@@ -62,15 +73,42 @@ class Pointers {
     }
 
     onPointerDown(event: PointerEvent) {
-        this.elements.forEach((element) => {
-            element.isPointerDown = true;
-        })
+        const LMBDown = () => {
+            this.elements.forEach((element) => {
+                element.isLMBDown = true;
+            })
+        }
+        const RMBDown = () => {
+            this.elements.forEach((element) => {
+                element.isRMBDown = true;
+            })
+        }
+
+        const isRMB = event.button == 2;
+        const isLMB = event.button == 0;
+
+        isRMB && RMBDown()
+            ||
+            isLMB && LMBDown()
+
     }
     onPointerUp(event: PointerEvent) {
         this.elements.forEach((element) => {
-            element.isPointerDown = false;
-        })
+            element.isLMBDown = false;
+            element.isRMBDown = false;
+        });
     }
+
+    // onRMBDown(event: MouseEvent) {
+    //     this.elements.forEach((element) => {
+    //         element.isRMBDown = true;
+    //     })
+    // }
+    // onRMBUp(event: MouseEvent) {
+    //     this.elements.forEach((element) => {
+    //         element.isRMBDown = false;
+    //     })
+    // }
 }
 
 export const pointers = new Pointers();

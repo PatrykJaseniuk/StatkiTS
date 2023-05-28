@@ -3,7 +3,7 @@ import { DynamicElement } from "./DynamicElement";
 import { Fluid } from "./Fluid";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElement, WorldElements } from "./Template";
-import { ViewLine } from "./View";
+import { ViewLine, ViewTexture } from "./View";
 import { Position } from "./Position";
 
 export class FluidInteractor implements WorldElement {
@@ -11,8 +11,10 @@ export class FluidInteractor implements WorldElement {
     dynamicElement: DynamicElement;
     fluid: Fluid;
     getArea: () => number;
-    private line: ViewLine;
-    private lineEnd: Position;
+    actualForce: Vector2 = new Vector2();
+    // private line: ViewLine;
+    // private lineEnd: Position;
+
 
     constructor(fluid: Fluid, normalGetter: () => Vector2, areaGetter: () => number, dynamicElement: DynamicElement) {
 
@@ -21,25 +23,27 @@ export class FluidInteractor implements WorldElement {
         this.getArea = areaGetter;
         this.dynamicElement = dynamicElement;
 
-        this.lineEnd = new Position();
-        this.line = new ViewLine(dynamicElement.position, this.lineEnd)
+        // this.lineEnd = new Position();
+        // this.line = new ViewLine(dynamicElement.position, this.lineEnd)
 
         fluidInteractors.addElement(this);
     }
 
     update(): void {
+        const maxFluidForce = 10000;
         const velocity = this.fluid.velocity.clone().sub(this.dynamicElement.velocity);
 
         const dotNormalVelocity = velocity.dot(this.getNormal());
         const dotNormalVelocitySquared = dotNormalVelocity * dotNormalVelocity * (dotNormalVelocity > 0 ? 1 : -1);
         const forceLength = dotNormalVelocitySquared * this.fluid.density * this.getArea();
+        const safeFluidForceLength = Math.min(Math.abs(forceLength), maxFluidForce) * (forceLength > 0 ? 1 : -1);
 
-        const fluidForce: Vector2 = this.getNormal().clone().multiplyScalar(forceLength);
+        const fluidForce: Vector2 = this.getNormal().clone().multiplyScalar(safeFluidForceLength);
 
-        // fluidForce.set(1, 1)
+        this.actualForce.set(fluidForce.x, fluidForce.y);
         this.dynamicElement.force.add(fluidForce);
 
-        this.lineEnd.value = this.dynamicElement.position.value.clone().add(fluidForce.clone().multiplyScalar(100));
+        // this.lineEnd.value = this.dynamicElement.position.value.clone().add(fluidForce.clone().multiplyScalar(100));
     }
     destroy(): void {
         throw new Error("Method not implemented.");
@@ -55,7 +59,9 @@ export function WaterInteractor(getNormal: () => Vector2, getArea: () => number,
     return new FluidInteractor(water, getNormal, getArea, dynamicElement);
 }
 
-const wind = new Fluid(1, new Vector2(0, 1));
+export const wind = new Fluid(1, new Vector2(0, 1));
+
+
 
 const water = new Fluid(1000, new Vector2(0, 0));
 

@@ -1,10 +1,9 @@
 import { InteractionCreator } from "./WorldElements/InteractionCreator";
 import { Pointer } from "./WorldElements/Pointer";
-import { HullRotation2 } from "./WorldElements/Ship";
 import { CollidingPoint, CollidingTriangle } from "./WorldElements/Collision";
 import { ViewTexture, views } from "./WorldElements/View";
 import { PositionRotation } from "./WorldElements/PositionRotation";
-import { Vector2 } from "three";
+import { Camera, RepeatWrapping, Vector2 } from "three";
 import { Triangle } from "./WorldElements/Triangle";
 import { Position } from "./WorldElements/Position";
 import { DynamicTriangle } from "./WorldElements/DynamicTriangle";
@@ -16,18 +15,37 @@ import { Hull2 } from "./WorldElements/Hull2";
 import { Ship2 } from "./WorldElements/Ship2";
 import { actionBinder } from "./WorldElements/ActionBinder";
 import { Renderer } from "pixi.js";
+import { pointer, userInteractors } from "./WorldElements/UserInteractor";
+import { FrictionInteraction } from "./WorldElements/FrictionInteraction";
+import { wind } from "./WorldElements/FluidIinteractor";
+import { timeSpeed } from "./WorldModifiers";
 
 export class World {
     constructor() {
-        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 });
 
 
-        let pointer = new Pointer();
-
-        const interactionCreateor = new InteractionCreator(pointer);
+        pointer.pointer = new Pointer();
 
 
+        const windDynamicElement = new DynamicElement(new Position(), 9999999999);
+        windDynamicElement.velocity = wind.velocity;
+        const clouds = new ViewTexture(new PositionRotation(windDynamicElement.position), 'clouds.png', { height: 1000000, width: 1000000 }, 100, { x: 500, y: 500 });
+
+        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 }, -10, { x: 500, y: 500 });
+
+
+        // let pointer = new Pointer();
+
+        // const collidingPoint = new CollidingPoint(pointer.position, pointer);
+
+
+        // const interactionCreateor = new InteractionCreator(pointer);
         const ship = new Ship2();
+
+        const DynameicElementOcean = new DynamicElement(new Position(), 9999999999);
+        const friction = new FrictionInteraction(ship.hull.dynamicCollidingPolygon.centerDynamicElement, DynameicElementOcean, 0.01)
+
+
         // const hull3 = ship.hull;
         actionBinder.actions.sail1Left.action = () => { ship.turnSail("back", -0.1) };
         actionBinder.actions.sail1Right.action = () => { ship.turnSail('back', 0.1) };
@@ -35,24 +53,34 @@ export class World {
         actionBinder.actions.sail2Left.action = () => { ship.turnSail('front', -0.1) };
         actionBinder.actions.sail2Right.action = () => { ship.turnSail('front', 0.1) };
 
+        actionBinder.actions.timeNormal.action = () => { timeSpeed.value = 1 };
+        actionBinder.actions.timeSlow.action = () => { timeSpeed.value = 0.1 };
 
-        const positionRotation = new PositionRotation();
-        const triangle = new Triangle(ship.sail1.mast.position, ship.hull.shapeOfFirstHalfOfShip[5], ship.hull.shapeOfSecondHalfOfShip[5], positionRotation);
+        // const positionRotation = new PositionRotation();
+        // const triangle = new Triangle(ship.hull.shapeOfFirstHalfOfShip[0], ship.hull.shapeOfSecondHalfOfShip[0], ship.sail1.mast.position, positionRotation);
 
-        views.camera.positionRotation = positionRotation;
-        views.camera.speed = ship.sail1.mast.velocity;
+        views.camera.getPositionRotation = () => {
+            const positionRotation = new PositionRotation();
+
+            const shipPosition = ship.positionRotation.position.value.clone();
+            const shipSpeed = ship.sail1.mast.velocity.clone();
+            const cameraPosition = shipPosition.add(shipSpeed.multiplyScalar(100));
+            positionRotation.position.value = cameraPosition;
+            positionRotation.rotation.value = ship.positionRotation.rotation.value;
+            return positionRotation
+        };
 
         const sail1 = ship.sail1;
         const sail2 = ship.sail2;
 
 
-        interactionCreateor.addDynamicElement(sail1.yardLeft);
-        interactionCreateor.addDynamicElement(sail1.yardRight);
-        interactionCreateor.addDynamicElement(sail1.mast);
+        // interactionCreateor.addDynamicElement(sail1.yardLeft);
+        // interactionCreateor.addDynamicElement(sail1.yardRight);
+        // interactionCreateor.addDynamicElement(sail1.mast);
 
-        interactionCreateor.addDynamicElement(sail2.yardLeft);
-        interactionCreateor.addDynamicElement(sail2.yardRight);
-        interactionCreateor.addDynamicElement(sail2.mast);
+        // interactionCreateor.addDynamicElement(sail2.yardLeft);
+        // interactionCreateor.addDynamicElement(sail2.yardRight);
+        // interactionCreateor.addDynamicElement(sail2.mast);
 
         // interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement0);
         // interactionCreateor.addDynamicElement(ship.sail1.dynamicTriangle.dynamicElement1);

@@ -14,10 +14,10 @@ Oddziaływanie musiałoby być rozbudowane o punk przyczepienia i z punktu przyc
 
 ## Rozwiązanie 2
 Za pomocą oddziaływań mogę połączyć ze sobą dwa punkty.
-Te dwa punkty będą stanowiły bryłę obrotową. I tyle.
-Takie rozwiązanie jest bliższe rzeczywistości. Ponieważ każda bryła obrotowa jest zbiorem punktów, które nie mają kierunku (kąta obrotu). Pomiędzy tymi punktami istnieją oddziaływania. Zbiór punktów, pomiędzy którymi istnieją oddziaływania, można nazwać bryłą. Bryła obraza się, jeżeli punktu poruszają się z różną prędkością. Bryła jest sztywna, jeżeli odległości pomiędzy punktami pozostają stałe.      
+Te dwa punkty będą stanowiły bryłę. I tyle.
+Takie rozwiązanie jest bliższe rzeczywistości. Ponieważ każda bryła jest zbiorem punktów, które nie mają kierunku (kąta obrotu). Pomiędzy tymi punktami istnieją oddziaływania. Zbiór punktów, pomiędzy którymi istnieją oddziaływania, można nazwać bryłą. Bryła obraca się, jeżeli punkty poruszają się z różną prędkością. Bryła jest sztywna, jeżeli odległości pomiędzy punktami pozostają stałe.      
 
-W tym przypadku model bryły obrotowej będzie się składał z trzech, a nie z dwóch punktów, ponieważ łatwiej będzie zasymulować oddziaływania tej bryły z inną.  
+W tym przypadku model bryły będzie się składał z trzech, a nie z dwóch punktów, ponieważ łatwiej będzie zasymulować oddziaływania tej bryły z inną.  
 
 ## Realizacja
 

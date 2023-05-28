@@ -76,6 +76,43 @@ const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
                 height: '100%',
             }}
         >
+
+            <Box
+                //  wyświetl komponent Box w leym górnym rogu ekranu
+                sx={{
+                    position: 'absolute',
+                    top: '0px',
+                    left: '0px',
+                    border: '0px red solid',
+                    padding: '10px',
+                    // czrne tło
+                    bgcolor: 'black',
+                    color: 'white',
+                    fontSize: '10px',
+                    fontFamily: 'monospace',
+
+                }}
+            >
+                <div>
+                    wskaźnik nad masztem:
+                    <ul>
+                        <li>LMB - obróć żagiel w lewo</li>
+                        <li>RMB - obróć żagiel w prawo</li>
+                        <li>scroll - rozwiń zwiń żagiel</li>
+                    </ul>
+                </div>
+                <div>wskaźnik nad sterem: </div>
+                <ul>
+                    <li>LMB - obróć w lewo</li>
+                    <li>RMB - obróć w prawo</li>
+                </ul>
+                <div> sterowanie czasem:
+                    <ul>
+                        <li>Q - zwolnij</li>
+                        <li>E - przyspiesz</li>
+                    </ul>
+                </div>
+            </Box>
         </Box>
     )
 }

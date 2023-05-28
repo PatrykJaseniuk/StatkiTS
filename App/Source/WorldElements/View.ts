@@ -176,9 +176,9 @@ export class ViewPoint implements View {
 
 class Camera {
 
-    positionRotation = new PositionRotation();
-    speed: THREE.Vector2 = new THREE.Vector2(0, 0);
-    private size: number = 1;
+    getPositionRotation: (() => PositionRotation) = () => new PositionRotation();
+    positionRotation: PositionRotation = new PositionRotation();
+    private size: number = 3;
     threeCamera = new THREE.OrthographicCamera(-1000, 1000, 1000, -1000, -100, 1000);
 
     setWidthHeight(width: number, height: number) {
@@ -190,10 +190,8 @@ class Camera {
     }
 
     update() {
-        const speedfactor = 500;
-        const speedMove = this.speed.clone().multiplyScalar(speedfactor);
-        const newPosition = this.positionRotation.position.value.clone().add(speedMove);
-        this.threeCamera.position.set(newPosition.x, newPosition.y, 100);
+        this.positionRotation = this.getPositionRotation();
+        this.threeCamera.position.set(this.positionRotation.position.value.x, this.positionRotation.position.value.y, 100);
         this.threeCamera.rotation.z = this.positionRotation.rotation.value;
     };
 }

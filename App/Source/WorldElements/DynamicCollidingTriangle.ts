@@ -9,7 +9,7 @@ import { DynamicTriangle } from "./DynamicTriangle";
 // import { ViewLine } from "./View";
 
 export class DynamicCollidingTriangle implements WorldElement {
-   
+
 
     readonly dynamicCollidingPoint0: DynamicCollidingPoint;
     readonly dynamicCollidingPoint1: DynamicCollidingPoint;
@@ -62,7 +62,7 @@ export class DynamicCollidingTriangle implements WorldElement {
 
     private createInteraction(dynamicCollidingPoint: DynamicCollidingPoint, collidingPoint: CollidingPoint, posNotOverlap: Vector2) {
         const distance = posNotOverlap.distanceTo(dynamicCollidingPoint.dynamicElement.position.value);
-        const interaction = new SpringInteraction(dynamicCollidingPoint.dynamicElement, collidingPoint.dynamicElement, 0.01, 0.1, distance);
+        const interaction = new SpringInteraction(dynamicCollidingPoint.dynamicElement, collidingPoint.element, 0.01, 0.1, distance);
         this.springInteractions.push(interaction);
     }
 

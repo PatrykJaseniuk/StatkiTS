@@ -11,6 +11,7 @@ import { mesureTime } from "../Tests/tools";
 import { dynamicCollidingPolygons } from "./WorldElements/DynamicCollidingPolygon";
 import { fluidInteractors } from "./WorldElements/FluidIinteractor";
 import { actionBinder } from "./WorldElements/ActionBinder";
+import { userInteractors } from "./WorldElements/UserInteractor";
 
 export class WorldModifiers {
     private previousTimeStamp: number | undefined = undefined;
@@ -23,9 +24,13 @@ export class WorldModifiers {
         this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
         views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.onPointerMove(event); });
         views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
-        views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => {
-            pointers.onPointerUp(event);
-        });
+        views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
+        window.addEventListener("contextmenu", e => e.preventDefault());
+
+        // on mouse wheel up
+        views.renderer?.domElement.addEventListener('wheel', (event: WheelEvent) => { pointers.onWheel(event); });
+
+
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             actionBinder.onKeyDown(event);
         });
@@ -113,15 +118,18 @@ export class WorldModifiers {
     }
 
     private molecularModelUpdate() {
-        const realWorldDt = 5;
+        const realWorldDt = 10;
+        const dt = realWorldDt * timeSpeed.value;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
         SimulationMaximumDT = 0.1;
-        const iterations = Math.floor(realWorldDt / SimulationMaximumDT);
+        const iterations = Math.floor(dt / SimulationMaximumDT);
+
+        this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
 
         for (let i = 0; i < iterations; i++) {
-            // this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
-            this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
-            this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
+            userInteractors.update();
+            // this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
+            // this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
             this.springInteractionsDuration += mesureTime(() => springInteractions.update(), 1);
             this.frictionInteractionsDuration += mesureTime(() => frictionInteractions.update(), 1);
             this.dynamicElementsDuration += mesureTime(() => dynamicElements.update(SimulationMaximumDT), 1);
@@ -143,4 +151,5 @@ export class WorldModifiers {
     private dynamicRotationElementsDuration: number = 0;
 }
 
+export const timeSpeed = { value: 1 };
 

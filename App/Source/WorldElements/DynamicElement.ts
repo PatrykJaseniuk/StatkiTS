@@ -41,10 +41,11 @@ export class DynamicElement {
 }
 
 class DynamicElements {
+    private elements: DynamicElement[] = [];
+
     removeElement(element: DynamicElement) {
         this.elements = this.elements.filter((e) => e !== element);
     }
-    private elements: DynamicElement[] = [];
 
     addElement(element: DynamicElement) {
         this.elements.push(element);

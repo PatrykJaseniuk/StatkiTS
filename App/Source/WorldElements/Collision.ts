@@ -16,11 +16,11 @@ import { type } from "os";
 export class CollidingPoint extends Point implements WorldElement {
     position: Position
     // overlapV: PotentialVector = {};
-    dynamicElement: DynamicElement
+    element: any;
 
-    constructor(position: Position, dynamciElement: DynamicElement) {
+    constructor(position: Position, element: any) {
         super({ x: position.value.x, y: position.value.y });
-        this.dynamicElement = dynamciElement;
+        this.element = element;
         this.position = position;
 
         collidingPoints.addElement(this);

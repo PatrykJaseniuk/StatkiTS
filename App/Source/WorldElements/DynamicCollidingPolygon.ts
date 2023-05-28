@@ -37,18 +37,20 @@ export class DynamicCollidingPolygon implements WorldElement {
     dyanmicElementsBouncing: DynamicElement[] = [];
     centerDynamicElement: DynamicElement;
     private readonly numberOfBouncingDynamicElements = 4;
+    mass: number;
 
     // private readonly lineP1 = new Position(new Vector2(0, 0));
     // private readonly linewP2 = new Position(new Vector2(0, 0));
     // private readonly viewLine: ViewLine;
 
-    constructor(positions: Position[]) {
-        // this.viewLine = new ViewLine(this.lineP1, this.linewP2);
+    constructor(positions: Position[], mass: number) {
+        this.mass = mass;
+        const massOfOneElement = mass / positions.length;
 
         this.positions = positions;
         this.collidingPolygon = new CollidingPolygon(positions);
         this.dyanmicElements = positions.map((position) => {
-            return new DynamicElement(position, 1);
+            return new DynamicElement(position, massOfOneElement);
         });
 
         this.dynamicColidingPoints = this.dyanmicElements.map((dynamicElement) => {
@@ -86,7 +88,11 @@ export class DynamicCollidingPolygon implements WorldElement {
         this.bauncingInteracions.length = 0;
 
         this.collidingPolygon.collidingPointsOverlapV.forEach((e) => {
-            !this.isPointFromThisPolygon(e.collidingPoint) && this.handleCollision(e);
+            !this.isPointFromThisPolygon(e.collidingPoint)
+                &&
+                e.collidingPoint.element instanceof DynamicElement
+                &&
+                this.handleCollision(e);
         });
 
 
@@ -104,13 +110,13 @@ export class DynamicCollidingPolygon implements WorldElement {
     }
     private createInteraction(dynamicElement: DynamicElement, collidingPoint: CollidingPoint, posNotOverlap: Vector2) {
         const distance = posNotOverlap.distanceTo(dynamicElement.position.value);
-        const interaction = new SpringInteraction(dynamicElement, collidingPoint.dynamicElement, 0.01, 0, distance);
+        const interaction = new SpringInteraction(dynamicElement, collidingPoint.element, 0.01, 0, distance);
         this.bauncingInteracions.push(interaction);
     }
 
     isPointFromThisPolygon(collidingPoint: CollidingPoint) {
         const isPointFromThisPolygon = this.dynamicColidingPoints.some((dynamicCollidingPoint) => {
-            return dynamicCollidingPoint.dynamicElement === collidingPoint.dynamicElement;
+            return dynamicCollidingPoint.dynamicElement === collidingPoint.element;
         });
         return isPointFromThisPolygon;
     }

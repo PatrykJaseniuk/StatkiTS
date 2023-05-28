@@ -44,7 +44,7 @@ describe("InteractionCreator", () => {
 
         it('should handle pointer down', () => {
             interactionCreator.addDynamicElement(dynamicElement0)
-            pointer.isPointerDown = true;
+            pointer.isLMBDown = true;
             dynamicElement0.position.value.set(0, 0);
             pointer.position.value.set(10, 10);
 
@@ -56,7 +56,7 @@ describe("InteractionCreator", () => {
         it('should destroy all', () => {
             interactionCreator['interactions'].push(new SpringInteractionWithPosition(dynamicElement0, pointer.position, 1, 1, 1));
 
-            pointer.isPointerDown = false;
+            pointer.isLMBDown = false;
 
             interactionCreator.update();
 

@@ -12,7 +12,7 @@ export class Pointer {
 
 
         this.position.value = worldSpace;
-        this.rotation = views.camera.positionRotation.rotation;
+        this.rotation.value = views.camera.positionRotation.rotation.value;
 
         // console.log('position' + this.position.value);
         // console.log("mesh position" + this.view.mesh.position);
@@ -20,7 +20,11 @@ export class Pointer {
     position: Position;
     rotation: Rotation;
     view: ViewTexture;
-    isPointerDown: boolean = false;
+
+    isLMBDown: boolean = false;
+    isRMBDown: boolean = false;
+
+    wheelDelta: number = 0;
 
     constructor() {
         this.position = new Position();
@@ -31,6 +35,11 @@ export class Pointer {
 }
 
 class Pointers {
+    onWheel(event: WheelEvent) {
+        this.elements.forEach((element) => {
+            element.wheelDelta = event.deltaY;
+        })
+    }
     private elements: Pointer[] = [];
     private cameraSpaceLocation: Vector2 = new Vector2();
 
@@ -64,15 +73,42 @@ class Pointers {
     }
 
     onPointerDown(event: PointerEvent) {
-        this.elements.forEach((element) => {
-            element.isPointerDown = true;
-        })
+        const LMBDown = () => {
+            this.elements.forEach((element) => {
+                element.isLMBDown = true;
+            })
+        }
+        const RMBDown = () => {
+            this.elements.forEach((element) => {
+                element.isRMBDown = true;
+            })
+        }
+
+        const isRMB = event.button == 2;
+        const isLMB = event.button == 0;
+
+        isRMB && RMBDown()
+            ||
+            isLMB && LMBDown()
+
     }
     onPointerUp(event: PointerEvent) {
         this.elements.forEach((element) => {
-            element.isPointerDown = false;
-        })
+            element.isLMBDown = false;
+            element.isRMBDown = false;
+        });
     }
+
+    // onRMBDown(event: MouseEvent) {
+    //     this.elements.forEach((element) => {
+    //         element.isRMBDown = true;
+    //     })
+    // }
+    // onRMBUp(event: MouseEvent) {
+    //     this.elements.forEach((element) => {
+    //         element.isRMBDown = false;
+    //     })
+    // }
 }
 
 export const pointers = new Pointers();

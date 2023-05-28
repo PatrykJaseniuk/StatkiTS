@@ -24,10 +24,10 @@ export class InteractionCreator implements WorldElement {
     }
     update(): void {
 
-        this.pointer.isPointerDown && this.interactions.length == 0 &&
+        this.pointer.isLMBDown && this.interactions.length == 0 &&
             handlePointerDown(this.pointer, this.dynamicElements, this.interactions);
 
-        !this.pointer.isPointerDown && this.interactions.length > 0 &&
+        !this.pointer.isLMBDown && this.interactions.length > 0 &&
             destroyAllinteractions(this.interactions);
 
 

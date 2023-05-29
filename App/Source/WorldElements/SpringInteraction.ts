@@ -11,7 +11,7 @@ export class SpringInteraction implements WorldElement {
     springRate: number;
     readonly dumperRate: number;
 
-    readonly viewLine: ViewLine;
+    // readonly viewLine: ViewLine;
 
     constructor(dynamicElement0: DynamicElement, dynamicElement1: DynamicElement, springRate?: number, dumperRate?: number, distance?: number) {
         this.dynamicElement0 = dynamicElement0;
@@ -19,23 +19,23 @@ export class SpringInteraction implements WorldElement {
         this.springRate = springRate ? springRate : calculateMaxSpringRate(Math.min(dynamicElement0.mass, dynamicElement0.mass), 1);
         this.dumperRate = dumperRate != undefined ? dumperRate : 0.1;
         this.distance = distance != undefined ? distance : dynamicElement0.position.value.distanceTo(dynamicElement1.position.value);
-        this.viewLine = new ViewLine(this.dynamicElement0.position, this.dynamicElement1.position);
-        this.viewLine.onUpdate = (p1, p2, collor) => {
-            const actualDistance = p1.value.distanceTo(p2.value);
-            const distanceDiff = Math.abs(actualDistance - this.distance);
+        // this.viewLine = new ViewLine(this.dynamicElement0.position, this.dynamicElement1.position);
+        // this.viewLine.onUpdate = (p1, p2, collor) => {
+        //     const actualDistance = p1.value.distanceTo(p2.value);
+        //     const distanceDiff = Math.abs(actualDistance - this.distance);
 
-            // collor depends on distanceDiff
-            const minCollor = 0x00ff00;
-            const maxCollorChange = 0xff;
-            const maxDistanceDiff = 10;
-            const collorChange = Math.floor(Math.min(distanceDiff / maxDistanceDiff * maxCollorChange, maxCollorChange));
+        //     // collor depends on distanceDiff
+        //     const minCollor = 0x00ff00;
+        //     const maxCollorChange = 0xff;
+        //     const maxDistanceDiff = 10;
+        //     const collorChange = Math.floor(Math.min(distanceDiff / maxDistanceDiff * maxCollorChange, maxCollorChange));
 
-            const readCollor = collorChange * 0x10000;
-            const greenCollor = (maxCollorChange - collorChange) * 0x100;
+        //     const readCollor = collorChange * 0x10000;
+        //     const greenCollor = (maxCollorChange - collorChange) * 0x100;
 
-            const newCollor = readCollor + greenCollor;
-            return newCollor;
-        };
+        //     const newCollor = readCollor + greenCollor;
+        //     return newCollor;
+        // };
 
         springInteractions.addElement(this);
     }
@@ -61,7 +61,7 @@ export class SpringInteraction implements WorldElement {
     destroy(): void {
         // every object which has reference to this object should remove it
         springInteractions.removeElement(this);
-        this.viewLine.destroy();
+        // this.viewLine.destroy();
     }
 
     setDistance(distance: number) {

@@ -121,10 +121,8 @@ export class WorldModifiers {
         const realWorldDt = 10;
         const dt = realWorldDt * timeSpeed.value;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
-        SimulationMaximumDT = 0.5;
+        SimulationMaximumDT = 0.3;
         const iterations = Math.floor(dt / SimulationMaximumDT);
-
-
 
         for (let i = 0; i < iterations; i++) {
             userInteractors.update();

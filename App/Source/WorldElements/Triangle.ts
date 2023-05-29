@@ -11,7 +11,7 @@ export class Triangle implements WorldElement {
 
     readonly positionRotation: PositionRotation;
 
-    private readonly lines: ViewLine[] = [];
+    // private readonly lines: ViewLine[] = [];
 
 
     constructor(position0: Position, position1: Position, position2: Position, positionRotation: PositionRotation) {
@@ -21,16 +21,16 @@ export class Triangle implements WorldElement {
 
         this.positionRotation = positionRotation;
 
-        this.lines.push(new ViewLine(this.position0, this.position1));
-        this.lines.push(new ViewLine(this.position1, this.position2));
-        this.lines.push(new ViewLine(this.position2, this.position0));
+        // this.lines.push(new ViewLine(this.position0, this.position1));
+        // this.lines.push(new ViewLine(this.position1, this.position2));
+        // this.lines.push(new ViewLine(this.position2, this.position0));
 
         triangles.addElement(this)
     }
     destroy(): void {
-        this.lines.forEach((line) => {
-            line.destroy();
-        });
+        // this.lines.forEach((line) => {
+        //     line.destroy();
+        // });
         triangles.removeElement(this)
     }
 

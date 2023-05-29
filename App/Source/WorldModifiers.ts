@@ -121,13 +121,14 @@ export class WorldModifiers {
         const realWorldDt = 10;
         const dt = realWorldDt * timeSpeed.value;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
-        SimulationMaximumDT = 0.1;
+        SimulationMaximumDT = 0.5;
         const iterations = Math.floor(dt / SimulationMaximumDT);
 
-        this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
+
 
         for (let i = 0; i < iterations; i++) {
             userInteractors.update();
+            // this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
             // this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
             // this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
             this.springInteractionsDuration += mesureTime(() => springInteractions.update(), 1);

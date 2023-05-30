@@ -156,23 +156,23 @@ export const dynamicElements = new DynamicElements();
 //         this.positions[2].value.add(positionDifference);
 //     }
 
-//     //GPT proposition
-//     setRotation(rotation: number) {
-//         const positionRotation = this.getPositionRotation();
-//         const rotationDifference = rotation - positionRotation.rotation;
-//         const rotationMatrix = new Vector2(Math.cos(rotationDifference), Math.sin(rotationDifference));
-//         this.positions[0].value.sub(positionRotation.position.value);
-//         this.positions[1].value.sub(positionRotation.position.value);
-//         this.positions[2].value.sub(positionRotation.position.value);
+    //GPT proposition
+    // setRotation(rotation: number) {
+    //     const positionRotation = this.getPositionRotation();
+    //     const rotationDifference = rotation - positionRotation.rotation;
+    //     const rotationMatrix = new Vector2(Math.cos(rotationDifference), Math.sin(rotationDifference));
+    //     this.positions[0].value.sub(positionRotation.position.value);
+    //     this.positions[1].value.sub(positionRotation.position.value);
+    //     this.positions[2].value.sub(positionRotation.position.value);
 
-//         this.positions[0].value = new Vector2(this.positions[0].value.x * rotationMatrix.x - this.positions[0].value.y * rotationMatrix.y, this.positions[0].value.x * rotationMatrix.y + this.positions[0].value.y * rotationMatrix.x);
-//         this.positions[1].value = new Vector2(this.positions[1].value.x * rotationMatrix.x - this.positions[1].value.y * rotationMatrix.y, this.positions[1].value.x * rotationMatrix.y + this.positions[1].value.y * rotationMatrix.x);
-//         this.positions[2].value = new Vector2(this.positions[2].value.x * rotationMatrix.x - this.positions[2].value.y * rotationMatrix.y, this.positions[2].value.x * rotationMatrix.y + this.positions[2].value.y * rotationMatrix.x);
+    //     this.positions[0].value = new Vector2(this.positions[0].value.x * rotationMatrix.x - this.positions[0].value.y * rotationMatrix.y, this.positions[0].value.x * rotationMatrix.y + this.positions[0].value.y * rotationMatrix.x);
+    //     this.positions[1].value = new Vector2(this.positions[1].value.x * rotationMatrix.x - this.positions[1].value.y * rotationMatrix.y, this.positions[1].value.x * rotationMatrix.y + this.positions[1].value.y * rotationMatrix.x);
+    //     this.positions[2].value = new Vector2(this.positions[2].value.x * rotationMatrix.x - this.positions[2].value.y * rotationMatrix.y, this.positions[2].value.x * rotationMatrix.y + this.positions[2].value.y * rotationMatrix.x);
 
-//         this.positions[0].value.add(positionRotation.position.value);
-//         this.positions[1].value.add(positionRotation.position.value);
-//         this.positions[2].value.add(positionRotation.position.value);
-//     }
+    //     this.positions[0].value.add(positionRotation.position.value);
+    //     this.positions[1].value.add(positionRotation.position.value);
+    //     this.positions[2].value.add(positionRotation.position.value);
+    // }
 
 //     Destroy() {
 

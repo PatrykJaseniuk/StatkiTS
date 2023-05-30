@@ -1,0 +1,167 @@
+{
+  "main": {
+    "id": "eeed867a508b6406",
+    "type": "split",
+    "children": [
+      {
+        "id": "28eab96a804beec1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e9414d306922cd5e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f56ebd8c362af5fd",
+    "type": "split",
+    "children": [
+      {
+        "id": "4c5c924393e0ebaa",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a43a6028d80bacb7",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "7869a99e9050d280",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "fd99a3e18c9aaed8",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b5b402fadef123a5",
+    "type": "split",
+    "children": [
+      {
+        "id": "7e7d1a9bd602a79c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "14a861adfb0e725a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "5fdaabb6df3e4e27",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4dc21211b085df4c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "eb16fc790748bb2e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "e9414d306922cd5e",
+  "lastOpenFiles": [
+    "doc/pracaDyplomowa/2 Rozwinięcie/2 Rozwinięcie.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia, Języki Programowania, Biblioteki, Frameworki.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Opis sposobu powstawania oprogramowania.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Pasted image 20230529145216.png",
+    "doc/pracaDyplomowa/3 Zakończenie/3 Zakończenie.md",
+    "doc/pracaDyplomowa/1 Wstęp/1 Wstęp.md",
+    "doc/wstep.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/().md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia, Języki Programowania Biblioteki.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia I Języki Programowania.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia I Język Programowania.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia I Język programowania.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia.md",
+    "doc/0.md"
+  ]
+}

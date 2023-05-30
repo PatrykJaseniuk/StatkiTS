@@ -1,5 +1,5 @@
 1) Opis sposobu pracy (iteracyjny rozwój oprogramowanie z ciągłym deployem coś jakby Extream programing) [[Opis sposobu powstawania oprogramowania]]
-2) Opis narzędzi wykorzystanych do stworzenia systemu informatycznego 
+2) [Opis narzędzi wykorzystanych do stworzenia systemu informatycznego]() 
 3) Sam materiał, z którego powstanie system informatyczny (język programowania)
 4) Automat skończony jako podstawa symulatora czasu rzeczywistego
 5) Opisy kolejnych `Elementów Swiata` (najdłuższy punkt)

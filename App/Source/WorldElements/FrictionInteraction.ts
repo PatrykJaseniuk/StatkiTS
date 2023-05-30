@@ -20,9 +20,7 @@ export class FrictionInteraction implements WorldElement {
     update(): void {
         // sila tarcia zalezy od predkosci wzgledem obiektów i jest stała
         let velocityDeferace = this.dynamicElement2.velocity.clone().sub(this.dynamicElement1.velocity);
-
         let force: Vector2 = velocityDeferace.clone().normalize().multiplyScalar(this.frictionRate);
-
         let negativeForce: Vector2 = force.clone().multiplyScalar(-1);
         this.dynamicElement1.force.add(force);
         this.dynamicElement2.force.add(negativeForce);

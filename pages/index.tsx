@@ -22,6 +22,7 @@ export default function Home() {
 
       <main style={{ border: 'solid red', width: '100vw', height: '100vh' }}>
         <CanvaAppComponent app={app} />
+        {/* <CanvaAppComponent app={app} /> */}
       </main>
     </div>
   )

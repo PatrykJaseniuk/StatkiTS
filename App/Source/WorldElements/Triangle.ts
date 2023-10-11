@@ -8,23 +8,13 @@ export class Triangle implements WorldElement {
     readonly position0: Position;
     readonly position1: Position;
     readonly position2: Position;
-
     readonly positionRotation: PositionRotation;
-
-    // private readonly lines: ViewLine[] = [];
-
 
     constructor(position0: Position, position1: Position, position2: Position, positionRotation: PositionRotation) {
         this.position0 = position0;
         this.position1 = position1;
         this.position2 = position2;
-
         this.positionRotation = positionRotation;
-
-        // this.lines.push(new ViewLine(this.position0, this.position1));
-        // this.lines.push(new ViewLine(this.position1, this.position2));
-        // this.lines.push(new ViewLine(this.position2, this.position0));
-
         triangles.addElement(this)
     }
     destroy(): void {

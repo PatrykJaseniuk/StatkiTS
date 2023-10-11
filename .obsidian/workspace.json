@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/5  Elementy świata.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 462.5
   },
   "right": {
     "id": "b5b402fadef123a5",
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/5  Elementy świata.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/5  Elementy świata.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md"
+                "file": "doc/pracaDyplomowa/2 Rozwinięcie/5  Elementy świata.md"
               }
             }
           }
@@ -148,11 +148,14 @@
   },
   "active": "e9414d306922cd5e",
   "lastOpenFiles": [
-    "doc/pracaDyplomowa/2 Rozwinięcie/2 Rozwinięcie.md",
-    "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
     "doc/pracaDyplomowa/2 Rozwinięcie/Narzędzia, Języki Programowania, Biblioteki, Frameworki.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/5  Elementy świata.md",
+    "Interaction.ts.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/3 Symulator Czasu rzeczysistego.md",
+    "doc/pracaDyplomowa/2 Rozwinięcie/Pasted image 20230530220551.png",
     "doc/pracaDyplomowa/2 Rozwinięcie/Opis sposobu powstawania oprogramowania.md",
     "doc/pracaDyplomowa/2 Rozwinięcie/Pasted image 20230529145216.png",
+    "doc/pracaDyplomowa/2 Rozwinięcie/2 Rozwinięcie.md",
     "doc/pracaDyplomowa/3 Zakończenie/3 Zakończenie.md",
     "doc/pracaDyplomowa/1 Wstęp/1 Wstęp.md",
     "doc/wstep.md",

@@ -42,7 +42,7 @@ return nowyStan;
 
 ## Implementacja w tym symulatorze
 
-Ogólna koncepcja systemu jest taka:
+### WorldElement
 
 symulator jest zbudowany z obiektów które implementują interfejs `WorldElement`
 ```ts
@@ -110,6 +110,57 @@ export class WorldElements {
 
 Wywołanie metody `update` na obiekcie `WorldElements` powoduje wywołanie metody `update` na każdym obiekcie w kontenerze.
 
-Końcowa `funkcjaprzejścia` jest wywołaniem metody `update` dla każdego kontenera:
+### Funkcja przejścia
 
+Końcowa funkcja przejścia (`transitionFunction`) wywołuje metodę update na każdym kontenerze:
+```ts
+private transitionFunction() {
+        const realWorldDt = 10;
+        const dt = realWorldDt * timeSpeed.value;
+        let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();
+        SimulationMaximumDT = 0.3;
+        const iterations = Math.floor(dt / SimulationMaximumDT);
+
+        for (let i = 0; i < iterations; i++) {
+            userInteractors.update();
+            // this.collisionSystemDuration += mesureTime(() => collisionSystem.update(), 1);
+            // this.dynamicCollidingPolygonsDuration += mesureTime(() => dynamicCollidingPolygons.update(), 1)
+            // this.dynamicCollidingTrianglesDuration += mesureTime(() => dynamicCollindingTriangles.update(), 1);
+            // wraper mesurTime służy do pomiaru wydajności
+            this.springInteractionsDuration += mesureTime(() => springInteractions.update(), 1);
+            this.frictionInteractionsDuration += mesureTime(() => frictionInteractions.update(), 1);
+            this.dynamicElementsDuration += mesureTime(() => dynamicElements.update(SimulationMaximumDT), 1);
+            this.fluidInteractorsDuration += mesureTime(() => fluidInteractors.update(), 1);
+            this.trianglesDuration += mesureTime(() => triangles.update(), 1);
+            pointers.update();
+        }
+    }
+```
+ta funkcja jest przesłana do interwału aby była wywołana co 10[ms] :
+```ts
+this.intervals.push(setInterval(() => this.transitionFunction(), 10));
+```
+
+### Stan 
+
+Stan początkowy automatu/symulatora jest reprezentowany przez klasę `World`:
+```ts
+export class World {
+    constructor() {
+        pointer.pointer = new Pointer();
+        const windDynamicElement = new DynamicElement(new Position(), 9999999999);
+        windDynamicElement.velocity = wind.velocity;
+        const clouds = new ViewTexture(new PositionRotation(windDynamicElement.position), 'clouds.png', { height: 1000000, width: 1000000 }, 100, { x: 500, y: 500 });
+
+        const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 }, -10, { x: 500, y: 500 });
+        
+        const ship = new Ship2();
+
+        const DynameicElementOcean = new DynamicElement(new Position(), 9999999999);
+        const friction = new FrictionInteraction(ship.hull.dynamicCollidingPolygon.centerDynamicElement, DynameicElementOcean, 0.01)
+        ...
+    }
+}
+```
+kolejne stany są przechowywane w globalnych kontenerach (obiektach klasy `WorldElements`)
 

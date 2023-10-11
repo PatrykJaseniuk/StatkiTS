@@ -22,24 +22,13 @@ import { timeSpeed } from "./WorldModifiers";
 
 export class World {
     constructor() {
-
-
         pointer.pointer = new Pointer();
-
-
         const windDynamicElement = new DynamicElement(new Position(), 9999999999);
         windDynamicElement.velocity = wind.velocity;
         const clouds = new ViewTexture(new PositionRotation(windDynamicElement.position), 'clouds.png', { height: 1000000, width: 1000000 }, 100, { x: 500, y: 500 });
 
         const viewOcean = new ViewTexture(new PositionRotation(), 'water.jpg', { height: 1000000, width: 1000000 }, -10, { x: 500, y: 500 });
-
-
-        // let pointer = new Pointer();
-
-        // const collidingPoint = new CollidingPoint(pointer.position, pointer);
-
-
-        // const interactionCreateor = new InteractionCreator(pointer);
+        
         const ship = new Ship2();
 
         const DynameicElementOcean = new DynamicElement(new Position(), 9999999999);

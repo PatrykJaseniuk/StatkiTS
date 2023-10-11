@@ -61,8 +61,6 @@ export function WaterInteractor(getNormal: () => Vector2, getArea: () => number,
 
 export const wind = new Fluid(1, new Vector2(0, 1));
 
-
-
 const water = new Fluid(1000, new Vector2(0, 0));
 
 export const fluidInteractors = new WorldElements();

@@ -21,7 +21,7 @@ export class WorldModifiers {
     start() {
         this.setRefreshRateDurationInterval();
         this.intervals.push(setInterval(() => interactionCreators.update(), 100)); //metoda update musi byc wywolana w funkcji strzalkowej, bo inaczej this jest undefined ???
-        this.intervals.push(setInterval(() => this.molecularModelUpdate(), 10));
+        this.intervals.push(setInterval(() => this.transitionFunction(), 10));
         views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { pointers.onPointerMove(event); });
         views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { pointers.onPointerDown(event); });
         views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { pointers.onPointerUp(event); });
@@ -117,7 +117,7 @@ export class WorldModifiers {
         this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
     }
 
-    private molecularModelUpdate() {
+    private transitionFunction() {
         const realWorldDt = 10;
         const dt = realWorldDt * timeSpeed.value;
         let SimulationMaximumDT = springInteractions.getSimulationMaximumDT();

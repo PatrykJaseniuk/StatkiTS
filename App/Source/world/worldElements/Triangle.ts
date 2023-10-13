@@ -1,8 +1,8 @@
 import { Vector2 } from "three";
 import { Position } from "./Position";
 import { PositionRotation, Rotation } from "./PositionRotation";
-import { WorldElement, WorldElements } from "./Template";
-import { ViewLine } from "./View";
+import { WorldElement } from "./WorldElement";
+import { World } from "../World";
 
 export class Triangle implements WorldElement {
     readonly position0: Position;
@@ -15,13 +15,13 @@ export class Triangle implements WorldElement {
         this.position1 = position1;
         this.position2 = position2;
         this.positionRotation = positionRotation;
-        triangles.addElement(this)
+        World.context.triangles.addElement(this)
     }
     destroy(): void {
         // this.lines.forEach((line) => {
         //     line.destroy();
         // });
-        triangles.removeElement(this)
+        World.context.triangles.removeElement(this)
     }
 
     update(): void {
@@ -74,4 +74,4 @@ export class Triangle implements WorldElement {
     }
 }
 
-export const triangles = new WorldElements()
+// export const triangles = new WorldElements()

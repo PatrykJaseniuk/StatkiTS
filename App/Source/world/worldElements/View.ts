@@ -1,8 +1,8 @@
 import * as THREE from "three";
 import { Position } from "./Position";
-import { WorldElement } from "./Template";
+import { WorldElement } from "./WorldElement";
 import { PositionRotation } from "./PositionRotation";
-import { Ocean } from "./Ocean/ViewOcean";
+import { World } from "../World";
 
 
 
@@ -11,8 +11,6 @@ import { Ocean } from "./Ocean/ViewOcean";
 interface View extends WorldElement {
     get3DObject(): THREE.Object3D<THREE.Event>;
 }
-
-
 
 export class ViewTexture implements View {
     readonly mesh: THREE.Mesh;
@@ -50,7 +48,7 @@ export class ViewTexture implements View {
         this.mesh = new THREE.Mesh(geometry, material);
 
         //register view for rendering
-        views.addView(this)
+        World.context.views.addView(this)
 
     }
 
@@ -108,7 +106,7 @@ export class ViewLine implements View {
         // this.line.position.set(p1.value.x, p1.value.y, 0);
         // this.line.lookAt(new THREE.Vector3(p2.value.x, p2.value.y, 0));
         this.setPosition(p1.value, p2.value);
-        views.addView(this)
+        World.context.views.addView(this)
     }
 
     setPosition(p1: THREE.Vector2, p2: THREE.Vector2) {
@@ -143,7 +141,7 @@ export class ViewLine implements View {
     onUpdate: (p1: Position, p2: Position, color: number) => number = (p1, p2, color) => color;
 
     destroy(): void {
-        views.removeView(this);
+        World.context.views.removeView(this);
     }
 }
 
@@ -157,7 +155,7 @@ export class ViewPoint implements View {
         const geometry = new THREE.CircleGeometry(5, 32);
         const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
         this.circle = new THREE.Mesh(geometry, material);
-        views.addView(this)
+        World.context.views.addView(this)
     }
 
 
@@ -168,11 +166,9 @@ export class ViewPoint implements View {
         this.circle.position.set(this.position.value.x, this.position.value.y, 0);
     }
     destroy(): void {
-        views.removeView(this);
+        World.context.views.removeView(this);
     }
 }
-
-
 
 class Camera {
 
@@ -246,12 +242,7 @@ export class Views {
     setSize(width: number, height: number) {
         this.renderer?.setSize(width, height);
         this.camera.setWidthHeight(width, height);
-        // this.camera.threeCamera.left = -width / 2;
-        // this.camera.threeCamera.right = width / 2;
-        // this.camera.threeCamera.top = height / 2;
-        // this.camera.threeCamera.bottom = -height / 2;
-        // this.camera.threeCamera.updateProjectionMatrix();
     }
 }
 
-export const views = new Views();
+// export const views = new Views();

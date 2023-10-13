@@ -1,4 +1,4 @@
-import { WorldElement, WorldElements } from "../../Source/WorldElements/Template";
+import { WorldElement, WorldElements } from "../../Source/world/worldElements/WorldElement";
 
 
 

@@ -2,9 +2,10 @@ import { NormalBlending, Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { Fluid } from "./Fluid";
 import { PositionRotation } from "./PositionRotation";
-import { WorldElement, WorldElements } from "./Template";
+import { WorldElement, WorldElements } from "./WorldElement";
 import { ViewLine, ViewTexture } from "./View";
 import { Position } from "./Position";
+import { World } from "../World";
 
 export class FluidInteractor implements WorldElement {
     getNormal: () => Vector2
@@ -22,11 +23,7 @@ export class FluidInteractor implements WorldElement {
         this.getNormal = normalGetter;
         this.getArea = areaGetter;
         this.dynamicElement = dynamicElement;
-
-        // this.lineEnd = new Position();
-        // this.line = new ViewLine(dynamicElement.position, this.lineEnd)
-
-        fluidInteractors.addElement(this);
+        World.context.fluidInteractors.addElement(this);
     }
 
     update(): void {
@@ -63,4 +60,4 @@ export const wind = new Fluid(1, new Vector2(0, 1));
 
 const water = new Fluid(1000, new Vector2(0, 0));
 
-export const fluidInteractors = new WorldElements();
+// export const fluidInteractors = new WorldElements();

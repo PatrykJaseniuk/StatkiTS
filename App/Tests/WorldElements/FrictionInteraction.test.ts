@@ -1,7 +1,7 @@
-import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
-import { FrictionInteraction, frictionInteractions } from "../../Source/WorldElements/FrictionInteraction";
+import { DynamicElement, dynamicElements } from "../../Source/world/worldElements/DynamicElement";
+import { FrictionInteraction, frictionInteractions } from "../../Source/world/worldElements/FrictionInteraction";
 import { Vector2 } from "three";
-import { Position } from "../../Source/WorldElements/Position";
+import { Position } from "../../Source/world/worldElements/Position";
 
 describe("FrictionInteraction", () => {
     let dynamicElement1: DynamicElement;

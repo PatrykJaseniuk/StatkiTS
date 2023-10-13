@@ -1,16 +1,16 @@
 import { create } from "domain";
 import { CollidingPoint, CollidingPointOverlapV, CollidingPolygon } from "./Collision";
 import { DynamicCollidingTriangle } from "./DynamicCollidingTriangle";
-import { DynamicTriangle } from "./DynamicTriangle";
-import { Position } from "./Position";
+import { DynamicTriangle } from "../DynamicTriangle";
+import { Position } from "../Position";
 import { Vector2 } from "three";
-import { Triangle } from "./Triangle";
-import { PositionRotation } from "./PositionRotation";
+import { Triangle } from "../Triangle";
+import { PositionRotation } from "../PositionRotation";
 import { DynamicCollidingPoint } from "./DynamicCollidingPoint";
-import { DynamicElement, dynamicElements } from "./DynamicElement";
-import { SpringInteraction } from "./SpringInteraction";
-import { WorldElement, WorldElements } from "./Template";
-import { ViewLine } from "./View";
+import { DynamicElement } from "../DynamicElement";
+import { SpringInteraction } from "../SpringInteraction";
+import { WorldElement, WorldElements } from "../WorldElement";
+import { ViewLine } from "../View";
 
 
 export class DynamicCollidingPolygon implements WorldElement {

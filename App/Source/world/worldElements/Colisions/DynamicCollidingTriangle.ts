@@ -1,11 +1,11 @@
 import { CollidingPoint, CollidingPointOverlapV, CollidingTriangle } from "./Collision";
-import { DynamicElement } from "./DynamicElement";
-import { SpringInteraction, calculateMaxSpringRate } from "./SpringInteraction";
-import { Position } from "./Position";
-import { WorldElement, WorldElements } from "./Template";
+import { DynamicElement } from "../DynamicElement";
+import { SpringInteraction, calculateMaxSpringRate } from "../SpringInteraction";
+import { Position } from "../Position";
+import { WorldElement, WorldElements } from "../WorldElement";
 import { DynamicCollidingPoint } from "./DynamicCollidingPoint";
 import { Vector2 } from "three";
-import { DynamicTriangle } from "./DynamicTriangle";
+import { DynamicTriangle } from "../DynamicTriangle";
 // import { ViewLine } from "./View";
 
 export class DynamicCollidingTriangle implements WorldElement {

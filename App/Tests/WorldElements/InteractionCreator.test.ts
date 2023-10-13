@@ -1,10 +1,10 @@
 
 import { jest } from "@jest/globals";
-import { InteractionCreator, interactionCreators } from "../../Source/WorldElements/InteractionCreator";
-import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
-import { Pointer, pointers } from "../../Source/WorldElements/Pointer";
-import { Position } from "../../Source/WorldElements/Position";
-import { SpringInteractionWithPosition } from "../../Source/WorldElements/SpringInteraction";
+import { InteractionCreator, interactionCreators } from "../../Source/world/worldElements/InteractionCreator";
+import { DynamicElement, dynamicElements } from "../../Source/world/worldElements/DynamicElement";
+import { Pointer, pointers } from "../../Source/world/worldStructures/Pointer";
+import { Position } from "../../Source/world/worldElements/Position";
+import { SpringInteractionWithPosition } from "../../Source/world/worldElements/SpringInteraction";
 
 
 describe("InteractionCreator", () => {

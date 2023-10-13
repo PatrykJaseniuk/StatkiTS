@@ -1,9 +1,9 @@
 // test for interaction class
 
 import { Vector2 } from "three";
-import { Position } from "../../Source/WorldElements/Position";
-import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
-import { SpringInteraction, SpringInteractionWithPosition, calculateMaxSpringRate, springInteractions } from "../../Source/WorldElements/SpringInteraction";
+import { Position } from "../../Source/world/worldElements/Position";
+import { DynamicElement, dynamicElements } from "../../Source/world/worldElements/DynamicElement";
+import { SpringInteraction, SpringInteractionWithPosition, calculateMaxSpringRate, springInteractions } from "../../Source/world/worldElements/SpringInteraction";
 import { calculateMaximumDt, mesureTime } from "../tools";
 
 describe("SpringInteraction", () => {

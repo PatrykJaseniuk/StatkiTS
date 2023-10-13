@@ -1,11 +1,11 @@
 
-import { DynamicCollidingTriangle, dynamicCollindingTriangles } from "../../Source/WorldElements/DynamicCollidingTriangle";
-import { DynamicTriangle } from "../../Source/WorldElements/DynamicTriangle";
-import { CollidingPoint, CollidingPointOverlapV, collisionSystem } from "../../Source/WorldElements/Collision";
-import { Triangle, triangles } from "../../Source/WorldElements/Triangle";
-import { Position } from "../../Source/WorldElements/Position";
-import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
-import { DynamicElement, dynamicElements } from "../../Source/WorldElements/DynamicElement";
+import { DynamicCollidingTriangle, dynamicCollindingTriangles } from "../../Source/world/worldElements/Colisions/DynamicCollidingTriangle";
+import { DynamicTriangle } from "../../Source/world/worldElements/DynamicTriangle";
+import { CollidingPoint, CollidingPointOverlapV, collisionSystem } from "../../Source/world/worldElements/Colisions/Collision";
+import { Triangle, triangles } from "../../Source/world/worldElements/Triangle";
+import { Position } from "../../Source/world/worldElements/Position";
+import { PositionRotation } from "../../Source/world/worldElements/PositionRotation";
+import { DynamicElement, dynamicElements } from "../../Source/world/worldElements/DynamicElement";
 import { Vector2 } from "three";
 import { mesureTime } from "../tools";
 

@@ -1,9 +1,9 @@
 import { Vector2 } from "three";
-import { DynamicCollidingTriangle } from "./DynamicCollidingTriangle";
-import { Position } from "./Position";
-import { Triangle } from "./Triangle";
-import { PositionRotation } from "./PositionRotation";
-import { DynamicTriangle } from "./DynamicTriangle";
+import { DynamicCollidingTriangle } from "../worldElements/Colisions/DynamicCollidingTriangle";
+import { Position } from "../worldElements/Position";
+import { Triangle } from "../worldElements/Triangle";
+import { PositionRotation } from "../worldElements/PositionRotation";
+import { DynamicTriangle } from "../worldElements/DynamicTriangle";
 
 export class Hull {
 
@@ -44,9 +44,6 @@ export class Hull {
         });
         this.dynamicCollidingTriangles = dynamicColidingTriangles;
     }
-
-
-
 }
 
 function SymetricPositions(positionsPerimeter: Position[]) {
@@ -60,20 +57,6 @@ function SymetricPositions(positionsPerimeter: Position[]) {
         positionsPerimeter.push(position);
     });
 }
-// function concatPositionsPerimeter(positionsPerimiterLeft: Position[], positionsPerimiterRight: Position[]) {
-//     const positionsPerimiterFull: Position[] = [];
-//     const positionsPerimeterLeftReversed = positionsPerimiterLeft.slice().reverse();
-//     // positionsPerimiterLeft.reverse();
-
-//     positionsPerimiterRight.forEach((position) => {
-//         positionsPerimiterFull.push(position);
-//     });
-
-//     positionsPerimiterLeft.forEach((position) => {
-//         positionsPerimiterFull.push(position);
-//     });
-//     return positionsPerimiterFull;
-// }
 
 function createDynamicCollidingTriangles(positionFrontFull: Position[], positionCenter: Position): Triangle[] {
     const triangles: Triangle[] = [];

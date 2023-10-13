@@ -40,7 +40,6 @@ const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
     }, [app])
 
     return (
-
         <Box ref={ref}
             sx={{
                 border: '0px blue solid',

@@ -1,5 +1,5 @@
 import { Vector2 } from "three";
-import { WorldElement } from "./Template";
+import { WorldElement } from "./WorldElement";
 
 export class Fluid implements WorldElement {
     density: number;

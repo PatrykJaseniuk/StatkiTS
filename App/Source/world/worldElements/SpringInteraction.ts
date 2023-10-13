@@ -1,8 +1,9 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
-import { WorldElements, WorldElement } from "./Template";
+import { WorldElements, WorldElement } from "./WorldElement";
 import { Position } from "./Position";
 import { ViewLine } from "./View";
+import { World } from "../World";
 
 export class SpringInteraction implements WorldElement {
     readonly dynamicElement0: DynamicElement;
@@ -19,7 +20,7 @@ export class SpringInteraction implements WorldElement {
         this.springRate = springRate ? springRate : calculateMaxSpringRate(Math.min(dynamicElement0.mass, dynamicElement0.mass), 1);
         this.dumperRate = dumperRate != undefined ? dumperRate : 0.1;
         this.distance = distance != undefined ? distance : dynamicElement0.position.value.distanceTo(dynamicElement1.position.value);
-        springInteractions.addElement(this);
+        World.context.springInteractions.addElement(this);
     }
 
     update(): void {
@@ -42,8 +43,8 @@ export class SpringInteraction implements WorldElement {
 
     destroy(): void {
         // every object which has reference to this object should remove it
-        springInteractions.removeElement(this);
-        // this.viewLine.destroy();
+        World.context.springInteractions.removeElement(this);
+
     }
 
     setDistance(distance: number) {
@@ -69,7 +70,7 @@ export class SpringInteractionWithPosition implements WorldElement {
         this.distance = distance;
         // this.viewLine = new ViewLine(this.dynamicElement.position, this.position);
 
-        springInteractions.addElement(this);
+        World.context.springInteractions.addElement(this);
     }
     update(): void {
         const pointsShift = this.position.value.clone().sub(this.dynamicElement.position.value);
@@ -84,19 +85,19 @@ export class SpringInteractionWithPosition implements WorldElement {
         this.dynamicElement.force.add(dumperForceOn1);
     }
     destroy(): void {
-        springInteractions.removeElement(this);
+        World.context.springInteractions.removeElement(this);
         // this.viewLine.destroy();
     }
 }
 
-class SpringInteractions extends WorldElements {
+export class SpringInteractions extends WorldElements {
     getSimulationMaximumDT() {
         const dt = 1; //TODO: calculate dt
         return dt
     }
 }
 
-export const springInteractions = new SpringInteractions();
+// export const springInteractions = new SpringInteractions();
 
 function calculateSpringForceOn1(pointsShift: Vector2, pointDirection: Vector2, springRate: number, distance: number) {
     // acording to third law of Newton and spring force

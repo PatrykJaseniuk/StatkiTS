@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
-import { DynamicElement } from "../../Source/WorldElements/DynamicElement";
-import { Position } from "../../Source/WorldElements/Position";
+import { DynamicElement } from "../../Source/world/worldElements/DynamicElement";
+import { Position } from "../../Source/world/worldElements/Position";
 import { measureMemory } from "vm";
 import { mesureTime } from "../tools";
 

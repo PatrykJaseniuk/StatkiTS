@@ -1,7 +1,7 @@
 import { Vector2 } from "three";
-import { Position } from "../../Source/WorldElements/Position";
-import { Triangle, triangles } from "../../Source/WorldElements/Triangle";
-import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
+import { Position } from "../../Source/world/worldElements/Position";
+import { Triangle, triangles } from "../../Source/world/worldElements/Triangle";
+import { PositionRotation } from "../../Source/world/worldElements/PositionRotation";
 
 describe('Triangle', () => {
 

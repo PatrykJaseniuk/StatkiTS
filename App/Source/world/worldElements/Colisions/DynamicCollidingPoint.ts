@@ -1,7 +1,7 @@
 import { CollidingPoint } from "./Collision";
-import { DynamicElement } from "./DynamicElement";
-import { Position } from "./Position";
-import { WorldElement } from "./Template";
+import { DynamicElement } from "../DynamicElement";
+import { Position } from "../Position";
+import { WorldElement } from "../WorldElement";
 
 export class DynamicCollidingPoint implements WorldElement {
 

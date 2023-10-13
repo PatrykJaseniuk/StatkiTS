@@ -1,6 +1,5 @@
-import { World } from "./World";
-import { views } from "./WorldElements/View";
-import { WorldModifiers } from "./WorldModifiers";
+import { World } from "./world/World";
+// import { WorldModifiers } from "./WorldModifiers";
 
 export interface CanvaApp {
     resize(width: number, height: number): void;
@@ -11,22 +10,22 @@ export interface CanvaApp {
 
 export async function app(): Promise<CanvaApp> {
 
-    let worldModifiers = new WorldModifiers();
-
+    // let worldModifiers = new WorldModifiers();
     let world = new World();
+
     let app: CanvaApp = {
         getHtmlElement: () => {
-            return worldModifiers.returnHtmlElement();
+            return world.returnHtmlElement();
         },
         start: (width, height) => {
-            worldModifiers.start();
-            views.setSize(width, height);
+            world.start();
+            // views.setSize(width, height);
         },
         stop: () => {
-            worldModifiers.stop();
+            world.stop();
         },
         resize: function (width: number, height: number) {
-            views.setSize(width, height);
+            World.context.views.setSize(width, height);
         }
     }
     return app;

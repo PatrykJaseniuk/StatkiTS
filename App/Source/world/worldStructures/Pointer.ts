@@ -1,11 +1,12 @@
 import { Vec2, Vector2 } from 'three';
-import { Position } from './Position';
-import { WorldElements, WorldElement } from './Template';
-import { ViewTexture, views, Views } from './View';
-import { PositionRotation, Rotation } from './PositionRotation';
+import { Position } from '../worldElements/Position';
+import { WorldElements, WorldElement } from '../worldElements/WorldElement';
+import { ViewTexture, Views } from '../worldElements/View';
+import { PositionRotation, Rotation } from '../worldElements/PositionRotation';
+import { World } from '../World';
 
 export class Pointer {
-    update(cameraSpace: Vector2) {
+    update(cameraSpace: Vector2, views: Views) {
 
         const worldSpace = cameraSpace.clone().add(views.camera.positionRotation.position.value);
         worldSpace.rotateAround(views.camera.positionRotation.position.value, views.camera.positionRotation.rotation.value);
@@ -13,9 +14,6 @@ export class Pointer {
 
         this.position.value = worldSpace;
         this.rotation.value = views.camera.positionRotation.rotation.value;
-
-        // console.log('position' + this.position.value);
-        // console.log("mesh position" + this.view.mesh.position);
     }
     position: Position;
     rotation: Rotation;
@@ -30,22 +28,27 @@ export class Pointer {
         this.position = new Position();
         this.rotation = new Rotation();
         this.view = new ViewTexture(new PositionRotation(this.position, this.rotation), 'hook.png', { width: 50, height: 50 }, 1);
-        pointers.addElement(this);
+        World.context.pointers.addElement(this);
     }
 }
 
-class Pointers {
+export class Pointers {
+
+    constructor(views: Views) {
+        this.views = views;
+    }
     onWheel(event: WheelEvent) {
         this.elements.forEach((element) => {
             element.wheelDelta = event.deltaY;
         })
     }
+    private views: Views;
     private elements: Pointer[] = [];
     private cameraSpaceLocation: Vector2 = new Vector2();
 
     update(): void {
         this.elements.forEach((element) => {
-            element.update(this.cameraSpaceLocation);
+            element.update(this.cameraSpaceLocation, this.views);
         })
     }
 
@@ -58,14 +61,14 @@ class Pointers {
     }
 
     onPointerMove(event: PointerEvent) {
-        let clientWidth = views.renderer != null ? views.renderer.domElement.clientWidth : 0;
-        let clientHeight = views.renderer != null ? views.renderer.domElement.clientHeight : 0;
+        let clientWidth = this.views.renderer != null ? this.views.renderer.domElement.clientWidth : 0;
+        let clientHeight = this.views.renderer != null ? this.views.renderer.domElement.clientHeight : 0;
         let mousePositionNDC = new Vector2();
         mousePositionNDC.x = (event.offsetX / clientWidth) * 2 - 1;
         mousePositionNDC.y = -(event.offsetY / clientHeight) * 2 + 1;
         let mousePositionCameraSpace = new Vector2();
-        mousePositionCameraSpace.x = mousePositionNDC.x * views.camera.threeCamera.right;
-        mousePositionCameraSpace.y = mousePositionNDC.y * views.camera.threeCamera.top;
+        mousePositionCameraSpace.x = mousePositionNDC.x * this.views.camera.threeCamera.right;
+        mousePositionCameraSpace.y = mousePositionNDC.y * this.views.camera.threeCamera.top;
         // console.log(mousePositionCameraSpace);
         event.x
 
@@ -98,17 +101,6 @@ class Pointers {
             element.isRMBDown = false;
         });
     }
-
-    // onRMBDown(event: MouseEvent) {
-    //     this.elements.forEach((element) => {
-    //         element.isRMBDown = true;
-    //     })
-    // }
-    // onRMBUp(event: MouseEvent) {
-    //     this.elements.forEach((element) => {
-    //         element.isRMBDown = false;
-    //     })
-    // }
 }
 
-export const pointers = new Pointers();
+// export const pointers = new Pointers();

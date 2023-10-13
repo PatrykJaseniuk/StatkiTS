@@ -5,14 +5,13 @@ import { Position } from "./worldElements/Position";
 import { DynamicElement, DynamicElements } from "./worldElements/DynamicElement";
 import { Ship2 } from "./worldStructures/Ship2";
 import { FrictionInteraction } from "./worldElements/FrictionInteraction";
-import { wind } from "./worldElements/FluidIinteractor";
 import { SpringInteractions } from "./worldElements/SpringInteraction";
 import { WorldElements } from "./worldElements/WorldElement";
 import { ActionBinder } from "./ActionBinder";
+import { FluidInteractor } from "./worldElements/FluidIinteractor";
 
 export class World {
     public static context: World;
-
 
     public dynamicElements = new DynamicElements();
     public dynamicTriangles = new WorldElements();
@@ -28,13 +27,14 @@ export class World {
     public actionBinder = new ActionBinder();
     public timeSpeed = { value: 1 };
 
-    constructor() {
+    constructor(worldInitializer: () => void) {
         World.context = this;
 
-        // pointer.pointer = new Pointer();
+        worldInitializer();
+
         const pointer = new Pointer();
         const windDynamicElement = new DynamicElement(new Position(), 9999999999);
-        windDynamicElement.velocity = wind.velocity;
+        windDynamicElement.velocity = FluidInteractor.wind.velocity;
         const clouds = new ViewTexture(
             new PositionRotation(windDynamicElement.position),
             'clouds.png', { height: 1000000, width: 1000000 },
@@ -45,6 +45,7 @@ export class World {
         const ship = new Ship2(pointer);
         const DynameicElementOcean = new DynamicElement(new Position(), 9999999999);
         const friction = new FrictionInteraction(ship.hull.dynamicCollidingPolygon.centerDynamicElement, DynameicElementOcean, 0.01)
+
 
         this.actionBinder.actions.sail1Left.action = () => { ship.turnSail("back", -0.1) };
         this.actionBinder.actions.sail1Right.action = () => { ship.turnSail('back', 0.1) };
@@ -64,14 +65,15 @@ export class World {
         };
     }
 
-    private previousTimeStamp: number | undefined = undefined;
     private intervals: NodeJS.Timer[] = [];
     private animationFrameId: number = 0;
 
     start() {
         this.setRefreshRateDurationInterval();
         this.intervals.push(setInterval(() => this.interactionCreators.update(), 100));
-        this.intervals.push(setInterval(() => this.transitionFunction(), 10));
+        // this.intervals.push(setInterval(() => this.userInteractors.update(), 100))
+        this.intervals.push(setInterval(() => this.CoreWorldElementsUpdate(10), 10));
+
         this.views.renderer?.domElement.addEventListener('pointermove', (event: PointerEvent) => { this.pointers.onPointerMove(event); });
         this.views.renderer?.domElement.addEventListener('pointerdown', (event: PointerEvent) => { this.pointers.onPointerDown(event); });
         this.views.renderer?.domElement.addEventListener('pointerup', (event: PointerEvent) => { this.pointers.onPointerUp(event); });
@@ -79,10 +81,35 @@ export class World {
 
         // on mouse wheel up
         this.views.renderer?.domElement.addEventListener('wheel', (event: WheelEvent) => { this.pointers.onWheel(event); });
-
         document.addEventListener('keydown', (event: KeyboardEvent) => {
             this.actionBinder.onKeyDown(event);
         });
+    }
+
+    private setRefreshRateDurationInterval(timeStamp: number | undefined = undefined) {
+        this.views.render();
+        this.animationFrameId = requestAnimationFrame(() => { this.setRefreshRateDurationInterval() });
+    }
+
+
+    private CoreWorldElementsUpdate(realWorldDt: number) {
+        const dt = realWorldDt * this.timeSpeed.value;
+        let SimulationMaximumDT = this.springInteractions.getSimulationMaximumDT();
+        SimulationMaximumDT = 0.3;
+        const iterations = Math.floor(dt / SimulationMaximumDT);
+
+        for (let i = 0; i < iterations; i++) {
+
+            this.springInteractions.update();
+            this.frictionInteractions.update();
+            this.fluidInteractors.update();
+            this.dynamicElements.update(SimulationMaximumDT);
+
+            this.pointers.update();
+
+            this.triangles.update();
+            this.userInteractors.update();
+        }
     }
 
     stop() {
@@ -94,36 +121,22 @@ export class World {
     }
 
     returnHtmlElement() {
-        const domElement = this.views.init();
-        return domElement;
+        return this.views.getDomHtml();
     }
 
     private clearAllModifiers() {
         this.views.clear();
         this.springInteractions.clear();
         this.frictionInteractions.clear();
+        this.dynamicElements.clear();
+        this.fluidInteractors.clear();
+        this.triangles.clear();
+        this.pointers.clear();
+        this.dynamicTriangles.clear();
+        this.interactionCreators.clear();
+        this.userInteractors.clear();
     }
 
-    private setRefreshRateDurationInterval(timeStamp: number | undefined = undefined) {
-        this.views.render();
-        this.animationFrameId = requestAnimationFrame((dt) => { this.setRefreshRateDurationInterval(dt) });
-    }
-    private transitionFunction() {
-        const realWorldDt = 10;
-        const dt = realWorldDt * this.timeSpeed.value;
-        let SimulationMaximumDT = this.springInteractions.getSimulationMaximumDT();
-        SimulationMaximumDT = 0.3;
-        const iterations = Math.floor(dt / SimulationMaximumDT);
 
-        for (let i = 0; i < iterations; i++) {
-            this.userInteractors.update();
-            this.springInteractions.update();
-            this.frictionInteractions.update();
-            this.dynamicElements.update(SimulationMaximumDT);
-            this.fluidInteractors.update();
-            this.triangles.update();
-            this.pointers.update();
-        }
-    }
 }
 

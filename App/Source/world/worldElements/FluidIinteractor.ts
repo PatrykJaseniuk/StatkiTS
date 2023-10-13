@@ -8,6 +8,10 @@ import { Position } from "./Position";
 import { World } from "../World";
 
 export class FluidInteractor implements WorldElement {
+
+    static wind = new Fluid(1, new Vector2(0, 1));
+    static water = new Fluid(1000, new Vector2(0, 0));
+
     getNormal: () => Vector2
     dynamicElement: DynamicElement;
     fluid: Fluid;
@@ -49,15 +53,9 @@ export class FluidInteractor implements WorldElement {
 }
 
 export function WindInteractor(getNormal: () => Vector2, getArea: () => number, dynamicElement: DynamicElement) {
-    return new FluidInteractor(wind, getNormal, getArea, dynamicElement);
+    return new FluidInteractor(FluidInteractor.wind, getNormal, getArea, dynamicElement);
 }
 
 export function WaterInteractor(getNormal: () => Vector2, getArea: () => number, dynamicElement: DynamicElement) {
-    return new FluidInteractor(water, getNormal, getArea, dynamicElement);
+    return new FluidInteractor(FluidInteractor.water, getNormal, getArea, dynamicElement);
 }
-
-export const wind = new Fluid(1, new Vector2(0, 1));
-
-const water = new Fluid(1000, new Vector2(0, 0));
-
-// export const fluidInteractors = new WorldElements();

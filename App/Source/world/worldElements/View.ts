@@ -221,7 +221,7 @@ export class Views {
     private views: View[];
     private scene: THREE.Scene;
     camera: Camera
-    renderer: THREE.WebGLRenderer | null = null;
+    renderer: THREE.WebGLRenderer;
 
     constructor() {
         this.views = [];
@@ -229,14 +229,12 @@ export class Views {
         this.camera = new Camera();
 
         this.scene.add(this.camera.threeCamera);
-
-    }
-
-    init() {
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(800, 800);
         // set background color blue
         this.renderer.setClearColor(0x6000ff);
+    }
+    getDomHtml() {
         return this.renderer.domElement;
     }
     setSize(width: number, height: number) {

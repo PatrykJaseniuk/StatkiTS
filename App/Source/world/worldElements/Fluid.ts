@@ -16,7 +16,7 @@ export class Fluid implements WorldElement {
     destroy(): void {
         throw new Error("Method not implemented.");
     }
-    //rużne parametry płynów
+    //różne parametry płynów
 
 
 }

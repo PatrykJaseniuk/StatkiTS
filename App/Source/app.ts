@@ -11,7 +11,7 @@ export interface CanvaApp {
 export async function app(): Promise<CanvaApp> {
 
     // let worldModifiers = new WorldModifiers();
-    let world = new World();
+    let world = new World(() => { });
 
     let app: CanvaApp = {
         getHtmlElement: () => {

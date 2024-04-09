@@ -5,7 +5,7 @@ import { PositionRotation } from "./PositionRotation";
 import { WorldElement, WorldElements } from "./WorldElement";
 import { ViewLine, ViewTexture } from "./View";
 import { Position } from "./Position";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 export class FluidInteractor implements WorldElement {
 

@@ -2,42 +2,43 @@ import React, { useEffect, useRef, useState } from "react"
 import { CanvaApp } from "../App/Source/app";
 import { Box } from "@mui/material";
 
-
-
-
-
 const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
-    let { app } = props;
+    const { app: getApp } = props;
     const ref = useRef<HTMLElement>();
 
     useEffect(() => {
-        const promise = app();
+        let stopAll = () => { };
 
-        const observer = new ResizeObserver((entries) => {
-            // wykonanie czynności po zmianie rozmiaru
-            const width = ref.current?.offsetWidth || 0;
-            const height = ref.current?.offsetHeight || 0;
-            promise.then((app) => app.resize(width, height));
-        });
+        (async () => {
+            const appp = await getApp();
 
-        ref.current && observer.observe(ref.current);
+            stopAll = ref.current ?
+                ref.current.appendChild(appp.getHtmlElement()) &&
+                (() => {
+                    const width = ref.current?.offsetWidth;
+                    const height = ref.current?.offsetHeight;
+                    const observer = new ResizeObserver((entries) => {
+                        // wykonanie czynności po zmianie rozmiaru
+                        const width = ref.current?.offsetWidth || 0;
+                        const height = ref.current?.offsetHeight || 0;
+                        appp.resize(width, height);
+                    });
 
-        promise.then((app) => {
-            if (ref.current) {
-                ref.current?.appendChild(app.getHtmlElement());
-                const width = ref.current.offsetWidth;
-                const height = ref.current.offsetHeight;
-                app.start(width, height);
-            }
-        })
+                    ref.current && observer.observe(ref.current);
+                    const stopApp = appp.start(width, height);
 
-        return () => {
-            promise.then((app) => {
-                app.stop();
-            })
-            ref.current && observer.unobserve(ref.current);
-        }
-    }, [app])
+                    return () => {
+                        stopApp();
+                        ref.current && observer.unobserve(ref.current);
+                    }
+                })()
+                :
+                () => { }
+
+        })()
+
+        return () => stopAll()
+    }, [getApp])
 
     return (
         <Box ref={ref}

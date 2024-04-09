@@ -4,7 +4,7 @@ import { SpringInteraction, calculateMaxSpringRate } from "./SpringInteraction";
 import { ViewPoint } from "./View";
 import { PositionRotation } from "./PositionRotation";
 import { WorldElements, WorldElement } from "./WorldElement";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 export class DynamicElement {
     force = new Vector2(0, 0);

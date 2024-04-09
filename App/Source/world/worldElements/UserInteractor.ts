@@ -1,4 +1,4 @@
-import { World } from "../World";
+import { World } from "../WorldCore";
 import { CollidingPolygon } from "./Colisions/Collision";
 import { Pointer } from "../worldStructures/Pointer";
 import { WorldElement, WorldElements } from "./WorldElement";

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { Position } from "./Position";
 import { WorldElement } from "./WorldElement";
 import { PositionRotation } from "./PositionRotation";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 
 

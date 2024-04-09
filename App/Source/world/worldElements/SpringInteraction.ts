@@ -3,7 +3,7 @@ import { DynamicElement } from "./DynamicElement";
 import { WorldElements, WorldElement } from "./WorldElement";
 import { Position } from "./Position";
 import { ViewLine } from "./View";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 export class SpringInteraction implements WorldElement {
     readonly dynamicElement0: DynamicElement;

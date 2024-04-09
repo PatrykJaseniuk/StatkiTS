@@ -3,7 +3,7 @@ import { Position } from '../worldElements/Position';
 import { WorldElements, WorldElement } from '../worldElements/WorldElement';
 import { ViewTexture, Views } from '../worldElements/View';
 import { PositionRotation, Rotation } from '../worldElements/PositionRotation';
-import { World } from '../World';
+import { World } from '../WorldCore';
 
 export class Pointer {
     update(cameraSpace: Vector2, views: Views) {

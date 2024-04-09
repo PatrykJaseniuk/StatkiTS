@@ -9,7 +9,7 @@ import { SpringInteraction } from "../worldElements/SpringInteraction";
 import { ViewTexture } from "../worldElements/View";
 import { UserInteractor } from "../worldElements/UserInteractor";
 import { Pointer } from "./Pointer";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 type Side = 'left' | 'right';
 type SailLocation = 'front' | 'back';

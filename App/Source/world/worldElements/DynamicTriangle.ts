@@ -3,7 +3,7 @@ import { WorldElement, WorldElements } from "./WorldElement";
 import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction } from "./SpringInteraction";
 import { Triangle } from "./Triangle";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 export class DynamicTriangle implements WorldElement {
 

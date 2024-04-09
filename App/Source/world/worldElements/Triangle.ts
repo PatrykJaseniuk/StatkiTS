@@ -2,7 +2,7 @@ import { Vector2 } from "three";
 import { Position } from "./Position";
 import { PositionRotation, Rotation } from "./PositionRotation";
 import { WorldElement } from "./WorldElement";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 export class Triangle implements WorldElement {
     readonly position0: Position;

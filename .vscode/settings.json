@@ -18,5 +18,8 @@
         "**/next.config.js": true,
         "**/coverage": true
     },
-    "explorerExclude.backup": {}
+    "explorerExclude.backup": {},
+    "cSpell.words": [
+        "Inicjalizatora"
+    ]
 }

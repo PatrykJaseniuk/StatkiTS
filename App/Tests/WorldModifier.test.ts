@@ -1,4 +1,4 @@
-import { World } from "../Source/world/World";
+import { World } from "../Source/world/WorldCore";
 import { collisionSystem } from "../Source/world/worldElements/Colisions/Collision";
 import { dynamicCollindingTriangles } from "../Source/world/worldElements/Colisions/DynamicCollidingTriangle";
 import { dynamicElements } from "../Source/world/worldElements/DynamicElement";

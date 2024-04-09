@@ -1,7 +1,7 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { WorldElements, WorldElement } from "./WorldElement";
-import { World } from "../World";
+import { World } from "../WorldCore";
 
 
 export class FrictionInteraction implements WorldElement {

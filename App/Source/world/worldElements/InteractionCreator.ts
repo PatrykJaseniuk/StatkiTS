@@ -3,7 +3,7 @@ import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction, SpringInteractionWithPosition } from "./SpringInteraction";
 import { Pointer } from "../worldStructures/Pointer";
 import { WorldElements, WorldElement } from "./WorldElement";
-import { World } from "../World";
+import { World } from "../WorldCore";
 // import { ViewLine } from "./View";
 
 

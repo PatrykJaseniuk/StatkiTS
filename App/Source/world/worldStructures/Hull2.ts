@@ -1,14 +1,13 @@
 import { Vector2 } from "three";
-import { Position } from "./Position";
-import { DynamicCollidingPolygon } from "./DynamicCollidingPolygon";
-import { DynamicElement } from "./DynamicElement";
-import { PositionRotation, Rotation } from "./PositionRotation";
-import { Triangle } from "./Triangle";
-import { ViewTexture } from "./View";
-import { FluidInteractor, WaterInteractor } from "./FluidIinteractor";
+import { Position } from "../worldElements/Position";
+import { DynamicCollidingPolygon } from "../worldElements/Colisions/DynamicCollidingPolygon";
+import { DynamicElement } from "../worldElements/DynamicElement";
+import { PositionRotation, Rotation } from "../worldElements/PositionRotation";
+import { Triangle } from "../worldElements/Triangle";
+import { ViewTexture } from "../worldElements/View";
+import { FluidInteractor, WaterInteractor } from "../worldElements/FluidIinteractor";
 
 export class Hull2 {
-
     dynamicCollidingPolygon: DynamicCollidingPolygon;
     shapeOfFirstHalfOfShip: Position[];
     shapeOfSecondHalfOfShip: Position[];

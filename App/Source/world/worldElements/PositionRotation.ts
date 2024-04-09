@@ -13,7 +13,6 @@ export class PositionRotation {
 
 export class Rotation {
     value: number = 0;
-
     constructor(value?: number) {
         this.value = value || 0;
     }

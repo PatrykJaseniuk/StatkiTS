@@ -1,22 +1,21 @@
 import { Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction, SpringInteractionWithPosition } from "./SpringInteraction";
-import { Pointer } from "./Pointer";
-import { WorldElements, WorldElement } from "./Template";
+import { Pointer } from "../worldStructures/Pointer";
+import { WorldElements, WorldElement } from "./WorldElement";
+import { World } from "../WorldCore";
 // import { ViewLine } from "./View";
 
 
 export class InteractionCreator implements WorldElement {
-
     private dynamicElements: DynamicElement[] = [];
     private pointer: Pointer;
     private interactions: (SpringInteractionWithPosition)[] = [];
-    // private lines: ViewLine[] = [];
 
     constructor(pointer: Pointer) {
         this.pointer = pointer;
 
-        interactionCreators.addElement(this);
+        World.context.interactionCreators.addElement(this);
     }
 
     addDynamicElement(dynamicElement: DynamicElement): void {
@@ -55,13 +54,11 @@ export class InteractionCreator implements WorldElement {
     }
 
     destroy(): void {
-        interactionCreators.removeElement(this);
+        World.context.interactionCreators.removeElement(this);
     }
 }
 
-// type Direction = 'up' | 'down';
-
-export const interactionCreators = new WorldElements();
+// export const interactionCreators = new WorldElements();
 
 
 

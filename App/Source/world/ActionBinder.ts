@@ -1,5 +1,5 @@
 import { type } from "os";
-import { WorldElement } from "./Template";
+import { WorldElement } from "./worldElements/WorldElement";
 
 class Action {
     key: string;
@@ -25,8 +25,7 @@ interface Actions {
     timeNormal: Action,
 }
 
-class ActionBinder {
-    
+export class ActionBinder {
     actions: Actions = {
         sail1Right: { key: 'd', action: () => { } },
         sail1Left: { key: 'a', action: () => { } },
@@ -51,4 +50,4 @@ class ActionBinder {
     }
 }
 
-export const actionBinder = new ActionBinder();
+// export const actionBinder = new ActionBinder();

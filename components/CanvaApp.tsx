@@ -2,72 +2,45 @@ import React, { useEffect, useRef, useState } from "react"
 import { CanvaApp } from "../App/Source/app";
 import { Box } from "@mui/material";
 
-
-
-
-
 const CanvaAppComponent = (props: { app: () => Promise<CanvaApp> }) => {
-    let { app } = props;
-    const ref = useRef(null);
-    let width = 10;
-    let height = 20;
+    const { app: getApp } = props;
+    const ref = useRef<HTMLElement>();
 
     useEffect(() => {
-        console.log('useEffect')
-        let promise = app();
-        promise.then((app) => {
-            (ref.current as unknown as HTMLElement).appendChild(app.getHtmlElement() as any);
-            console.log('mount threeApp')
-            if (ref.current) {
-                width = (ref.current as any).offsetWidth;
-                height = (ref.current as any).offsetHeight;
-            }
-            app.start(width, height);
+        let stopAll = () => { };
 
+        (async () => {
+            const appp = await getApp();
 
-            console.log('width', width)
-            console.log('height', height)
-        })
+            stopAll = ref.current ?
+                ref.current.appendChild(appp.getHtmlElement()) &&
+                (() => {
+                    const width = ref.current?.offsetWidth;
+                    const height = ref.current?.offsetHeight;
+                    const observer = new ResizeObserver((entries) => {
+                        // wykonanie czynności po zmianie rozmiaru
+                        const width = ref.current?.offsetWidth || 0;
+                        const height = ref.current?.offsetHeight || 0;
+                        appp.resize(width, height);
+                    });
 
-        const observer = new ResizeObserver((entries) => {
-            // wykonanie czynności po zmianie rozmiaru
-            width = (ref.current as any)?.offsetWidth;
-            height = (ref.current as any)?.offsetHeight;
-            console.log('width', width)
-            console.log('height', height)
-            promise.then((app) => {
-                app.resize(width, height);
-            });
+                    ref.current && observer.observe(ref.current);
+                    const stopApp = appp.start(width, height);
 
-        });
+                    return () => {
+                        stopApp();
+                        ref.current && observer.unobserve(ref.current);
+                    }
+                })()
+                :
+                () => { }
 
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
-        return () => {
-            promise.then((app) => {
-                app.stop();
-                if (ref.current) {
-                    (ref.current as any).innerHTML = '';
-                }
-            })
-            if (ref.current) {
-                observer.unobserve(ref.current);
-            }
-            console.log('unmount threeApp')
-        }
-    }, [app])
+        })()
 
-    useEffect(() => {
-
-
-        return () => {
-
-        };
-    }, []);
+        return () => stopAll()
+    }, [getApp])
 
     return (
-
         <Box ref={ref}
             sx={{
                 border: '0px blue solid',

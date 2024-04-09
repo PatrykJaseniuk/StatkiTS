@@ -1,8 +1,9 @@
 
-import { WorldElement, WorldElements } from "./Template";
+import { WorldElement, WorldElements } from "./WorldElement";
 import { DynamicElement } from "./DynamicElement";
 import { SpringInteraction } from "./SpringInteraction";
 import { Triangle } from "./Triangle";
+import { World } from "../WorldCore";
 
 export class DynamicTriangle implements WorldElement {
 
@@ -34,7 +35,7 @@ export class DynamicTriangle implements WorldElement {
         this.interaction1 = new SpringInteraction(this.dynamicElement0, this.dynamicElement2, springRate, dumperRate);
         this.interaction2 = new SpringInteraction(this.dynamicElement1, this.dynamicElement2, springRate, dumperRate);
 
-        dynamicTriangles.addElement(this);
+        World.context.dynamicTriangles.addElement(this);
     }
 
     update(): void {
@@ -46,4 +47,4 @@ export class DynamicTriangle implements WorldElement {
 
 }
 
-export const dynamicTriangles = new WorldElements();
+// export const dynamicTriangles = new WorldElements();

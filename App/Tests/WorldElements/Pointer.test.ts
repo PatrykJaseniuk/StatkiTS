@@ -1,7 +1,7 @@
 
 
-import { Pointer } from "../../Source/WorldElements/Pointer";
-import { views } from "../../Source/WorldElements/View";
+import { Pointer } from "../../Source/world/worldStructures/Pointer";
+import { views } from "../../Source/world/worldElements/View";
 import { Vector2 } from "three";
 
 

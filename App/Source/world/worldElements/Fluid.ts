@@ -1,5 +1,5 @@
 import { Vector2 } from "three";
-import { WorldElement } from "./Template";
+import { WorldElement } from "./WorldElement";
 
 export class Fluid implements WorldElement {
     density: number;
@@ -16,7 +16,7 @@ export class Fluid implements WorldElement {
     destroy(): void {
         throw new Error("Method not implemented.");
     }
-    //rużne parametry płynów
+    //różne parametry płynów
 
 
 }

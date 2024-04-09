@@ -1,7 +1,7 @@
 import { Vector2, Vector3 } from "three";
-import { Position } from "../../Source/WorldElements/Position";
-import { ViewLine, ViewTexture, views } from "../../Source/WorldElements/View";
-import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
+import { Position } from "../../Source/world/worldElements/Position";
+import { ViewLine, ViewTexture, views } from "../../Source/world/worldElements/View";
+import { PositionRotation } from "../../Source/world/worldElements/PositionRotation";
 
 describe('View', () => {
     const positionRotation = new PositionRotation()

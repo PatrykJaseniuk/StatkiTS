@@ -1,8 +1,8 @@
-import { World } from "../Source/World";
-import { collisionSystem } from "../Source/WorldElements/Collision";
-import { dynamicCollindingTriangles } from "../Source/WorldElements/DynamicCollidingTriangle";
-import { dynamicElements } from "../Source/WorldElements/DynamicElement";
-import { springInteractions } from "../Source/WorldElements/SpringInteraction";
+import { World } from "../Source/world/WorldCore";
+import { collisionSystem } from "../Source/world/worldElements/Colisions/Collision";
+import { dynamicCollindingTriangles } from "../Source/world/worldElements/Colisions/DynamicCollidingTriangle";
+import { dynamicElements } from "../Source/world/worldElements/DynamicElement";
+import { springInteractions } from "../Source/world/worldElements/SpringInteraction";
 import { WorldModifiers } from "../Source/WorldModifiers";
 import { mesureTime } from "./tools";
 

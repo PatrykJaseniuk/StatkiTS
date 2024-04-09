@@ -1,11 +1,11 @@
 import { Vector2 } from "three";
-import { CollidingPoint, CollidingTriangle, collidingPoints, collidingTriangles, collisionSystem } from "../../Source/WorldElements/Collision";
-import { Position } from "../../Source/WorldElements/Position";
-import { DynamicElement } from "../../Source/WorldElements/DynamicElement";
-import { DynamicTriangle } from "../../Source/WorldElements/DynamicTriangle";
-import { Triangle } from "../../Source/WorldElements/Triangle";
-import { PositionRotation } from "../../Source/WorldElements/PositionRotation";
-import { DynamicCollidingTriangle } from "../../Source/WorldElements/DynamicCollidingTriangle";
+import { CollidingPoint, CollidingTriangle, collidingPoints, collidingTriangles, collisionSystem } from "../../Source/world/worldElements/Colisions/Collision";
+import { Position } from "../../Source/world/worldElements/Position";
+import { DynamicElement } from "../../Source/world/worldElements/DynamicElement";
+import { DynamicTriangle } from "../../Source/world/worldElements/DynamicTriangle";
+import { Triangle } from "../../Source/world/worldElements/Triangle";
+import { PositionRotation } from "../../Source/world/worldElements/PositionRotation";
+import { DynamicCollidingTriangle } from "../../Source/world/worldElements/Colisions/DynamicCollidingTriangle";
 import { mesureTime } from "../tools";
 
 describe('CollidingPoint', () => {

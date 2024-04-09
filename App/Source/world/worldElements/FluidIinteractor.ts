@@ -2,11 +2,16 @@ import { NormalBlending, Vector2 } from "three";
 import { DynamicElement } from "./DynamicElement";
 import { Fluid } from "./Fluid";
 import { PositionRotation } from "./PositionRotation";
-import { WorldElement, WorldElements } from "./Template";
+import { WorldElement, WorldElements } from "./WorldElement";
 import { ViewLine, ViewTexture } from "./View";
 import { Position } from "./Position";
+import { World } from "../WorldCore";
 
 export class FluidInteractor implements WorldElement {
+
+    static wind = new Fluid(1, new Vector2(0, 1));
+    static water = new Fluid(1000, new Vector2(0, 0));
+
     getNormal: () => Vector2
     dynamicElement: DynamicElement;
     fluid: Fluid;
@@ -22,11 +27,7 @@ export class FluidInteractor implements WorldElement {
         this.getNormal = normalGetter;
         this.getArea = areaGetter;
         this.dynamicElement = dynamicElement;
-
-        // this.lineEnd = new Position();
-        // this.line = new ViewLine(dynamicElement.position, this.lineEnd)
-
-        fluidInteractors.addElement(this);
+        World.context.fluidInteractors.addElement(this);
     }
 
     update(): void {
@@ -52,17 +53,9 @@ export class FluidInteractor implements WorldElement {
 }
 
 export function WindInteractor(getNormal: () => Vector2, getArea: () => number, dynamicElement: DynamicElement) {
-    return new FluidInteractor(wind, getNormal, getArea, dynamicElement);
+    return new FluidInteractor(FluidInteractor.wind, getNormal, getArea, dynamicElement);
 }
 
 export function WaterInteractor(getNormal: () => Vector2, getArea: () => number, dynamicElement: DynamicElement) {
-    return new FluidInteractor(water, getNormal, getArea, dynamicElement);
+    return new FluidInteractor(FluidInteractor.water, getNormal, getArea, dynamicElement);
 }
-
-export const wind = new Fluid(1, new Vector2(0, 1));
-
-
-
-const water = new Fluid(1000, new Vector2(0, 0));
-
-export const fluidInteractors = new WorldElements();

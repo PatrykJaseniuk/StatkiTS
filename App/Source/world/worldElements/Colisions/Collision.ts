@@ -1,17 +1,11 @@
 import { Body, BodyType, Box, Point, Polygon, PotentialVector, System } from "detect-collisions";
-import { Position } from "./Position";
-import { WorldElements, WorldElement } from "./Template";
+import { Position } from "../Position";
+import { WorldElements, WorldElement } from "../WorldElement";
 import * as SAT from "sat";
 // import { ViewLine } from "./View";
-import { DynamicElement } from "./DynamicElement";
-import { mesureTime } from "../../Tests/tools";
+import { DynamicElement } from "../DynamicElement";
+import { mesureTime } from "../../../../Tests/tools";
 import { type } from "os";
-
-// interface CollisionPointOverlapV {
-//     point: CollidingPoint;
-//     overlapV: PotentialVector;
-// }
-
 
 export class CollidingPoint extends Point implements WorldElement {
     position: Position
@@ -109,27 +103,7 @@ export class CollidingPolygon extends Polygon implements WorldElement, Colliding
     }
 }
 
-// class CollidingPolygons extends WorldElements {
-//     protected elements: ColidingPolygon[] = [];
-//     addElement(element: ColidingPolygon): void {
-//         super.addElement(element);
-//         collisionSystem.addElement(element);
-//     }
-
-//     removeElement(element: ColidingPolygon): void {
-//         super.removeElement(element);
-//         collisionSystem.removeElement(element);
-//     }
-//     clear(): void {
-//         this.elements.forEach((e) => {
-//             collisionSystem.removeElement(e);
-//         });
-//         super.clear()
-//     }
-// }
-
-
-class CollidingWorldElement<T extends WorldElement & Body> extends WorldElements {
+class CollidingWorldElements<T extends WorldElement & Body> extends WorldElements {
     elements: T[] = [];
     addElement(element: T): void {
         super.addElement(element);
@@ -148,32 +122,12 @@ class CollidingWorldElement<T extends WorldElement & Body> extends WorldElements
     }
 }
 
-export const collidingPoints = new CollidingWorldElement();
-const collidingTriangles = new CollidingWorldElement<CollidingTriangle>();
-const collidingPolygons = new CollidingWorldElement<CollidingPolygon>();
-
-
-// class CollidingTriangles extends WorldElements {
-//     override elements: CollidingTriangle[] = [];
-//     addElement(element: CollidingTriangle): void {
-//         super.addElement(element);
-//         collisionSystem.addElement(element);
-//     }
-//     removeElement(element: CollidingTriangle): void {
-//         super.removeElement(element);
-//         collisionSystem.removeElement(element);
-//     }
-//     clear(): void {
-//         this.elements.forEach((e) => {
-//             collisionSystem.removeElement(e)
-//         })
-//         super.clear();
-//     }
-// }
-
-// export const collidingTriangles = new CollidingTriangles();
+export const collidingPoints = new CollidingWorldElements();
+const collidingTriangles = new CollidingWorldElements<CollidingTriangle>();
+const collidingPolygons = new CollidingWorldElements<CollidingPolygon>();
 
 class CollisionSystem {
+
     system = new System();
 
     addElement(body: Body) {

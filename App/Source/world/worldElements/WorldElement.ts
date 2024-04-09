@@ -1,4 +1,4 @@
-import { Pointer } from "./Pointer";
+import { Pointer } from "../worldStructures/Pointer";
 
 
 export class WorldElements {
